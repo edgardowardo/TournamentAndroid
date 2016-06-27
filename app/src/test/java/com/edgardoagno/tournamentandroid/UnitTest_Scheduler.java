@@ -299,6 +299,18 @@ public class UnitTest_Scheduler {
     }
 
     @Test
+    public void roundRobin_isCorrect_2() throws Exception {
+        Team[] teams = {new Team("1"), new Team("2")};
+        Game[] m = Scheduler.roundRobin(teams);
+        assertEquals(m.length, 1);
+
+        assertEquals(m[0].round, 1);
+        assertEquals(m[0].index, 1);
+        assertEquals(m[0].leftTeam.name, "1");
+        assertEquals(m[0].rightTeam.name, "2");
+    }
+
+    @Test
     public void roundRobin_isCorrect_3() throws Exception {
         Team[] teams = {new Team("1"), new Team("2"), new Team("3")};
         Game[] m = Scheduler.roundRobin(teams);
@@ -331,4 +343,126 @@ public class UnitTest_Scheduler {
         assertEquals(m[5].leftTeam.name, "1");
         assertEquals(m[5].rightTeam.name, "2");
     }
+
+    @Test
+    public void roundRobin_isCorrect_4() throws Exception {
+        Team[] teams = {new Team("1"), new Team("2"), new Team("3"), new Team("4")};
+        Game[] m = Scheduler.roundRobin(teams);
+        assertEquals(m.length, 6);
+
+        assertEquals(m[0].round, 1);
+        assertEquals(m[1].round, 1);
+        assertEquals(m[2].round, 2);
+        assertEquals(m[3].round, 2);
+        assertEquals(m[4].round, 3);
+        assertEquals(m[5].round, 3);
+
+        assertEquals(m[0].index, 1);
+        assertEquals(m[1].index, 2);
+        assertEquals(m[2].index, 3);
+        assertEquals(m[3].index, 4);
+        assertEquals(m[4].index, 5);
+        assertEquals(m[5].index, 6);
+
+        assertEquals(m[0].leftTeam.name, "2");
+        assertEquals(m[0].rightTeam.name, "3");
+        assertEquals(m[1].leftTeam.name, "1");
+        assertEquals(m[1].rightTeam.name, "4");
+        assertEquals(m[2].leftTeam.name, "4");
+        assertEquals(m[2].rightTeam.name, "2");
+        assertEquals(m[3].leftTeam.name, "1");
+        assertEquals(m[3].rightTeam.name, "3");
+        assertEquals(m[4].leftTeam.name, "3");
+        assertEquals(m[4].rightTeam.name, "4");
+        assertEquals(m[5].leftTeam.name, "1");
+        assertEquals(m[5].rightTeam.name, "2");
+    }
+
+    @Test
+    public void roundRobin_isCorrect_5() throws Exception {
+        Team[] teams = {new Team("1"), new Team("2"), new Team("3"), new Team("4"), new Team("5")};
+        Game[] m = Scheduler.roundRobin(teams);
+        assertEquals(m.length, 15);
+
+        assertEquals(m[0].round, 1);
+        assertEquals(m[1].round, 1);
+        assertEquals(m[2].round, 1);
+        assertEquals(m[3].round, 2);
+        assertEquals(m[4].round, 2);
+        assertEquals(m[5].round, 2);
+        assertEquals(m[6].round, 3);
+        assertEquals(m[7].round, 3);
+        assertEquals(m[8].round, 3);
+        assertEquals(m[9].round, 4);
+        assertEquals(m[10].round, 4);
+        assertEquals(m[11].round, 4);
+        assertEquals(m[12].round, 5);
+        assertEquals(m[13].round, 5);
+        assertEquals(m[14].round, 5);
+
+        assertEquals(m[0].index, 1);
+        assertEquals(m[1].index, 2);
+        assertEquals(m[2].index, 3);
+        assertEquals(m[3].index, 4);
+        assertEquals(m[4].index, 5);
+        assertEquals(m[5].index, 6);
+        assertEquals(m[6].index, 7);
+        assertEquals(m[7].index, 8);
+        assertEquals(m[8].index, 9);
+        assertEquals(m[9].index, 10);
+        assertEquals(m[10].index, 11);
+        assertEquals(m[11].index, 12);
+        assertEquals(m[12].index, 13);
+        assertEquals(m[13].index, 14);
+        assertEquals(m[14].index, 15);
+
+        assertEquals(m[0].leftTeam.name, "3");
+        assertEquals(m[0].rightTeam.name, "4");
+
+        assertEquals(m[1].leftTeam.name, "2");
+        assertEquals(m[1].rightTeam.name, "5");
+
+        assertEquals(m[2].leftTeam.name, "1");
+        assertNull(m[2].rightTeam);
+
+        assertEquals(m[3].leftTeam.name, "2");
+        assertEquals(m[3].rightTeam.name, "3");
+
+        assertNull(m[4].leftTeam);
+        assertEquals(m[4].rightTeam.name, "4");
+
+        assertEquals(m[5].leftTeam.name, "1");
+        assertEquals(m[5].rightTeam.name, "5");
+
+        assertNull(m[6].leftTeam);
+        assertEquals(m[6].rightTeam.name, "2");
+
+        assertEquals(m[7].leftTeam.name, "5");
+        assertEquals(m[7].rightTeam.name, "3");
+
+        assertEquals(m[8].leftTeam.name, "1");
+        assertEquals(m[8].rightTeam.name, "4");
+
+        assertEquals(m[9].leftTeam.name, "5");
+        assertNull(m[9].rightTeam);
+
+        assertEquals(m[10].leftTeam.name, "4");
+        assertEquals(m[10].rightTeam.name, "2");
+
+        assertEquals(m[11].leftTeam.name, "1");
+        assertEquals(m[11].rightTeam.name, "3");
+
+        assertEquals(m[12].leftTeam.name, "4");
+        assertEquals(m[12].rightTeam.name, "5");
+
+        assertEquals(m[13].leftTeam.name, "3");
+        assertNull(m[13].rightTeam);
+
+        assertEquals(m[14].leftTeam.name, "1");
+        assertEquals(m[14].rightTeam.name, "2");
+
+    }
+
+
+
 }
