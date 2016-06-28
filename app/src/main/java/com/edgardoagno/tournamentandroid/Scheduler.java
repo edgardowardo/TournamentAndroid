@@ -52,11 +52,11 @@ public class Scheduler {
         //
         int endIndex = elements.size() - 1;
 
-
         for (int i = elements.size() / 2 - 1; i >= 0; i--) {
             Team home = elements.get(i);
             Team away = elements.get(endIndex - i);
             Game pair = new Game(round, index++, home, away);
+            pair.isBye = (home == null || away == null);
             schedules.add(pair);
         }
 
@@ -152,6 +152,110 @@ public class Scheduler {
         // Accumulate the games
         //
         Game[] newGames = americanTournament(round + 1, index, allChange);
+        schedules.addAll(new ArrayList<Game>(Arrays.asList(newGames)));
+        return  schedules.toArray(new Game[schedules.size()]);
+    }
+
+
+    ///
+    /// Single elimination wrapper
+    ///
+    static Game[] singleElimination(Team[] teams) {
+        return singleElimination(1, 1, teams);
+    }
+
+    ///
+    /// Builds single elimination match schedule from a given set
+    ///
+    /// - Returns: a list of game matches in single elimination format.
+    ///
+    private static Game[] singleElimination(int round, int startIndex, Team[] teams) {
+
+        int index = startIndex;
+        ArrayList<Team> elements = new ArrayList<Team>(Arrays.asList(teams));
+        ArrayList<Game> schedules = new ArrayList<Game>();
+
+        //
+        // base case
+        //
+        if (elements.size() > 64 || round >= elements.size()) {
+            return schedules.toArray(new Game[schedules.size()]);
+        }
+
+        //
+        // Adjust the number of teams necessary to construct the brackets which are 2, 4, 8, 16, 32 and 64
+        //
+        for (int i = 1; i <= 8; i++ ) {
+            int minimum = (int)Math.pow(2, i);
+            if (elements.size() < minimum) {
+                int diff = minimum - elements.size();
+                for (int j = 0; j < diff; j++) {
+                    elements.add(null);
+                }
+                break;
+            } else if (elements.size() == minimum) {
+                break;
+            }
+        }
+
+        //
+        // process half the elements to create the pairs
+        //
+        int endIndex = elements.size() - 1;
+        for (int i = elements.size() / 2 - 1; i >= 0; i--) {
+            Team home = elements.get(i);
+            Team away = elements.get(endIndex - i);
+            Game game = new Game(round, index, home, away);
+            game.isBye = (home == null || away == null);
+            schedules.add(game);
+            index++;
+        }
+
+        //
+        // apply rainbow pairing for the new game winners instead of teams
+        //
+        Game[] newGames = futureSingleElimination(round + 1, index, schedules.toArray(new Game[schedules.size()]));
+        schedules.addAll(new ArrayList<Game>(Arrays.asList(newGames)));
+        return  schedules.toArray(new Game[schedules.size()]);
+    }
+
+    ///
+    /// Builds single elimination match schedule from a given set
+    ///
+    /// - Returns: a game tree in single elimination format.
+    ///
+    private static Game[] futureSingleElimination(int round, int startIndex, Game[] games) {
+
+        int index = startIndex;
+        ArrayList<Game> schedules = new ArrayList<Game>();
+
+        if (games.length < 2) {
+            return schedules.toArray(new Game[schedules.size()]);
+        }
+
+        //
+        // process all the game winners to create new games for the round
+        //
+        int endIndex = games.length - 1;
+        for (int i = games.length / 2 - 1; i >= 0; i--) {
+            Game prevHome = games[i];
+            Game prevAway = games[endIndex - i];
+            Game game = new Game();
+            game.round = round;
+            game.index = index;
+            Elimination e = new Elimination(false, prevHome.index, prevAway.index);
+            e.prevLeftGame = prevHome;
+            e.prevRightGame = prevAway;
+            game.elimination = e;
+
+            index++;
+            schedules.add(game);
+        }
+
+        //
+        // apply rainbow pairing for the new game winners until the base case happens
+        //
+        Game[] newGames = futureSingleElimination(round + 1, index, schedules.toArray(new Game[schedules.size()]));
         schedules.addAll(new ArrayList<Game>(Arrays.asList(newGames)));
         return  schedules.toArray(new Game[schedules.size()]);
     }
