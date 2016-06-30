@@ -48,5 +48,14 @@ public class Game extends RealmObject {
         this.doublesInfo = doublesInfo;
         this.elimination = elimination;
     }
+
+    public boolean getIsLoserBracket() {
+        if (this.elimination == null) {
+            return false;
+        } else {
+            return this.elimination.isLoserBracket;
+        }
+    }
+
 }
 
