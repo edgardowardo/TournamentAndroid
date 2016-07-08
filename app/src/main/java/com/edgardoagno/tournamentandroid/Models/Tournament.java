@@ -14,8 +14,7 @@ import io.realm.annotations.Required;
 public class Tournament extends RealmObject {
 
     @PrimaryKey
-    public String id = UUID.randomUUID().toString();
-    public Date createdOn = new Date();
+    public long id = System.currentTimeMillis();
     @Required
     public String name = "";
     public RealmList<Group> groups = new RealmList<Group>();
