@@ -2,6 +2,7 @@ package com.edgardoagno.tournamentandroid;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -65,14 +66,14 @@ public class TournamentsActivity extends RealmBaseActivity {
 
         Log.d("", "*****path: " + realm.getPath());
 
-        RealmResults<Tournament> toDoItems = realm
+        RealmResults<Tournament> tournamentItems = realm
                 .where(Tournament.class)
                 .findAllSorted("id", Sort.ASCENDING);
-        TournamentRealmAdapter toDoRealmAdapter =
-                new TournamentRealmAdapter(this, toDoItems, true, true);
+        TournamentRealmAdapter tournamentRealmAdapter =
+                new TournamentRealmAdapter(this, tournamentItems, true, true);
         RealmRecyclerView realmRecyclerView =
                 (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
-        realmRecyclerView.setAdapter(toDoRealmAdapter);
+        realmRecyclerView.setAdapter(tournamentRealmAdapter);
     }
 
     @Override
@@ -123,8 +124,8 @@ public class TournamentsActivity extends RealmBaseActivity {
                 });
     }
 
-    private void addTournamentItem(String toDoItemText) {
-        if (toDoItemText == null || toDoItemText.length() == 0) {
+    private void addTournamentItem(String tournamentItemText) {
+        if (tournamentItemText == null || tournamentItemText.length() == 0) {
             Toast
                     .makeText(this, "Please enter a tournament name", Toast.LENGTH_SHORT)
                     .show();
@@ -134,7 +135,7 @@ public class TournamentsActivity extends RealmBaseActivity {
         realm.beginTransaction();
         Tournament tournamentItem = realm.createObject(Tournament.class);
         tournamentItem.id = System.currentTimeMillis();
-        tournamentItem.name = toDoItemText;
+        tournamentItem.name = tournamentItemText;
         realm.commitTransaction();
     }
 
@@ -165,12 +166,24 @@ public class TournamentsActivity extends RealmBaseActivity {
         }
 
         @Override
-        public void onBindRealmViewHolder(ViewHolder viewHolder, int position) {
+        public void onBindRealmViewHolder(final ViewHolder viewHolder, int position) {
             final Tournament item = realmResults.get(position);
             viewHolder.tournamentTextView.setText(item.name);
             viewHolder.itemView.setBackgroundColor(
                     COLORS[(int) (item.id % COLORS.length)]
             );
+
+            viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+//                    Context context = v.getContext();
+//                    Intent intent = new Intent(context, GroupDetailActivity.class);
+//                    intent.putExtra(GroupDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+//
+//                    context.startActivity(intent);
+                }
+            });
+
         }
     }
 }
