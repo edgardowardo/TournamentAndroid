@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center_horizontal"
-        android:text="You can add tournaments using the ‘+’ button above. Each tournament can be renamed or deleted and may contain several groups of schedules."
+        android:text="You can add groups using the ‘+’ button above. A group can be scheduled with round robin, american, single elimination and double elimination."
         android:textSize="24sp"
         />
 </FrameLayout>

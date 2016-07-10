@@ -1,8 +1,8 @@
 package com.edgardoagno.tournamentandroid;
 
+
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +21,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -31,8 +32,10 @@ import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 import io.realm.Sort;
 
-
-public class TournamentsActivity extends RealmBaseActivity {
+/**
+ * A TO-DO app example showcasing the {@link RealmRecyclerView} with swipe to delete.
+ */
+public class GroupsActivity extends RealmBaseActivity {
 
     private static final int[] COLORS = new int[] {
             Color.argb(255, 28, 160, 170),
@@ -46,61 +49,56 @@ public class TournamentsActivity extends RealmBaseActivity {
     };
 
     private Realm realm;
-    private RealmResults<Tournament> tournaments;
-    private RealmChangeListener tournamentsListener;
+    private Tournament tournament;
+    RealmResults<Group> groups;
+    private RealmChangeListener groupsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tournaments_layout);
+        setContentView(R.layout.groups_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         realm = Realm.getInstance(getRealmConfig());
-        tournaments = realm.where(Tournament.class).findAllSorted("id", Sort.ASCENDING);
-        final TournamentRealmAdapter tournamentRealmAdapter = new TournamentRealmAdapter(this, tournaments, true, true);
-        final RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
-        realmRecyclerView.setAdapter(tournamentRealmAdapter);
+        Long id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
+        tournament = realm.where(Tournament.class).equalTo("id", id).findFirst();
+        setTitle(tournament.name);
 
-        tournamentsListener = new RealmChangeListener() {
+        groups = tournament.groups.where().findAllSorted("id", Sort.ASCENDING);
+        final GroupRealmAdapter groupRealmAdapter = new GroupRealmAdapter(this, groups, true, true);
+        RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
+        realmRecyclerView.setAdapter(groupRealmAdapter);
+
+        groupsListener = new RealmChangeListener() {
             @Override
             public void onChange(Object element) {
-                tournamentRealmAdapter.notifyDataSetChanged();
+                groupRealmAdapter.notifyDataSetChanged();
             }
         };
-        tournaments.addChangeListener(tournamentsListener);
+        groups.addChangeListener(groupsListener);
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_tournaments, menu);
+        getMenuInflater().inflate(R.menu.menu_groups, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_add) {
+        if (id == R.id.action_edit) {
             buildAndShowInputDialog();
             return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (realm != null) {
-            realm.close();
-            realm = null;
-        }
-        tournaments.removeChangeListener(tournamentsListener);
-    }
-
     private void buildAndShowInputDialog() {
-        final AlertDialog.Builder builder = new AlertDialog.Builder(TournamentsActivity.this);
-        builder.setTitle("Create A Tournament");
+        final AlertDialog.Builder builder = new AlertDialog.Builder(GroupsActivity.this);
+        builder.setTitle("Update Tournament");
 
         LayoutInflater li = LayoutInflater.from(this);
         View dialogView = li.inflate(R.layout.tournaments_dialog_view, null);
@@ -110,7 +108,7 @@ public class TournamentsActivity extends RealmBaseActivity {
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                addTournamentItem(input.getText().toString());
+                updateTournamentItem(input.getText().toString());
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -121,6 +119,7 @@ public class TournamentsActivity extends RealmBaseActivity {
         });
 
         final AlertDialog dialog = builder.show();
+        input.setText(tournament.name);
         input.setOnEditorActionListener(
                 new EditText.OnEditorActionListener() {
                     @Override
@@ -129,7 +128,7 @@ public class TournamentsActivity extends RealmBaseActivity {
                                 (event.getAction() == KeyEvent.ACTION_DOWN &&
                                         event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) {
                             dialog.dismiss();
-                            addTournamentItem(input.getText().toString());
+                            updateTournamentItem(input.getText().toString());
                             return true;
                         }
                         return false;
@@ -137,7 +136,7 @@ public class TournamentsActivity extends RealmBaseActivity {
                 });
     }
 
-    private void addTournamentItem(String tournamentItemText) {
+    private void updateTournamentItem(String tournamentItemText) {
         if (tournamentItemText == null || tournamentItemText.length() == 0) {
             Toast
                     .makeText(this, "Please enter a tournament name", Toast.LENGTH_SHORT)
@@ -146,38 +145,52 @@ public class TournamentsActivity extends RealmBaseActivity {
         }
 
         realm.beginTransaction();
-        Tournament tournamentItem = realm.createObject(Tournament.class);
-        tournamentItem.id = System.currentTimeMillis();
-        tournamentItem.name = tournamentItemText;
+        tournament.name = tournamentItemText;
         realm.commitTransaction();
+
+        setTitle(tournament.name);
     }
 
-    public class TournamentRealmAdapter
-            extends RealmBasedRecyclerViewAdapter<Tournament, TournamentRealmAdapter.ViewHolder> {
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (realm != null) {
+            realm.close();
+            realm = null;
+        }
+    }
+
+    public class GroupRealmAdapter
+            extends RealmBasedRecyclerViewAdapter<Group, GroupRealmAdapter.ViewHolder> {
 
         public class ViewHolder extends RealmViewHolder {
 
-            public TextView tournamentTextView;
+            public TextView groupTextView;
             public ViewHolder(FrameLayout container) {
                 super(container);
-                this.tournamentTextView = (TextView) container.findViewById(R.id.tournament_text_view);
+                this.groupTextView = (TextView) container.findViewById(R.id.group_text_view);
             }
         }
 
-        public TournamentRealmAdapter(Context context, RealmResults<Tournament> realmResults, boolean automaticUpdate, boolean animateResults) {
+        public GroupRealmAdapter(
+                Context context,
+                RealmResults<Group> realmResults,
+                boolean automaticUpdate,
+                boolean animateResults) {
             super(context, realmResults, automaticUpdate, animateResults);
         }
 
         @Override
         public ViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int viewType) {
-            View v = inflater.inflate(R.layout.tournaments_item_view, viewGroup, false);
+            View v = inflater.inflate(R.layout.groups_item_view, viewGroup, false);
             return new ViewHolder((FrameLayout) v);
         }
 
         @Override
         public void onBindRealmViewHolder(final ViewHolder viewHolder, int position) {
-            final Tournament item = realmResults.get(position);
-            viewHolder.tournamentTextView.setText(item.name);
+            final Group item = realmResults.get(position);
+            viewHolder.groupTextView.setText(item.name);
             viewHolder.itemView.setBackgroundColor(
                     COLORS[(int) (item.id % COLORS.length)]
             );
@@ -185,14 +198,15 @@ public class TournamentsActivity extends RealmBaseActivity {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Context context = v.getContext();
-                    Intent intent = new Intent(context, GroupsActivity.class);
-
-                    intent.putExtra("TOURNAMENT_ID", item.id);
-                    context.startActivity(intent);
+//                    Context context = v.getContext();
+//                    Intent intent = new Intent(context, GroupDetailActivity.class);
+//                    intent.putExtra(GroupDetailFragment.ARG_ITEM_ID, holder.mItem.id);
+//
+//                    context.startActivity(intent);
                 }
             });
         }
     }
 }
+
 

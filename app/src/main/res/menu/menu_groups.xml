@@ -1,10 +1,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".TournamentsActivity">
+    tools:context=".GroupsActivity">
+
+    <item android:id="@+id/action_edit"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Edit"
+        android:orderInCategory="100"
+        app:showAsAction="always"/>
+
     <item android:id="@+id/action_add"
         android:icon="@android:drawable/ic_menu_add"
         android:title="Add"
-        android:orderInCategory="100"
+        android:orderInCategory="101"
         app:showAsAction="always"/>
 </menu>
