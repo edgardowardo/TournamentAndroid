@@ -21,7 +21,6 @@ import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
-import io.realm.Sort;
 
 /**
  * Created by edgardoagno on 10/07/16.
@@ -87,6 +86,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
 
                 HorizontalPicker picker = (HorizontalPicker) container.findViewById(R.id.picker_team_count);
                 picker.setOnItemSelectedListener(this);
+
             }
 
             @Override
@@ -97,6 +97,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 // do nothing. to be overridden
             }
         }
+        //schedule_types_array
 
         public TeamRealmAdapter(Context context, RealmResults<Team> realmResults, boolean automaticUpdate, boolean animateResults) {
             super(context, realmResults, automaticUpdate, animateResults);
