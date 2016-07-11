@@ -11,7 +11,7 @@ import io.realm.annotations.Required;
 public class Team extends RealmObject {
 
     @PrimaryKey
-    public String id = UUID.randomUUID().toString();
+    public long id = System.currentTimeMillis();
     @Required
     public String name = "";
     public boolean isHandicapped = false;

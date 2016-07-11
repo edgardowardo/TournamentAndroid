@@ -3,7 +3,7 @@ package com.edgardoagno.tournamentandroid;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -32,21 +32,7 @@ import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 import io.realm.Sort;
 
-/**
- * A TO-DO app example showcasing the {@link RealmRecyclerView} with swipe to delete.
- */
 public class GroupsActivity extends RealmBaseActivity {
-
-    private static final int[] COLORS = new int[] {
-            Color.argb(255, 28, 160, 170),
-            Color.argb(255, 99, 161, 247),
-            Color.argb(255, 13, 79, 139),
-            Color.argb(255, 89, 113, 173),
-            Color.argb(255, 200, 213, 219),
-            Color.argb(255, 99, 214, 74),
-            Color.argb(255, 205, 92, 92),
-            Color.argb(255, 105, 5, 98)
-    };
 
     private Realm realm;
     private Tournament tournament;
@@ -91,6 +77,11 @@ public class GroupsActivity extends RealmBaseActivity {
         int id = item.getItemId();
         if (id == R.id.action_edit) {
             buildAndShowInputDialog();
+            return true;
+        } else if (id == R.id.action_add) {
+            Intent intent = new Intent(GroupsActivity.this, GroupSettingsActivity.class);
+            intent.putExtra("TOURNAMENT_ID", tournament.id);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);

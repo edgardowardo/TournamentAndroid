@@ -20,6 +20,9 @@
         <activity
             android:name=".GroupsActivity"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".GroupSettingsActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>
