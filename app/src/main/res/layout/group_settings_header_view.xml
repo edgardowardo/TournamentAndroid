@@ -26,6 +26,23 @@
             android:layout_margin="20dp"
             />
 
+        <com.wefika.horizontalpicker.HorizontalPicker
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/picker_team_count"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="22dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="2"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            app:values="@array/team_count_values"
+            app:dividerSize="10dp"
+            app:sideItems="@integer/numSideItems"/>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

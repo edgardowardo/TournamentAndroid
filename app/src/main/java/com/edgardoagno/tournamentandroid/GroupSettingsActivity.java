@@ -8,10 +8,12 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
+import com.wefika.horizontalpicker.HorizontalPicker;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
@@ -41,12 +43,21 @@ public class GroupSettingsActivity extends RealmBaseActivity {
 
 //        group = new Group();
         realm = Realm.getInstance(getRealmConfig());
-//        Long id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
+        Long id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
         teams = realm.where(Team.class).findAll();
 
-        final TeamRealmAdapter groupRealmAdapter = new TeamRealmAdapter(this, teams, true, true);
+        TeamRealmAdapter groupRealmAdapter = new TeamRealmAdapter(this, teams, true, true){
+            public void onItemSelectedAdapterCallBack(int index){
+                onItemSelectedActivityCallBack(index);
+            }
+        };
         RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(groupRealmAdapter);
+    }
+
+    public void onItemSelectedActivityCallBack(int index){
+        String s = String.format("Item %1$s selected", index);
+        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
     }
 
     public class TeamRealmAdapter extends RealmBasedRecyclerViewAdapter<Team, TeamRealmAdapter.ViewHolder> {
@@ -68,16 +79,31 @@ public class GroupSettingsActivity extends RealmBaseActivity {
             }
         }
 
-        public class HeaderViewHolder extends ViewHolder {
+        public class HeaderViewHolder extends ViewHolder implements  HorizontalPicker.OnItemSelected {
             public EditText groupEditText;
             public HeaderViewHolder(FrameLayout container) {
                 super(container);
                 this.groupEditText = (EditText) container.findViewById(R.id.group_edit_text);
+
+                HorizontalPicker picker = (HorizontalPicker) container.findViewById(R.id.picker_team_count);
+                picker.setOnItemSelectedListener(this);
+            }
+
+            @Override
+            public void onItemSelected(int index)    {
+                onItemSelectedHolderCallBack(index);
+            }
+            public void onItemSelectedHolderCallBack(int index){
+                // do nothing. to be overridden
             }
         }
 
         public TeamRealmAdapter(Context context, RealmResults<Team> realmResults, boolean automaticUpdate, boolean animateResults) {
             super(context, realmResults, automaticUpdate, animateResults);
+        }
+
+        public void onItemSelectedAdapterCallBack(int index){
+            // do nothing. to be overridden
         }
 
         @Override
@@ -87,7 +113,11 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 return new ItemViewHolder((FrameLayout) v);
             } else if (viewType == TYPE_HEADER) {
                 View v = inflater.inflate(R.layout.group_settings_header_view, viewTeam, false);
-                return new HeaderViewHolder((FrameLayout) v);
+                return new HeaderViewHolder((FrameLayout) v){
+                    public void onItemSelectedHolderCallBack(int index){
+                        onItemSelectedAdapterCallBack(index);
+                    }
+                };
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
         }
