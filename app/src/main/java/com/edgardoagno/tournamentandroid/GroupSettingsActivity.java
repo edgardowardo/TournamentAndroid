@@ -45,13 +45,19 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         Long id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
         teams = realm.where(Team.class).findAll();
 
-        TeamRealmAdapter groupRealmAdapter = new TeamRealmAdapter(this, teams, true, true){
+        TeamRealmAdapter teamsRealmAdapter = new TeamRealmAdapter(this, teams, true, true){
             public void onItemSelectedAdapterCallBack(int index){
                 onItemSelectedActivityCallBack(index);
             }
         };
         RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
-        realmRecyclerView.setAdapter(groupRealmAdapter);
+        realmRecyclerView.setAdapter(teamsRealmAdapter);
+
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
     }
 
     public void onItemSelectedActivityCallBack(int index){
@@ -61,6 +67,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
 
     public class TeamRealmAdapter extends RealmBasedRecyclerViewAdapter<Team, TeamRealmAdapter.ViewHolder> {
 
+        public HeaderViewHolder headerViewHolder;
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_ITEM = 1;
 
@@ -80,13 +87,13 @@ public class GroupSettingsActivity extends RealmBaseActivity {
 
         public class HeaderViewHolder extends ViewHolder implements  HorizontalPicker.OnItemSelected {
             public EditText groupEditText;
+            public HorizontalPicker pickerTeamCount;
+
             public HeaderViewHolder(FrameLayout container) {
                 super(container);
                 this.groupEditText = (EditText) container.findViewById(R.id.group_edit_text);
-
-                HorizontalPicker picker = (HorizontalPicker) container.findViewById(R.id.picker_team_count);
-                picker.setOnItemSelectedListener(this);
-
+                this.pickerTeamCount = (HorizontalPicker) container.findViewById(R.id.picker_team_count);
+                this.pickerTeamCount.setOnItemSelectedListener(this);
             }
 
             @Override
@@ -97,7 +104,8 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 // do nothing. to be overridden
             }
         }
-        //schedule_types_array
+
+        // Initializer
 
         public TeamRealmAdapter(Context context, RealmResults<Team> realmResults, boolean automaticUpdate, boolean animateResults) {
             super(context, realmResults, automaticUpdate, animateResults);
@@ -114,11 +122,12 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 return new ItemViewHolder((FrameLayout) v);
             } else if (viewType == TYPE_HEADER) {
                 View v = inflater.inflate(R.layout.group_settings_header_view, viewTeam, false);
-                return new HeaderViewHolder((FrameLayout) v){
+                this.headerViewHolder = new HeaderViewHolder((FrameLayout) v){
                     public void onItemSelectedHolderCallBack(int index){
                         onItemSelectedAdapterCallBack(index);
                     }
                 };
+                return this.headerViewHolder;
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
         }
