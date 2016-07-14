@@ -45,7 +45,7 @@ public class TournamentsActivity extends RealmBaseActivity {
         setSupportActionBar(toolbar);
 
         realm = Realm.getInstance(getRealmConfig());
-        tournaments = realm.where(Tournament.class).findAllSorted("id", Sort.ASCENDING);
+        tournaments = realm.where(Tournament.class).findAllSorted("id", Sort.DESCENDING);
         final TournamentRealmAdapter tournamentRealmAdapter = new TournamentRealmAdapter(this, tournaments, true, true);
         final RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(tournamentRealmAdapter);

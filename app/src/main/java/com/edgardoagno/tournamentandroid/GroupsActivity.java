@@ -51,7 +51,7 @@ public class GroupsActivity extends RealmBaseActivity {
         tournament = realm.where(Tournament.class).equalTo("id", id).findFirst();
         setTitle(tournament.name);
 
-        groups = tournament.groups.where().findAllSorted("id", Sort.ASCENDING);
+        groups = tournament.groups.where().findAllSorted("id", Sort.DESCENDING);
         final GroupRealmAdapter groupRealmAdapter = new GroupRealmAdapter(this, groups, true, true);
         RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(groupRealmAdapter);
