@@ -62,7 +62,9 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String value) {
-                        _menuSaveItem.setEnabled(value.length() > 0);
+                        boolean isEnabled = value.length() > 0;
+                        _menuSaveItem.setEnabled(isEnabled);
+                        _menuSaveItem.getIcon().setAlpha((isEnabled) ? 255 : 130);
                     }
                 });
     }
@@ -78,6 +80,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         getMenuInflater().inflate(R.menu.menu_group_settings, menu);
         _menuSaveItem = menu.getItem(0);
         _menuSaveItem.setEnabled(false);
+        _menuSaveItem.getIcon().setAlpha(130);
         return true;
     }
 
