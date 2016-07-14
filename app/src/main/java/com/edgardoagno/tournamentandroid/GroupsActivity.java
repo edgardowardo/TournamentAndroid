@@ -18,12 +18,16 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.edgardoagno.tournamentandroid.Models.Group;
+import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -157,10 +161,11 @@ public class GroupsActivity extends RealmBaseActivity {
 
         public class ViewHolder extends RealmViewHolder {
 
-            public TextView groupTextView;
+            @Bind(R.id.image_schedule_type) ImageView imageScheduleType;
+            @Bind(R.id.group_text_view) TextView groupTextView;
             public ViewHolder(FrameLayout container) {
                 super(container);
-                this.groupTextView = (TextView) container.findViewById(R.id.group_text_view);
+                ButterKnife.bind(this, container);
             }
         }
 
@@ -182,9 +187,25 @@ public class GroupsActivity extends RealmBaseActivity {
         public void onBindRealmViewHolder(final ViewHolder viewHolder, int position) {
             final Group item = realmResults.get(position);
             viewHolder.groupTextView.setText(item.name);
-            viewHolder.itemView.setBackgroundColor(
-                    COLORS[(int) (item.id % COLORS.length)]
-            );
+            ScheduleType s = item.getScheduleType();
+            switch (s) {
+                case RoundRobin: {
+                    viewHolder.imageScheduleType.setImageResource(R.drawable.icon_round_robin_text);
+                    break;
+                }
+                case American: {
+                    viewHolder.imageScheduleType.setImageResource(R.drawable.icon_american_text);
+                    break;
+                }
+                case SingleElimination: {
+                    viewHolder.imageScheduleType.setImageResource(R.drawable.icon_single_e_text);
+                    break;
+                }
+                case DoubleElimination: {
+                    viewHolder.imageScheduleType.setImageResource(R.drawable.icon_double_e_text);
+                    break;
+                }
+            }
 
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

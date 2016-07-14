@@ -15,6 +15,7 @@
             android:textAlignment="center"
             android:id="@+id/group_edit_text"
             android:inputType="textCapWords"
+            android:theme="@style/editTextTheme"
             android:hint="Group Name" />
 
         <RadioGroup
@@ -29,6 +30,7 @@
                 android:layout_height="wrap_content"
                 android:textColorHighlight="@color/colorPrimary"
                 android:checked="true"
+                android:theme="@style/radioTheme"
                 android:text="Round Robin">
             </RadioButton>
             <RadioButton
@@ -36,6 +38,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColorHighlight="@color/colorPrimary"
+                android:theme="@style/radioTheme"
                 android:text="American Tournament">
             </RadioButton>
             <RadioButton
@@ -43,6 +46,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColorHighlight="@color/colorPrimary"
+                android:theme="@style/radioTheme"
                 android:text="Single Elimination">
             </RadioButton>
             <RadioButton
@@ -50,6 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColorHighlight="@color/colorPrimary"
+                android:theme="@style/radioTheme"
                 android:text="Double Elimination">
             </RadioButton>
         </RadioGroup>

@@ -1,6 +1,7 @@
 package com.edgardoagno.tournamentandroid.ViewModels;
 
 import com.edgardoagno.tournamentandroid.Models.Group;
+import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
 
@@ -21,6 +22,12 @@ public class GroupSettingsViewModel {
     public GroupSettingsViewModel(Realm realm) {
         this._realm = realm;
         _groupNameEmitterSubject = PublishSubject.create();
+    }
+
+    public  void setScheduleType(ScheduleType scheduleType) {
+        _realm.beginTransaction();
+        this._group.setScheduleType(scheduleType);
+        _realm.commitTransaction();
     }
 
     public void setGroupName(String groupName) {

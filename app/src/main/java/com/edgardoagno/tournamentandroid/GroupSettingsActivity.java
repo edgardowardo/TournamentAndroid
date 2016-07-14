@@ -9,15 +9,21 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.ViewModels.GroupSettingsViewModel;
 import com.wefika.horizontalpicker.HorizontalPicker;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnCheckedChanged;
+import butterknife.OnClick;
+import butterknife.OnItemSelected;
 import butterknife.OnTextChanged;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
@@ -130,23 +136,39 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         public class HeaderViewHolder extends ViewHolder implements  HorizontalPicker.OnItemSelected {
 
             @Bind(R.id.group_edit_text) EditText _groupNameEditText;
-            public HorizontalPicker pickerTeamCount;
-            private GroupSettingsViewModel viewModel;
+            @Bind(R.id.radio_round_robin) RadioButton _radioRoundRobin;
+            @Bind(R.id.radio_american) RadioButton _radioAmerican;
+            @Bind(R.id.radio_single) RadioButton _radioSingle;
+            @Bind(R.id.radio_double) RadioButton _radioDouble;
+            @Bind(R.id.picker_team_count) HorizontalPicker _pickerTeamCount;
+            private GroupSettingsViewModel __viewModel;
 
             // Constructor
 
             public HeaderViewHolder(FrameLayout container, GroupSettingsViewModel viewModel) {
                 super(container);
-                this.viewModel = viewModel;
+                this.__viewModel = viewModel;
                 ButterKnife.bind(this, container);
-                this.pickerTeamCount = (HorizontalPicker) container.findViewById(R.id.picker_team_count);
-                this.pickerTeamCount.setOnItemSelectedListener(this);
+                this._pickerTeamCount.setOnItemSelectedListener(this);
             }
 
-            @OnTextChanged({ R.id.group_edit_text })
+            @OnTextChanged(R.id.group_edit_text)
             public void onGroupNameChanged() {
                 String name = _groupNameEditText.getText().toString();
-                this.viewModel.setGroupName(name);
+                this.__viewModel.setGroupName(name);
+            }
+
+            @OnClick({R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_double })
+            public void onClickScheduleTypeGroup() {
+                if (_radioRoundRobin.isChecked()) {
+                    this.__viewModel.setScheduleType(ScheduleType.RoundRobin);
+                } else if (_radioAmerican.isChecked()) {
+                    this.__viewModel.setScheduleType(ScheduleType.American);
+                } else if (_radioSingle.isChecked()) {
+                    this.__viewModel.setScheduleType(ScheduleType.SingleElimination);
+                } else if (_radioDouble.isChecked()) {
+                    this.__viewModel.setScheduleType(ScheduleType.DoubleElimination);
+                }
             }
 
             @Override

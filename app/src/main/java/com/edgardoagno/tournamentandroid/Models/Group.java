@@ -19,6 +19,7 @@ public class Group extends RealmObject {
     public String name = "";
     public int teamCount = 4;
     public boolean isHandicap = false;
+    private String scheduleTypeValue = ScheduleType.RoundRobin.toString();
     public RealmList<Team> teams = new RealmList<Team>();
     public RealmList<Game> games = new RealmList<Game>();
 
@@ -27,15 +28,11 @@ public class Group extends RealmObject {
         name = "";
         teamCount = 4;
         isHandicap = false;
+        scheduleTypeValue = ScheduleType.RoundRobin.toString();
         teams = new RealmList<Team>();
         games = new RealmList<Game>();
     }
 
-    private String scheduleTypeValue = ScheduleType.RoundRobin.toString();
-    public void setScheduleType(ScheduleType type) {
-        this.scheduleTypeValue = type.toString();
-    }
-    public ScheduleType getScheduleType() {
-        return ScheduleType.valueOf(this.scheduleTypeValue);
-    }
+    public void setScheduleType(ScheduleType type) { this.scheduleTypeValue = type.toString(); }
+    public ScheduleType getScheduleType() { return ScheduleType.valueOf(this.scheduleTypeValue);}
 }
