@@ -11,27 +11,19 @@ import io.realm.annotations.Required;
 public class Team extends RealmObject {
 
     @PrimaryKey
-    public long id = System.currentTimeMillis();
-    @Required
+    public String id = UUID.randomUUID().toString();
+    public long createdOnMillis = System.currentTimeMillis();
     public String name = "";
     public boolean isHandicapped = false;
     public int handicap = 0;
     public int seed = 0;
 
-    public Team() {
-        super();
-    }
-
-    public Team(String name) {
-        super();
-        this.name = name;
-    }
-
-    public Team(String name, boolean isHandicapped, int handicap, int seed) {
-        super();
-        this.name = name;
-        this.isHandicapped = isHandicapped;
-        this.handicap = handicap;
-        this.seed = seed;
+    public void setDefaultProperties() {
+        id = UUID.randomUUID().toString();
+        createdOnMillis = System.currentTimeMillis();
+        name = "";
+        isHandicapped = false;
+        handicap = 0;
+        seed = 0;
     }
 }

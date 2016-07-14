@@ -3,6 +3,8 @@ package com.edgardoagno.tournamentandroid;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
@@ -13,6 +15,7 @@ import android.widget.Toast;
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
+import com.edgardoagno.tournamentandroid.ViewModels.GroupSettingsViewModel;
 import com.wefika.horizontalpicker.HorizontalPicker;
 
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -27,10 +30,7 @@ import io.realm.RealmViewHolder;
  */
 public class GroupSettingsActivity extends RealmBaseActivity {
 
-    private Realm realm;
-    Group group;
-    RealmResults<Team> teams;
-    private RealmChangeListener teamsListener;
+    GroupSettingsViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,11 +40,10 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         setSupportActionBar(toolbar);
         setTitle("Add Group");
 
-//        group = new Group();
-        realm = Realm.getInstance(getRealmConfig());
-        Long id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
-        teams = realm.where(Team.class).findAll();
-
+        Realm realm = Realm.getInstance(getRealmConfig());
+        viewModel = new GroupSettingsViewModel(realm);
+        viewModel.saveDefaultGroup();
+        RealmResults<Team> teams = viewModel.group.teams.where().findAll();
         TeamRealmAdapter teamsRealmAdapter = new TeamRealmAdapter(this, teams, true, true){
             public void onItemSelectedAdapterCallBack(int index){
                 onItemSelectedActivityCallBack(index);
@@ -53,11 +52,33 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(teamsRealmAdapter);
 
+
+        int i = 0;
+        //teamsRealmAdapter.headerViewHolder.groupEditText.setText(viewModel.group.name);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_group_settings, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_attach_default_group) {
+            Long tournament_id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
+            viewModel.attachDefaultGroup(tournament_id);
+            finish();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+        viewModel.deleteDefaultGroup();
     }
 
     public void onItemSelectedActivityCallBack(int index){
@@ -67,7 +88,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
 
     public class TeamRealmAdapter extends RealmBasedRecyclerViewAdapter<Team, TeamRealmAdapter.ViewHolder> {
 
-        public HeaderViewHolder headerViewHolder;
+        public HeaderViewHolder headerViewHolder; // To do: ???
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_ITEM = 1;
 
@@ -94,6 +115,14 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 this.groupEditText = (EditText) container.findViewById(R.id.group_edit_text);
                 this.pickerTeamCount = (HorizontalPicker) container.findViewById(R.id.picker_team_count);
                 this.pickerTeamCount.setOnItemSelectedListener(this);
+
+
+
+//                RxTextView
+
+
+//                this.groupEditText
+
             }
 
             @Override
@@ -139,7 +168,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 final Team item = getItem(position);
                 itemViewHolder.groupTextView.setText(item.name);
                 itemViewHolder.itemView.setBackgroundColor(
-                        COLORS[(int) (item.id % COLORS.length)]
+                        COLORS[(int) (item.createdOnMillis % COLORS.length)]
                 );
                 itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override

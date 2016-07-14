@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".GroupSettingsActivity">
+
+    <item android:id="@+id/action_attach_default_group"
+        android:icon="@android:drawable/ic_menu_save"
+        android:title="Save"
+        android:orderInCategory="200"
+        app:showAsAction="always"/>
+
+</menu>

@@ -22,6 +22,15 @@ public class Group extends RealmObject {
     public RealmList<Team> teams = new RealmList<Team>();
     public RealmList<Game> games = new RealmList<Game>();
 
+    public void setDefaultProperties() {
+        id = System.currentTimeMillis();
+        name = "";
+        teamCount = 4;
+        isHandicap = false;
+        teams = new RealmList<Team>();
+        games = new RealmList<Game>();
+    }
+
     private String scheduleTypeValue = ScheduleType.RoundRobin.toString();
     public void setScheduleType(ScheduleType type) {
         this.scheduleTypeValue = type.toString();

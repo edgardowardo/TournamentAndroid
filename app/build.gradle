@@ -31,4 +31,7 @@ dependencies {
     compile(group: 'com.google.guava', name: 'guava', version: '19.0')
     compile 'com.github.thorbenprimke:realm-recyclerview:0.9.20'
     compile 'com.wefika:horizontal-picker:1.1.1'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+    compile 'com.jakewharton:butterknife:7.0.1'
 }
