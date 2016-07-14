@@ -55,6 +55,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         _viewModel.saveDefaultGroup();
         RealmResults<Team> teams = _viewModel._group.teams.where().findAll();
         TeamRealmAdapter teamsRealmAdapter = new TeamRealmAdapter(this, teams, true, true, _viewModel){
+            //TODO: Remove this callBack nonsense!
             public void onItemSelectedAdapterCallBack(int index){
                 onItemSelectedActivityCallBack(index);
             }
@@ -150,6 +151,13 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 this.__viewModel = viewModel;
                 ButterKnife.bind(this, container);
                 this._pickerTeamCount.setOnItemSelectedListener(this);
+
+
+//                this._pickerTeamCount.colo
+//                CharSequence[] s = {"4", "5", "6"};
+//                this._pickerTeamCount
+//                this._pickerTeamCount.setValues(s);
+//                this._pickerTeamCount.refreshDrawableState();
             }
 
             @OnTextChanged(R.id.group_edit_text)
