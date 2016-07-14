@@ -12,25 +12,29 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Team;
-import com.edgardoagno.tournamentandroid.Models.Tournament;
 import com.edgardoagno.tournamentandroid.ViewModels.GroupSettingsViewModel;
 import com.wefika.horizontalpicker.HorizontalPicker;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnTextChanged;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmBasedRecyclerViewAdapter;
-import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Created by edgardoagno on 10/07/16.
  */
 public class GroupSettingsActivity extends RealmBaseActivity {
 
-    GroupSettingsViewModel viewModel;
+    GroupSettingsViewModel _viewModel;
+    private MenuItem _menuSaveItem;
+    private Subscription _groupNameSubscription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,10 +45,10 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         setTitle("Add Group");
 
         Realm realm = Realm.getInstance(getRealmConfig());
-        viewModel = new GroupSettingsViewModel(realm);
-        viewModel.saveDefaultGroup();
-        RealmResults<Team> teams = viewModel.group.teams.where().findAll();
-        TeamRealmAdapter teamsRealmAdapter = new TeamRealmAdapter(this, teams, true, true){
+        _viewModel = new GroupSettingsViewModel(realm);
+        _viewModel.saveDefaultGroup();
+        RealmResults<Team> teams = _viewModel._group.teams.where().findAll();
+        TeamRealmAdapter teamsRealmAdapter = new TeamRealmAdapter(this, teams, true, true, _viewModel){
             public void onItemSelectedAdapterCallBack(int index){
                 onItemSelectedActivityCallBack(index);
             }
@@ -52,14 +56,28 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(teamsRealmAdapter);
 
+        _groupNameSubscription = _viewModel
+                ._groupNameEmitterSubject
+                .asObservable()
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String value) {
+                        _menuSaveItem.setEnabled(value.length() > 0);
+                    }
+                });
+    }
 
-        int i = 0;
-        //teamsRealmAdapter.headerViewHolder.groupEditText.setText(viewModel.group.name);
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        _groupNameSubscription.unsubscribe();
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_group_settings, menu);
+        _menuSaveItem = menu.getItem(0);
+        _menuSaveItem.setEnabled(false);
         return true;
     }
 
@@ -68,7 +86,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         int id = item.getItemId();
         if (id == R.id.action_attach_default_group) {
             Long tournament_id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
-            viewModel.attachDefaultGroup(tournament_id);
+            _viewModel.attachDefaultGroup(tournament_id);
             finish();
             return true;
         }
@@ -78,7 +96,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        viewModel.deleteDefaultGroup();
+        _viewModel.deleteDefaultGroup();
     }
 
     public void onItemSelectedActivityCallBack(int index){
@@ -88,7 +106,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
 
     public class TeamRealmAdapter extends RealmBasedRecyclerViewAdapter<Team, TeamRealmAdapter.ViewHolder> {
 
-        public HeaderViewHolder headerViewHolder; // To do: ???
+        private GroupSettingsViewModel viewModel;
         private static final int TYPE_HEADER = 0;
         private static final int TYPE_ITEM = 1;
 
@@ -107,22 +125,25 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         }
 
         public class HeaderViewHolder extends ViewHolder implements  HorizontalPicker.OnItemSelected {
-            public EditText groupEditText;
-            public HorizontalPicker pickerTeamCount;
 
-            public HeaderViewHolder(FrameLayout container) {
+            @Bind(R.id.group_edit_text) EditText _groupNameEditText;
+            public HorizontalPicker pickerTeamCount;
+            private GroupSettingsViewModel viewModel;
+
+            // Constructor
+
+            public HeaderViewHolder(FrameLayout container, GroupSettingsViewModel viewModel) {
                 super(container);
-                this.groupEditText = (EditText) container.findViewById(R.id.group_edit_text);
+                this.viewModel = viewModel;
+                ButterKnife.bind(this, container);
                 this.pickerTeamCount = (HorizontalPicker) container.findViewById(R.id.picker_team_count);
                 this.pickerTeamCount.setOnItemSelectedListener(this);
+            }
 
-
-
-//                RxTextView
-
-
-//                this.groupEditText
-
+            @OnTextChanged({ R.id.group_edit_text })
+            public void onGroupNameChanged() {
+                String name = _groupNameEditText.getText().toString();
+                this.viewModel.setGroupName(name);
             }
 
             @Override
@@ -134,10 +155,11 @@ public class GroupSettingsActivity extends RealmBaseActivity {
             }
         }
 
-        // Initializer
+        // Constructor
 
-        public TeamRealmAdapter(Context context, RealmResults<Team> realmResults, boolean automaticUpdate, boolean animateResults) {
+        public TeamRealmAdapter(Context context, RealmResults<Team> realmResults, boolean automaticUpdate, boolean animateResults, GroupSettingsViewModel viewModel) {
             super(context, realmResults, automaticUpdate, animateResults);
+            this.viewModel = viewModel;
         }
 
         public void onItemSelectedAdapterCallBack(int index){
@@ -151,12 +173,12 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 return new ItemViewHolder((FrameLayout) v);
             } else if (viewType == TYPE_HEADER) {
                 View v = inflater.inflate(R.layout.group_settings_header_view, viewTeam, false);
-                this.headerViewHolder = new HeaderViewHolder((FrameLayout) v){
+                HeaderViewHolder headerViewHolder = new HeaderViewHolder((FrameLayout) v, this.viewModel){
                     public void onItemSelectedHolderCallBack(int index){
                         onItemSelectedAdapterCallBack(index);
                     }
                 };
-                return this.headerViewHolder;
+                return headerViewHolder;
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
         }
@@ -179,6 +201,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
             } else if (viewHolder instanceof HeaderViewHolder) {
                 //cast holder to HeaderViewHolder and set data for header.
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder)viewHolder;
+                headerViewHolder._groupNameEditText.requestFocus();
             }
         }
 
