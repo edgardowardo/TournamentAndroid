@@ -7,6 +7,7 @@ import com.edgardoagno.tournamentandroid.Models.Tournament;
 import com.google.common.base.Strings;
 
 import io.realm.Realm;
+import io.realm.RealmList;
 import rx.subjects.PublishSubject;
 
 /**
@@ -43,10 +44,33 @@ public class GroupSettingsViewModel {
 
         int teamCount = Integer.parseInt(getTeamCountValue().toString());
         _realm.beginTransaction();
-        this._group.teamCount = teamCount;
-        _realm.commitTransaction();
+        _group.teamCount = teamCount;
 
-        // TODO: change group.teams
+        //
+        // add to list
+        //
+        if (_group.teams.size() < teamCount) {
+            for (int i = _group.teams.size(); i < teamCount; i++) {
+                int seed = i + 1;
+                Team team = _realm.createObject(Team.class);
+                team.setDefaultProperties();
+                team.name = String.format("Team %1$s", seed);
+                team.seed = seed;
+                _group.teams.add(team);
+
+            }
+        }
+
+        //
+        // truncate list
+        //
+        int teamSize = _group.teams.size();
+        if (teamSize > teamCount) {
+            for (int i = teamSize; i > teamCount ; i--) {
+                _group.teams.deleteLastFromRealm();
+            }
+        }
+        _realm.commitTransaction();
     }
 
     public  void setScheduleType(ScheduleType scheduleType) {

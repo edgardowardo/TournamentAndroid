@@ -30,6 +30,7 @@ import butterknife.OnTextChanged;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmBasedRecyclerViewAdapter;
+import io.realm.RealmChangeListener;
 import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 import rx.Subscription;
@@ -43,6 +44,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
     GroupSettingsViewModel _viewModel;
     private MenuItem _menuSaveItem;
     private Subscription _groupNameSubscription;
+    private RealmChangeListener teamsListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,15 +58,20 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         _viewModel = new GroupSettingsViewModel(realm);
         _viewModel.saveDefaultGroup();
         RealmResults<Team> teams = _viewModel._group.teams.where().findAll();
-        TeamRealmAdapter teamsRealmAdapter = new TeamRealmAdapter(this, teams, true, true, _viewModel){
-            //TODO: Remove this callBack nonsense!
-            public void onItemSelectedAdapterCallBack(int index){
-                onItemSelectedActivityCallBack(index);
-            }
-        };
+        final TeamRealmAdapter teamsRealmAdapter = new TeamRealmAdapter(this, teams, true, true, _viewModel);
         RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);
         realmRecyclerView.setAdapter(teamsRealmAdapter);
 
+        //  Observers
+        teamsListener = new RealmChangeListener() {
+            @Override
+            public void onChange(Object element) {
+                teamsRealmAdapter.notifyDataSetChanged();
+            }
+        };
+        teams.addChangeListener(teamsListener);
+
+        // Rx Observers
         _groupNameSubscription = _viewModel
                 ._groupNameEmitterSubject
                 .asObservable()
@@ -111,11 +118,6 @@ public class GroupSettingsActivity extends RealmBaseActivity {
         _viewModel.deleteDefaultGroup();
     }
 
-    public void onItemSelectedActivityCallBack(int index){
-        String s = String.format("Item %1$s selected", index);
-        Toast.makeText(this, s, Toast.LENGTH_SHORT).show();
-    }
-
     public class TeamRealmAdapter extends RealmBasedRecyclerViewAdapter<Team, TeamRealmAdapter.ViewHolder> {
 
         private GroupSettingsViewModel viewModel;
@@ -155,6 +157,11 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 this._pickerTeamCount.setOnItemSelectedListener(this);
                 CharSequence[] s = this.__viewModel.getAllowedTeamCounts();
                 this._pickerTeamCount.setValues(s);
+
+                CharSequence[] allowedTeamCounts = this.__viewModel._group.getScheduleType().getAllowedTeamCounts();
+                String teamCount = Integer.toString(__viewModel._group.teamCount);
+                int index = Arrays.asList(allowedTeamCounts).indexOf(teamCount);
+                this._pickerTeamCount.setSelectedItem(index);
             }
 
             @OnTextChanged(R.id.group_edit_text)
@@ -198,10 +205,6 @@ public class GroupSettingsActivity extends RealmBaseActivity {
             @Override
             public void onItemSelected(int index)    {
                 this.__viewModel.setTeamCountIndex(index);
-                onItemSelectedHolderCallBack(index);
-            }
-            public void onItemSelectedHolderCallBack(int index){
-                // do nothing. to be overridden
             }
         }
 
@@ -212,10 +215,6 @@ public class GroupSettingsActivity extends RealmBaseActivity {
             this.viewModel = viewModel;
         }
 
-        public void onItemSelectedAdapterCallBack(int index){
-            // do nothing. to be overridden
-        }
-
         @Override
         public ViewHolder onCreateRealmViewHolder(ViewGroup viewTeam, int viewType) {
             if (viewType == TYPE_ITEM) {
@@ -223,11 +222,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 return new ItemViewHolder((FrameLayout) v);
             } else if (viewType == TYPE_HEADER) {
                 View v = inflater.inflate(R.layout.group_settings_header_view, viewTeam, false);
-                HeaderViewHolder headerViewHolder = new HeaderViewHolder((FrameLayout) v, this.viewModel){
-                    public void onItemSelectedHolderCallBack(int index){
-                        onItemSelectedAdapterCallBack(index);
-                    }
-                };
+                HeaderViewHolder headerViewHolder = new HeaderViewHolder((FrameLayout) v, this.viewModel);
                 return headerViewHolder;
             }
             throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
