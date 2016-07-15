@@ -4,6 +4,7 @@ import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
+import com.google.common.base.Strings;
 
 import io.realm.Realm;
 import rx.subjects.PublishSubject;
@@ -22,6 +23,30 @@ public class GroupSettingsViewModel {
     public GroupSettingsViewModel(Realm realm) {
         this._realm = realm;
         _groupNameEmitterSubject = PublishSubject.create();
+    }
+
+    public CharSequence[] getAllowedTeamCounts() {
+        return this._group.getScheduleType().getAllowedTeamCounts();
+    }
+
+    public CharSequence getTeamCountValue() {
+        CharSequence s = this._group.getScheduleType().getAllowedTeamCounts()[teamCountIndex];
+        return s;
+    }
+
+    private int teamCountIndex;
+    public int getTeamCountIndex() {
+        return teamCountIndex;
+    }
+    public void setTeamCountIndex(int teamCountIndex) {
+        this.teamCountIndex = teamCountIndex;
+
+        int teamCount = Integer.parseInt(getTeamCountValue().toString());
+        _realm.beginTransaction();
+        this._group.teamCount = teamCount;
+        _realm.commitTransaction();
+
+        // TODO: change group.teams
     }
 
     public  void setScheduleType(ScheduleType scheduleType) {

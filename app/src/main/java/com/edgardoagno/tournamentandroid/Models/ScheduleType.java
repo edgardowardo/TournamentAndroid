@@ -1,5 +1,6 @@
 package com.edgardoagno.tournamentandroid.Models;
 
+import com.google.common.base.Strings;
 import com.google.common.primitives.Ints;
 
 import java.util.ArrayList;
@@ -11,30 +12,31 @@ import java.util.Arrays;
 public enum ScheduleType {
     RoundRobin, American, SingleElimination, DoubleElimination;
 
-    public int[] getAllowedTeamCounts() {
+    public CharSequence[] getAllowedTeamCounts() {
         switch (this) {
             case American: {
-                ArrayList<Integer> teamCounts = new ArrayList<>();
+                ArrayList<CharSequence> teamCounts = new ArrayList<>();
                 for (int i = 4; i < 33; i++) {
                     if (i % 4 != 2) {
-                        teamCounts.add(i);
+                        teamCounts.add(Integer.toString(i));
                     }
                 }
-                Integer[] a = teamCounts.toArray(new Integer[teamCounts.size()]);
-                return Ints.toArray(Arrays.asList(a));
+                CharSequence[] a = teamCounts.toArray(new CharSequence[teamCounts.size()]);
+                return a;
             }
             case RoundRobin:
             case SingleElimination:
             case DoubleElimination: {
-                ArrayList<Integer> teamCounts = new ArrayList<>();
+                ArrayList<CharSequence> teamCounts = new ArrayList<>();
                 for (int i = 2; i < 33; i++) {
-                    teamCounts.add(i);
+                    teamCounts.add(Integer.toString(i));
                 }
-                Integer[] a = teamCounts.toArray(new Integer[teamCounts.size()]);
-                return Ints.toArray(Arrays.asList(a));
+                CharSequence[] a = teamCounts.toArray(new CharSequence[teamCounts.size()]);
+                return a;
             }
         }
-        return new int[0];
+        CharSequence[] counts = {};
+        return counts;
     }
 
     public String getIconNameWithText() {

@@ -19,6 +19,8 @@ import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.ViewModels.GroupSettingsViewModel;
 import com.wefika.horizontalpicker.HorizontalPicker;
 
+import java.util.Arrays;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnCheckedChanged;
@@ -151,9 +153,7 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 this.__viewModel = viewModel;
                 ButterKnife.bind(this, container);
                 this._pickerTeamCount.setOnItemSelectedListener(this);
-
-
-                CharSequence[] s = {"4", "5", "6"};
+                CharSequence[] s = this.__viewModel.getAllowedTeamCounts();
                 this._pickerTeamCount.setValues(s);
             }
 
@@ -166,18 +166,38 @@ public class GroupSettingsActivity extends RealmBaseActivity {
             @OnClick({R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_double })
             public void onClickScheduleTypeGroup() {
                 if (_radioRoundRobin.isChecked()) {
-                    this.__viewModel.setScheduleType(ScheduleType.RoundRobin);
+                    setScheduleType(ScheduleType.RoundRobin);
                 } else if (_radioAmerican.isChecked()) {
-                    this.__viewModel.setScheduleType(ScheduleType.American);
+                    setScheduleType(ScheduleType.American);
                 } else if (_radioSingle.isChecked()) {
-                    this.__viewModel.setScheduleType(ScheduleType.SingleElimination);
+                    setScheduleType(ScheduleType.SingleElimination);
                 } else if (_radioDouble.isChecked()) {
-                    this.__viewModel.setScheduleType(ScheduleType.DoubleElimination);
+                    setScheduleType(ScheduleType.DoubleElimination);
                 }
+            }
+
+            private void setScheduleType(ScheduleType scheduleType) {
+                CharSequence oldTeamCountValueCharSequence = this.__viewModel.getTeamCountValue();
+                int oldTeamCountValue = Integer.parseInt(oldTeamCountValueCharSequence.toString());
+                CharSequence[] newAllowedTeamCounts = scheduleType.getAllowedTeamCounts();
+                int index = Arrays.asList(newAllowedTeamCounts).indexOf(oldTeamCountValueCharSequence);
+                if (index < 0) {
+                    oldTeamCountValue--;
+                    String newTeamCountValue = Integer.toString(oldTeamCountValue);
+                    index = Arrays.asList(newAllowedTeamCounts).indexOf(newTeamCountValue);
+                    if (index < 0) {
+                        index = 0;
+                    }
+                }
+                this._pickerTeamCount.setValues(scheduleType.getAllowedTeamCounts());
+                this._pickerTeamCount.setSelectedItem(index);
+                this.__viewModel.setScheduleType(scheduleType);
+                this.__viewModel.setTeamCountIndex(index);
             }
 
             @Override
             public void onItemSelected(int index)    {
+                this.__viewModel.setTeamCountIndex(index);
                 onItemSelectedHolderCallBack(index);
             }
             public void onItemSelectedHolderCallBack(int index){
