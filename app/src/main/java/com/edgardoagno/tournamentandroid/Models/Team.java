@@ -26,4 +26,13 @@ public class Team extends RealmObject {
         handicap = 0;
         seed = 0;
     }
+
+    public Team() {
+        super();
+    }
+
+    public Team(String name) {
+        super();
+        this.name = name;
+    }
 }

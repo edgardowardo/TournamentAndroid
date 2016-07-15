@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/HorizontalPicker.iml" filepath="$PROJECT_DIR$/HorizontalPicker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../HorizontalPicker-issues_37_38.iml" filepath="$PROJECT_DIR$/../HorizontalPicker-issues_37_38.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../HorizontalPickerExample/HorizontalPickerExample.iml" filepath="$PROJECT_DIR$/../HorizontalPickerExample/HorizontalPickerExample.iml" />
+    </modules>
+  </component>
+</project>

@@ -153,11 +153,8 @@ public class GroupSettingsActivity extends RealmBaseActivity {
                 this._pickerTeamCount.setOnItemSelectedListener(this);
 
 
-//                this._pickerTeamCount.colo
-//                CharSequence[] s = {"4", "5", "6"};
-//                this._pickerTeamCount
-//                this._pickerTeamCount.setValues(s);
-//                this._pickerTeamCount.refreshDrawableState();
+                CharSequence[] s = {"4", "5", "6"};
+                this._pickerTeamCount.setValues(s);
             }
 
             @OnTextChanged(R.id.group_edit_text)
