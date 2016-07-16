@@ -117,4 +117,19 @@ public class GroupSettingsViewModel {
         _group.deleteFromRealm();
         _realm.commitTransaction();
     }
+
+    public void swapTeams(int fromPosition, int toPosition) {
+        _realm.beginTransaction();
+
+        Team fromTeam = _group.teams.get(fromPosition);
+        int fromSeed = fromTeam.seed;
+
+        Team toTeam = _group.teams.get(toPosition);
+        int toSeed = toTeam.seed;
+
+        fromTeam.seed = toSeed;
+        toTeam.seed = fromSeed;
+
+        _realm.commitTransaction();
+    }
 }
