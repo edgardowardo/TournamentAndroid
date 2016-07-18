@@ -92,34 +92,49 @@
             android:orientation="horizontal">
 
             <Button
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/shuffle_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/icon_shuffle" />
+                android:background="@drawable/icon_shuffle_selector"
+                />
             <ToggleButton
+                android:layout_gravity="center_vertical"
                 android:id="@+id/sort_toggle"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
                 android:background="@drawable/icon_sort_selector"
                 android:textOff=""
                 android:textOn=""
                 />
             <Button
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/reset_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/icon_reset" />
+                android:background="@drawable/icon_reset_selector"
+                />
             <Button
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:id="@+id/import_button"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/icon_import" />
-            <Button
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+                android:background="@drawable/icon_import_selector"
+                />
+            <ToggleButton
+                android:layout_gravity="center_vertical"
+                android:id="@+id/handicap_toggle"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/icon_handicap" />
+                android:background="@drawable/icon_handicap_selector"
+                android:textOff=""
+                android:textOn=""
+                />
 
         </LinearLayout>
 

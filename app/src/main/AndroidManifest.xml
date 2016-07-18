@@ -23,7 +23,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".GroupSettingsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"
+            />
     </application>
 
 </manifest>
