@@ -7,6 +7,7 @@ import com.edgardoagno.tournamentandroid.Models.Tournament;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import io.realm.Realm;
 
@@ -131,6 +132,28 @@ public class GroupSettingsViewModel {
         fromTeam.seed = toSeed;
         toTeam.seed = fromSeed;
         Collections.sort(_teams);
+        _teamsEmitterSubject.onNext(_teams);
+    }
+
+    public void shuffleTeams() {
+        long randomSeed = System.nanoTime();
+        Collections.shuffle(_teams, new Random(randomSeed));
+        int seed = 1;
+        for (Team team: _teams) {
+            team.seed = seed;
+            seed++;
+        }
+        _teamsEmitterSubject.onNext(_teams);
+    }
+
+    public void resetTeams() {
+        for (int i = 0; i < _group.teamCount; i++ ) {
+            int seed = i + 1;
+            String name = String.format("Team %1$s", seed);
+            Team team = _teams.get(i);
+            team.name = name;
+            team.handicap = 0;
+        }
         _teamsEmitterSubject.onNext(_teams);
     }
 

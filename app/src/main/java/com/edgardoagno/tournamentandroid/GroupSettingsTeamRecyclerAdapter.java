@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -91,7 +92,13 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         @Bind(R.id.radio_single) RadioButton _radioSingle;
         @Bind(R.id.radio_double) RadioButton _radioDouble;
         @Bind(R.id.picker_team_count) HorizontalPicker _pickerTeamCount;
+
+        @Bind(R.id.shuffle_button) Button _shuffleButton;
         @Bind(R.id.sort_toggle) ToggleButton _sortToggleButton;
+        @Bind(R.id.reset_button) Button _resetButton;
+        @Bind(R.id.import_button) Button _importButton;
+        @Bind(R.id.handicap_toggle) ToggleButton _handicapToggleButton;
+
         private GroupSettingsViewModel __viewModel;
 
         // Constructor
@@ -116,10 +123,31 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
             this.__viewModel.setGroupName(name);
         }
 
+        @OnClick(R.id.shuffle_button)
+        public void onClickShuffle() {
+            this.__viewModel.shuffleTeams();
+        }
+
         @OnClick(R.id.sort_toggle)
-        public void onClickSort() {
+        public void onToggleSort() {
             Boolean isChecked = _sortToggleButton.isChecked();
             this.__viewModel.setIsManualSorting(isChecked);
+        }
+
+        @OnClick(R.id.reset_button)
+        public void onClickReset() {
+            this.__viewModel.resetTeams();
+        }
+
+        @OnClick(R.id.import_button)
+        public void onClickImport() {
+            // TODO: under construction
+        }
+
+        @OnClick(R.id.handicap_toggle)
+        public void onToggleHandicap() {
+            Boolean isChecked = _handicapToggleButton.isChecked();
+            // TODO: under construction
         }
 
         @OnClick({R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_double })
