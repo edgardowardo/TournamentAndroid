@@ -96,11 +96,15 @@
                 android:layout_height="35dp"
                 android:layout_margin="10dp"
                 android:background="@drawable/icon_shuffle" />
-            <Button
-                android:layout_width="35dp"
-                android:layout_height="35dp"
+            <ToggleButton
+                android:id="@+id/sort_toggle"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
                 android:layout_margin="10dp"
-                android:background="@drawable/icon_sort" />
+                android:background="@drawable/icon_sort_selector"
+                android:textOff=""
+                android:textOn=""
+                />
             <Button
                 android:layout_width="35dp"
                 android:layout_height="35dp"

@@ -13,6 +13,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
+import android.widget.ToggleButton;
 
 import com.edgardoagno.tournamentandroid.ItemTouchHelperAdapter.ItemTouchHelperAdapter;
 import com.edgardoagno.tournamentandroid.ItemTouchHelperAdapter.ItemTouchHelperViewHolder;
@@ -28,6 +29,8 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
+import rx.Subscription;
+import rx.functions.Action1;
 
 /**
  * Created by edgardoagno on 16/07/16.
@@ -49,9 +52,24 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         @Bind(R.id.seed_text_view) TextView _seedTextView;
         @Bind(R.id.team_name_edit_text) EditText _teamNameEditText;
         @Bind(R.id.team_handle_view) ImageView _teamHandleView;
-        public ItemViewHolder(FrameLayout container) {
+        private GroupSettingsViewModel __viewModel;
+        private Subscription _isManualSortingSubscription;
+
+        public ItemViewHolder(final FrameLayout container, GroupSettingsViewModel viewModel) {
             super(container);
             ButterKnife.bind(this, container);
+            __viewModel = viewModel;
+
+            _isManualSortingSubscription = __viewModel
+                    ._isManualSortingEmitterSubject
+                    .asObservable()
+                    .subscribe(new Action1<Boolean>() {
+                        @Override
+                        public void call(Boolean value) {
+                            int visibility = (value) ? View.VISIBLE : View.INVISIBLE;
+                            _teamHandleView.setVisibility(visibility);
+                        }
+                    });
         }
 
         @Override
@@ -73,6 +91,7 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         @Bind(R.id.radio_single) RadioButton _radioSingle;
         @Bind(R.id.radio_double) RadioButton _radioDouble;
         @Bind(R.id.picker_team_count) HorizontalPicker _pickerTeamCount;
+        @Bind(R.id.sort_toggle) ToggleButton _sortToggleButton;
         private GroupSettingsViewModel __viewModel;
 
         // Constructor
@@ -95,6 +114,12 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         public void onGroupNameChanged() {
             String name = _groupNameEditText.getText().toString();
             this.__viewModel.setGroupName(name);
+        }
+
+        @OnClick(R.id.sort_toggle)
+        public void onClickSort() {
+            Boolean isChecked = _sortToggleButton.isChecked();
+            this.__viewModel.setIsManualSorting(isChecked);
         }
 
         @OnClick({R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_double })
@@ -147,11 +172,12 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         if (viewType == TYPE_ITEM) {
             View v = inflater.inflate(R.layout.group_settings_team_item_view, parent, false);
-            return new ItemViewHolder((FrameLayout) v);
+            ItemViewHolder holder = new ItemViewHolder((FrameLayout) v, viewModel);
+            return holder;
         } else if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.group_settings_header_view, parent, false);
-            HeaderViewHolder headerViewHolder = new HeaderViewHolder((FrameLayout) v, this.viewModel);
-            return headerViewHolder;
+            HeaderViewHolder holder = new HeaderViewHolder((FrameLayout) v, this.viewModel);
+            return holder;
         }
         throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
     }
@@ -163,6 +189,8 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
             final Team item = getItem(position);
             itemViewHolder._seedTextView.setText(viewModel.seed(item.seed));
             itemViewHolder._teamNameEditText.setText(item.name);
+            int visibility = (this.viewModel.getIsManualSorting()) ? View.VISIBLE : View.INVISIBLE;
+            itemViewHolder._teamHandleView.setVisibility(visibility);
             itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

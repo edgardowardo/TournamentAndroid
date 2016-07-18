@@ -4,14 +4,12 @@ import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
-import com.google.common.base.Strings;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
 import io.realm.Realm;
-import io.realm.RealmList;
+
 import rx.subjects.PublishSubject;
 
 /**
@@ -22,6 +20,8 @@ public class GroupSettingsViewModel {
     private Realm _realm;
     public PublishSubject<String> _groupNameEmitterSubject;
     public PublishSubject<ArrayList<Team>> _teamsEmitterSubject;
+    public PublishSubject<Boolean> _isManualSortingEmitterSubject;
+    private boolean isManualSorting = false;
     public Group _group;
     public ArrayList<Team> _teams;
 
@@ -31,6 +31,7 @@ public class GroupSettingsViewModel {
         this._realm = realm;
         _groupNameEmitterSubject = PublishSubject.create();
         _teamsEmitterSubject = PublishSubject.create();
+        _isManualSortingEmitterSubject = PublishSubject.create();
     }
 
     public CharSequence[] getAllowedTeamCounts() {
@@ -131,5 +132,14 @@ public class GroupSettingsViewModel {
         toTeam.seed = fromSeed;
         Collections.sort(_teams);
         _teamsEmitterSubject.onNext(_teams);
+    }
+
+    public boolean getIsManualSorting() {
+        return this.isManualSorting;
+    }
+
+    public void setIsManualSorting(Boolean isManualSorting) {
+        this.isManualSorting = isManualSorting;
+        _isManualSortingEmitterSubject.onNext(isManualSorting);
     }
 }
