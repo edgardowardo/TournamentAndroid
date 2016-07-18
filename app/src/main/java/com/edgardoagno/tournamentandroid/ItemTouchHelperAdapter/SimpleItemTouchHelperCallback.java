@@ -37,13 +37,17 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
 
     private final ItemTouchHelperAdapter mAdapter;
 
+    private int dragFrom = -1;
+
+    private int dragTo = -1;
+
     public SimpleItemTouchHelperCallback(ItemTouchHelperAdapter adapter) {
         mAdapter = adapter;
     }
 
     @Override
     public boolean isLongPressDragEnabled() {
-        return true;
+        return false;
     }
 
     @Override
@@ -71,8 +75,16 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
             return false;
         }
 
+        int fromPosition = source.getAdapterPosition();
+        int toPosition = target.getAdapterPosition();
+
+        if(dragFrom == -1) {
+            dragFrom =  fromPosition;
+        }
+        dragTo = toPosition;
+
         // Notify the adapter of the move
-        mAdapter.onItemMove(source.getAdapterPosition(), target.getAdapterPosition());
+        mAdapter.onItemMove(fromPosition, toPosition);
         return true;
     }
 
@@ -119,5 +131,11 @@ public class SimpleItemTouchHelperCallback extends ItemTouchHelper.Callback {
             ItemTouchHelperViewHolder itemViewHolder = (ItemTouchHelperViewHolder) viewHolder;
             itemViewHolder.onItemClear();
         }
+
+        if(dragFrom != -1 && dragTo != -1 && dragFrom != dragTo) {
+            mAdapter.onItemMoved(dragFrom, dragTo);
+        }
+
+        dragFrom = dragTo = -1;
     }
 }

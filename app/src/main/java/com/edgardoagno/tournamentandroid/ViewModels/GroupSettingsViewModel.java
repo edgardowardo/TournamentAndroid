@@ -6,6 +6,10 @@ import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
 import com.google.common.base.Strings;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import io.realm.Realm;
 import io.realm.RealmList;
 import rx.subjects.PublishSubject;
@@ -16,14 +20,17 @@ import rx.subjects.PublishSubject;
 public class GroupSettingsViewModel {
 
     private Realm _realm;
-    public Group _group;
     public PublishSubject<String> _groupNameEmitterSubject;
+    public PublishSubject<ArrayList<Team>> _teamsEmitterSubject;
+    public Group _group;
+    public ArrayList<Team> _teams;
 
     // Constructor
 
     public GroupSettingsViewModel(Realm realm) {
         this._realm = realm;
         _groupNameEmitterSubject = PublishSubject.create();
+        _teamsEmitterSubject = PublishSubject.create();
     }
 
     public CharSequence[] getAllowedTeamCounts() {
@@ -43,93 +50,86 @@ public class GroupSettingsViewModel {
         this.teamCountIndex = teamCountIndex;
 
         int teamCount = Integer.parseInt(getTeamCountValue().toString());
-        _realm.beginTransaction();
         _group.teamCount = teamCount;
 
         //
         // add to list
         //
-        if (_group.teams.size() < teamCount) {
-            for (int i = _group.teams.size(); i < teamCount; i++) {
+        if (_teams.size() < teamCount) {
+            for (int i = _teams.size(); i < teamCount; i++) {
                 int seed = i + 1;
-                Team team = _realm.createObject(Team.class);
+                Team team = new Team();
                 team.setDefaultProperties();
                 team.name = String.format("Team %1$s", seed);
                 team.seed = seed;
-                _group.teams.add(team);
-
+                _teams.add(team);
             }
         }
 
         //
         // truncate list
         //
-        int teamSize = _group.teams.size();
+        int teamSize = _teams.size();
         if (teamSize > teamCount) {
             for (int i = teamSize; i > teamCount ; i--) {
-                _group.teams.deleteLastFromRealm();
+                _teams.remove(i - 1);
             }
         }
-        _realm.commitTransaction();
+
+        _teamsEmitterSubject.onNext(_teams);
     }
 
     public  void setScheduleType(ScheduleType scheduleType) {
-        _realm.beginTransaction();
         this._group.setScheduleType(scheduleType);
-        _realm.commitTransaction();
+    }
+
+    public String seed(int seed) {
+        return String.format("%1$s.", seed);
     }
 
     public void setGroupName(String groupName) {
-        _realm.beginTransaction();
         this._group.name = groupName;
-        _realm.commitTransaction();
         _groupNameEmitterSubject.onNext(groupName);
     }
 
     public void attachDefaultGroup(long tournamentId) {
         _realm.beginTransaction();
+        _realm.copyToRealmOrUpdate(_group);
+        for (Team t: _teams) {
+            _realm.copyToRealm(t);
+            _group.teams.add(t);
+        }
         Tournament tournament = _realm.where(Tournament.class).equalTo("id", tournamentId).findFirst();
         tournament.groups.add(_group);
         _realm.commitTransaction();
     }
 
-    public void saveDefaultGroup() {
-        _realm.beginTransaction();
-        _group = _realm.createObject(Group.class);
+    public void createDefaultGroup() {
+        _group = new Group();
         _group.setDefaultProperties();
-        long runningTime = System.currentTimeMillis();
+        _teams = new ArrayList<Team>();
         for (int i = 0; i < _group.teamCount; i++ ) {
-            runningTime++;
             int seed = i + 1;
-            Team team = _realm.createObject(Team.class);
+            String name = String.format("Team %1$s", seed);
+            Team team = new Team();
             team.setDefaultProperties();
-            team.createdOnMillis = runningTime;
-            team.name = String.format("Team %1$s", seed);
+            team.name = name;
             team.seed = seed;
-            _group.teams.add(team);
+            _teams.add(team);
         }
-        _realm.commitTransaction();
-    }
-
-    public void deleteDefaultGroup() {
-        _realm.beginTransaction();
-        _group.teams.deleteAllFromRealm();
-        _group.deleteFromRealm();
-        _realm.commitTransaction();
     }
 
     public void swapTeams(int fromPosition, int toPosition) {
-        _realm.beginTransaction();
 
-        Team fromTeam = _group.teams.get(fromPosition);
+        Team fromTeam = _teams.get(fromPosition);
         int fromSeed = fromTeam.seed;
 
-        Team toTeam = _group.teams.get(toPosition);
+        Team toTeam = _teams.get(toPosition);
         int toSeed = toTeam.seed;
 
         fromTeam.seed = toSeed;
         toTeam.seed = fromSeed;
-
-        _realm.commitTransaction();
+        Collections.sort(_teams);
+        _teamsEmitterSubject.onNext(_teams);
     }
 }

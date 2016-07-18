@@ -46,8 +46,9 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
     }
 
     public class ItemViewHolder extends ViewHolder implements ItemTouchHelperViewHolder {
+        @Bind(R.id.seed_text_view) TextView _seedTextView;
+        @Bind(R.id.team_name_edit_text) EditText _teamNameEditText;
         @Bind(R.id.team_handle_view) ImageView _teamHandleView;
-        @Bind(R.id.team_text_view) TextView _groupTextView;
         public ItemViewHolder(FrameLayout container) {
             super(container);
             ButterKnife.bind(this, container);
@@ -160,7 +161,8 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         if (viewHolder instanceof ItemViewHolder) {
             final ItemViewHolder itemViewHolder = (ItemViewHolder)viewHolder;
             final Team item = getItem(position);
-            itemViewHolder._groupTextView.setText(item.name);
+            itemViewHolder._seedTextView.setText(viewModel.seed(item.seed));
+            itemViewHolder._teamNameEditText.setText(item.name);
             itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -185,20 +187,24 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
 
     @Override
     public void onItemDismiss(int position) {
-//            mItems.remove(position);
         notifyItemRemoved(position);
     }
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
         notifyItemMoved(fromPosition, toPosition);
-//        viewModel.swapTeams(fromPosition - 1, toPosition - 1);
         return true;
     }
 
     @Override
+    public boolean onItemMoved(int fromPosition, int toPosition) {
+        viewModel.swapTeams(fromPosition - 1, toPosition - 1);
+        return  true;
+    }
+
+    @Override
     public int getItemCount() {
-        return viewModel._group.teams.size() + 1;
+        return viewModel._teams.size() + 1;
     }
 
     @Override
@@ -214,6 +220,6 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
     }
 
     private Team getItem(int position) {
-        return viewModel._group.teams.get(position - 1);
+        return viewModel._teams.get(position - 1);
     }
 }
