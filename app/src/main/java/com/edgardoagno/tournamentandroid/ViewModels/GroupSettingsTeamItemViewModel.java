@@ -2,14 +2,11 @@ package com.edgardoagno.tournamentandroid.ViewModels;
 
 import com.edgardoagno.tournamentandroid.Models.Team;
 
-import io.realm.Realm;
-
 /**
  * Created by edgardoagno on 18/07/16.
  */
 public class GroupSettingsTeamItemViewModel {
 
-    public Realm _realm;
     private Team team;
 
     public GroupSettingsTeamItemViewModel() {

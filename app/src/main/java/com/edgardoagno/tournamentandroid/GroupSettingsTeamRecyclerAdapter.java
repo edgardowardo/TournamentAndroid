@@ -32,6 +32,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
+import butterknife.OnTouch;
 import rx.Subscription;
 import rx.functions.Action1;
 
@@ -56,18 +57,16 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         @Bind(R.id.team_name_edit_text) EditText _teamNameEditText;
         @Bind(R.id.handicap_edit_text) EditText _handicapEditText;
         @Bind(R.id.team_handle_view) ImageView _teamHandleView;
-        private GroupSettingsViewModel _groupViewModel; // TODO: REMOVE ME
         private GroupSettingsTeamItemViewModel _viewModel;
         private Subscription _isManualSortingSubscription;
         private Subscription _isEditingHandicapSubscription;
 
-        public ItemViewHolder(final FrameLayout container, GroupSettingsViewModel groupViewModel, GroupSettingsTeamItemViewModel viewModel) {
+        public ItemViewHolder(final FrameLayout container, GroupSettingsTeamItemViewModel teamViewModel) {
             super(container);
             ButterKnife.bind(this, container);
-            _groupViewModel = groupViewModel;
-            _viewModel = viewModel;
+            _viewModel = teamViewModel;
 
-            _isManualSortingSubscription = _groupViewModel
+            _isManualSortingSubscription = viewModel
                     ._isManualSortingEmitterSubject
                     .asObservable()
                     .subscribe(new Action1<Boolean>() {
@@ -78,7 +77,7 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
                         }
                     });
 
-            _isEditingHandicapSubscription = _groupViewModel
+            _isEditingHandicapSubscription = viewModel
                     ._isEditingHandicapEmitterSubject
                     .asObservable()
                     .subscribe(new Action1<Boolean>() {
@@ -88,6 +87,14 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
                             _handicapEditText.setVisibility(visibility);
                         }
                     });
+        }
+
+        @OnTouch(R.id.team_handle_view)
+        public boolean onTeamHandleTouch(View v, MotionEvent event) {
+            if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+                _dragStartListener.onStartDrag(this);
+            }
+            return false;
         }
 
         @OnTextChanged(R.id.team_name_edit_text)
@@ -135,44 +142,33 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         @Bind(R.id.import_button) Button _importButton;
         @Bind(R.id.handicap_toggle) ToggleButton _handicapToggleButton;
 
-        private GroupSettingsViewModel _groupViewModel; // TODO: REMOVE ME!
-
         // Constructor
 
-        public HeaderViewHolder(FrameLayout container, GroupSettingsViewModel viewModel) {
+        public HeaderViewHolder(FrameLayout container) {
             super(container);
-            this._groupViewModel = viewModel;
             ButterKnife.bind(this, container);
-            this._pickerTeamCount.setOnItemSelectedListener(this);
-            CharSequence[] s = this._groupViewModel.getAllowedTeamCounts();
-            this._pickerTeamCount.setValues(s);
-
-            CharSequence[] allowedTeamCounts = this._groupViewModel._group.getScheduleType().getAllowedTeamCounts();
-            String teamCount = Integer.toString(_groupViewModel._group.teamCount);
-            int index = Arrays.asList(allowedTeamCounts).indexOf(teamCount);
-            this._pickerTeamCount.setSelectedItem(index);
         }
 
         @OnTextChanged(R.id.group_edit_text)
         public void onGroupNameChanged() {
             String name = _groupNameEditText.getText().toString();
-            this._groupViewModel.setGroupName(name);
+            viewModel.setGroupName(name);
         }
 
         @OnClick(R.id.shuffle_button)
         public void onClickShuffle() {
-            this._groupViewModel.shuffleTeams();
+            viewModel.shuffleTeams();
         }
 
         @OnClick(R.id.sort_toggle)
         public void onToggleSort() {
             Boolean isChecked = _sortToggleButton.isChecked();
-            this._groupViewModel.setIsManualSorting(isChecked);
+            viewModel.setIsManualSorting(isChecked);
         }
 
         @OnClick(R.id.reset_button)
         public void onClickReset() {
-            this._groupViewModel.resetTeams();
+            viewModel.resetTeams();
         }
 
         @OnClick(R.id.import_button)
@@ -183,7 +179,7 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         @OnClick(R.id.handicap_toggle)
         public void onToggleHandicap() {
             Boolean isChecked = _handicapToggleButton.isChecked();
-            this._groupViewModel.setIsEditingHandicap(isChecked);
+            viewModel.setIsEditingHandicap(isChecked);
         }
 
         @OnClick({R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_double })
@@ -200,7 +196,7 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         }
 
         private void setScheduleType(ScheduleType scheduleType) {
-            CharSequence oldTeamCountValueCharSequence = this._groupViewModel.getTeamCountValue();
+            CharSequence oldTeamCountValueCharSequence = viewModel.getTeamCountValue();
             int oldTeamCountValue = Integer.parseInt(oldTeamCountValueCharSequence.toString());
             CharSequence[] newAllowedTeamCounts = scheduleType.getAllowedTeamCounts();
             int index = Arrays.asList(newAllowedTeamCounts).indexOf(oldTeamCountValueCharSequence);
@@ -214,13 +210,13 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
             }
             this._pickerTeamCount.setValues(scheduleType.getAllowedTeamCounts());
             this._pickerTeamCount.setSelectedItem(index);
-            this._groupViewModel.setScheduleType(scheduleType);
-            this._groupViewModel.setTeamCountIndex(index);
+            viewModel.setScheduleType(scheduleType);
+            viewModel.setTeamCountIndex(index);
         }
 
         @Override
         public void onItemSelected(int index)    {
-            this._groupViewModel.setTeamCountIndex(index);
+            viewModel.setTeamCountIndex(index);
         }
     }
 
@@ -237,11 +233,11 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         if (viewType == TYPE_ITEM) {
             View v = inflater.inflate(R.layout.group_settings_team_item_view, parent, false);
             GroupSettingsTeamItemViewModel teamItemViewModel = new GroupSettingsTeamItemViewModel();
-            ItemViewHolder holder = new ItemViewHolder((FrameLayout) v, viewModel, teamItemViewModel);
+            ItemViewHolder holder = new ItemViewHolder((FrameLayout) v, teamItemViewModel);
             return holder;
         } else if (viewType == TYPE_HEADER) {
             View v = inflater.inflate(R.layout.group_settings_header_view, parent, false);
-            HeaderViewHolder holder = new HeaderViewHolder((FrameLayout) v, this.viewModel);
+            HeaderViewHolder holder = new HeaderViewHolder((FrameLayout) v);
             return holder;
         }
         throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
@@ -256,30 +252,21 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
             itemViewHolder._seedTextView.setText(viewModel.seed(item.seed));
             itemViewHolder._teamNameEditText.setText(item.name);
             itemViewHolder._handicapEditText.setText(itemViewHolder._viewModel.getHandicap());
-
-            int sortingVisibility = (this.viewModel.getIsManualSorting()) ? View.VISIBLE : View.GONE;
-            itemViewHolder._teamHandleView.setVisibility(sortingVisibility);
-            int handicapVisibility = (this.viewModel.getIsEditingHandicap()) ? View.VISIBLE : View.GONE;
-            itemViewHolder._handicapEditText.setVisibility(handicapVisibility);
-            itemViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
-            // Start a drag whenever the handle view it touched
-            itemViewHolder._teamHandleView.setOnTouchListener(new View.OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-                        _dragStartListener.onStartDrag(itemViewHolder);
-                    }
-                    return false;
-                }
-            });
+            itemViewHolder._teamHandleView.setVisibility((viewModel.getIsManualSorting()) ? View.VISIBLE : View.GONE);
+            itemViewHolder._handicapEditText.setVisibility((viewModel.getIsEditingHandicap()) ? View.VISIBLE : View.GONE);
         } else if (viewHolder instanceof HeaderViewHolder) {
             //cast holder to HeaderViewHolder and set data for header.
-            HeaderViewHolder headerViewHolder = (HeaderViewHolder)viewHolder;
-            headerViewHolder._groupNameEditText.requestFocus();
+            HeaderViewHolder holder = (HeaderViewHolder)viewHolder;
+            holder._groupNameEditText.requestFocus();
+
+            holder._pickerTeamCount.setOnItemSelectedListener(holder);
+            CharSequence[] s = viewModel.getAllowedTeamCounts();
+            holder._pickerTeamCount.setValues(s);
+
+            CharSequence[] allowedTeamCounts = viewModel._group.getScheduleType().getAllowedTeamCounts();
+            String teamCount = Integer.toString(viewModel._group.teamCount);
+            int index = Arrays.asList(allowedTeamCounts).indexOf(teamCount);
+            holder._pickerTeamCount.setSelectedItem(index);
         }
     }
 
