@@ -42,7 +42,7 @@
                 android:layout_gravity="left"
                 android:textColor="@color/colorPrimary"
                 android:text="N teams, O games, P rounds, handicapped"
-                android:textSize="8dp"
+                android:textSize="10dp"
                 />
         </LinearLayout>
 
