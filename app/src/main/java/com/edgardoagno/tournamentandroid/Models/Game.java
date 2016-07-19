@@ -9,7 +9,7 @@ import io.realm.annotations.PrimaryKey;
  */
 public class Game extends RealmObject {
 
-   @PrimaryKey
+    @PrimaryKey
     public String id = UUID.randomUUID().toString();
     public int round = 0;
     public int index = 0;

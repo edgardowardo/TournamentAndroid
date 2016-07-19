@@ -26,6 +26,8 @@ import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
 
+import java.util.ArrayList;
+
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
@@ -163,6 +165,7 @@ public class GroupsActivity extends RealmBaseActivity {
 
             @Bind(R.id.image_schedule_type) ImageView imageScheduleType;
             @Bind(R.id.group_text_view) TextView groupTextView;
+            @Bind(R.id.group_detail_text_view) TextView groupDetailTextView;
             public ViewHolder(FrameLayout container) {
                 super(container);
                 ButterKnife.bind(this, container);
@@ -187,6 +190,9 @@ public class GroupsActivity extends RealmBaseActivity {
         public void onBindRealmViewHolder(final ViewHolder viewHolder, int position) {
             final Group item = realmResults.get(position);
             viewHolder.groupTextView.setText(item.name);
+            String handicapText =  (item.isHandicap)? ", handicapped" : "";
+            String detail = String.format("%1$s teams, %2$s games, %3$s rounds%4$s", item.teams.size(), item.games.size(), 0, handicapText);
+            viewHolder.groupDetailTextView.setText(detail);
             ScheduleType s = item.getScheduleType();
             switch (s) {
                 case RoundRobin: {

@@ -17,14 +17,6 @@ public class Team extends RealmObject implements Comparable<Team> {
     public int handicap = 0;
     public int seed = 0;
 
-    public void setDefaultProperties() {
-        id = UUID.randomUUID().toString();
-        name = "";
-        isHandicapped = false;
-        handicap = 0;
-        seed = 0;
-    }
-
     public Team() {
         super();
     }

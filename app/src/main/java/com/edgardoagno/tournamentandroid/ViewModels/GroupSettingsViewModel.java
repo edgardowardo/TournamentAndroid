@@ -65,9 +65,8 @@ public class GroupSettingsViewModel {
         if (_teams.size() < teamCount) {
             for (int i = _teams.size(); i < teamCount; i++) {
                 int seed = i + 1;
-                Team team = new Team();
-                team.setDefaultProperties();
-                team.name = String.format("Team %1$s", seed);
+                String name = String.format("Team %1$s", seed);
+                Team team = new Team(name);
                 team.seed = seed;
                 _teams.add(team);
             }
@@ -101,7 +100,7 @@ public class GroupSettingsViewModel {
 
     public void attachDefaultGroup(long tournamentId) {
         Game[] games = {};
-        Team[] teams = _group.teams.toArray(new Team[_group.teams.size()]);
+        Team[] teams = _teams.toArray(new Team[_teams.size()]);
         switch (_group.getScheduleType()) {
             case RoundRobin:
                 games = Scheduler.roundRobin(teams);
@@ -122,14 +121,16 @@ public class GroupSettingsViewModel {
         _realm.beginTransaction();
         _realm.copyToRealmOrUpdate(_group);
         for (Team t: _teams) {
-            _realm.copyToRealm(t);
+            _realm.copyToRealmOrUpdate(t);
             _group.teams.add(t);
         }
-        for (Game g: games) {
-            _realm.copyToRealm(g);
-            _group.games.add(g);
 
+        for (Game g: games) {
+            Game game = new Game(g.round, g.index, g.leftTeam, g.rightTeam);
+            _realm.copyToRealmOrUpdate(game);
+            _group.games.add(game);
         }
+
         Tournament tournament = _realm.where(Tournament.class).equalTo("id", tournamentId).findFirst();
         tournament.groups.add(_group);
         _realm.commitTransaction();
@@ -142,9 +143,7 @@ public class GroupSettingsViewModel {
         for (int i = 0; i < _group.teamCount; i++ ) {
             int seed = i + 1;
             String name = String.format("Team %1$s", seed);
-            Team team = new Team();
-            team.setDefaultProperties();
-            team.name = name;
+            Team team = new Team(name);
             team.seed = seed;
             _teams.add(team);
         }
@@ -197,6 +196,7 @@ public class GroupSettingsViewModel {
 
     public void setIsEditingHandicap(Boolean isEditingHandicap) {
         this.isEditingHandicap = isEditingHandicap;
+        this._group.isHandicap = isEditingHandicap;
         _isEditingHandicapEmitterSubject.onNext(isEditingHandicap);
     }
 }
