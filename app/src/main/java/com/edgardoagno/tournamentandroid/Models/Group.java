@@ -1,7 +1,11 @@
 package com.edgardoagno.tournamentandroid.Models;
 
-import java.util.Date;
-import java.util.UUID;
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import io.realm.RealmList;
 import io.realm.RealmObject;
@@ -35,4 +39,17 @@ public class Group extends RealmObject {
 
     public void setScheduleType(ScheduleType type) { this.scheduleTypeValue = type.toString(); }
     public ScheduleType getScheduleType() { return ScheduleType.valueOf(this.scheduleTypeValue);}
+
+    public int distinctRounds() {
+        Function<Game, Integer> groupToInt =
+                new Function<Game, Integer>() {
+                    @Override
+                    public Integer apply(Game input) {
+                        return input.round;
+                    }
+                };
+        List<Integer> roundsList = Lists.transform(games, groupToInt);
+        Set<Integer> uniqueRounds = new HashSet<Integer>(roundsList);
+        return uniqueRounds.size();
+    }
 }

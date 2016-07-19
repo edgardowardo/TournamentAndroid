@@ -1,14 +1,11 @@
 package com.edgardoagno.tournamentandroid;
 
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,8 +22,6 @@ import android.widget.Toast;
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
-
-import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -148,7 +143,6 @@ public class GroupsActivity extends RealmBaseActivity {
         setTitle(tournament.name);
     }
 
-
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -191,7 +185,7 @@ public class GroupsActivity extends RealmBaseActivity {
             final Group item = realmResults.get(position);
             viewHolder.groupTextView.setText(item.name);
             String handicapText =  (item.isHandicap)? ", handicapped" : "";
-            String detail = String.format("%1$s teams, %2$s games, %3$s rounds%4$s", item.teams.size(), item.games.size(), 0, handicapText);
+            String detail = String.format("%1$s teams, %2$s games, %3$s rounds%4$s", item.teams.size(), item.games.size(), item.distinctRounds(), handicapText);
             viewHolder.groupDetailTextView.setText(detail);
             ScheduleType s = item.getScheduleType();
             switch (s) {
