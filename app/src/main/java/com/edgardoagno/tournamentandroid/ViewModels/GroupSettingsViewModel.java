@@ -22,7 +22,9 @@ public class GroupSettingsViewModel {
     public PublishSubject<String> _groupNameEmitterSubject;
     public PublishSubject<ArrayList<Team>> _teamsEmitterSubject;
     public PublishSubject<Boolean> _isManualSortingEmitterSubject;
+    public PublishSubject<Boolean> _isEditingHandicapEmitterSubject;
     private boolean isManualSorting = false;
+    private boolean isEditingHandicap = false;
     public Group _group;
     public ArrayList<Team> _teams;
 
@@ -33,6 +35,7 @@ public class GroupSettingsViewModel {
         _groupNameEmitterSubject = PublishSubject.create();
         _teamsEmitterSubject = PublishSubject.create();
         _isManualSortingEmitterSubject = PublishSubject.create();
+        _isEditingHandicapEmitterSubject = PublishSubject.create();
     }
 
     public CharSequence[] getAllowedTeamCounts() {
@@ -122,16 +125,12 @@ public class GroupSettingsViewModel {
     }
 
     public void swapTeams(int fromPosition, int toPosition) {
-
-        Team fromTeam = _teams.get(fromPosition);
-        int fromSeed = fromTeam.seed;
-
-        Team toTeam = _teams.get(toPosition);
-        int toSeed = toTeam.seed;
-
-        fromTeam.seed = toSeed;
-        toTeam.seed = fromSeed;
-        Collections.sort(_teams);
+        Team removed = _teams.remove(fromPosition);
+        _teams.add(toPosition, removed);
+        int seed = 1;
+        for (Team team: _teams) {
+            team.seed = seed++;
+        }
         _teamsEmitterSubject.onNext(_teams);
     }
 
@@ -164,5 +163,14 @@ public class GroupSettingsViewModel {
     public void setIsManualSorting(Boolean isManualSorting) {
         this.isManualSorting = isManualSorting;
         _isManualSortingEmitterSubject.onNext(isManualSorting);
+    }
+
+    public boolean getIsEditingHandicap() {
+        return this.isEditingHandicap;
+    }
+
+    public void setIsEditingHandicap(Boolean isEditingHandicap) {
+        this.isEditingHandicap = isEditingHandicap;
+        _isEditingHandicapEmitterSubject.onNext(isEditingHandicap);
     }
 }

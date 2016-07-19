@@ -10,21 +10,32 @@
         android:orientation="horizontal">
         <TextView
             android:id="@+id/seed_text_view"
-            android:layout_width="35dp"
+            android:layout_width="40dp"
             android:layout_height="wrap_content"
             android:padding="4dp"
             android:textSize="32sp"
-            android:layout_weight="0.125"
+            android:layout_weight="0.1"
             />
         <EditText
+            android:id="@+id/team_name_edit_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="left"
-            android:id="@+id/team_name_edit_text"
             android:inputType="textCapWords"
             android:theme="@style/editTextTheme"
             android:hint="Team Name"
-            android:layout_weight="0.75"
+            android:layout_weight="0.9"
+            />
+        <EditText
+            android:id="@+id/handicap_edit_text"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:inputType="number"
+            android:theme="@style/editTextTheme"
+            android:hint="0"
+            android:visibility="gone"
+            android:layout_weight="0.1"
             />
         <ImageView
             android:id="@+id/team_handle_view"
@@ -33,8 +44,7 @@
             android:layout_gravity="right"
             android:scaleType="center"
             android:src="@drawable/ic_reorder_grey_500_24dp"
-            android:layout_weight="0.125"
-            android:visibility="invisible"
+            android:visibility="gone"
             />
     </LinearLayout>
 </FrameLayout>
