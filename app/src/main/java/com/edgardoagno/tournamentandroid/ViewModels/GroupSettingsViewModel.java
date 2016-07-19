@@ -1,9 +1,11 @@
 package com.edgardoagno.tournamentandroid.ViewModels;
 
+import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.Tournament;
+import com.edgardoagno.tournamentandroid.Scheduler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -98,11 +100,35 @@ public class GroupSettingsViewModel {
     }
 
     public void attachDefaultGroup(long tournamentId) {
+        Game[] games = {};
+        Team[] teams = _group.teams.toArray(new Team[_group.teams.size()]);
+        switch (_group.getScheduleType()) {
+            case RoundRobin:
+                games = Scheduler.roundRobin(teams);
+                break;
+            case American:
+                games = Scheduler.americanTournament(teams);
+                break;
+            case SingleElimination:
+                games = Scheduler.singleElimination(teams);
+                break;
+            case DoubleElimination:
+                games = Scheduler.doubleElimination(teams);
+                break;
+        }
+
+        // Realm transaction
+
         _realm.beginTransaction();
         _realm.copyToRealmOrUpdate(_group);
         for (Team t: _teams) {
             _realm.copyToRealm(t);
             _group.teams.add(t);
+        }
+        for (Game g: games) {
+            _realm.copyToRealm(g);
+            _group.games.add(g);
+
         }
         Tournament tournament = _realm.where(Tournament.class).equalTo("id", tournamentId).findFirst();
         tournament.groups.add(_group);

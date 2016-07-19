@@ -169,7 +169,7 @@ public class Scheduler {
     ///
     /// Single elimination wrapper
     ///
-    static Game[] singleElimination(Team[] teams) {
+    public static Game[] singleElimination(Team[] teams) {
         return singleElimination(1, 1, teams);
     }
 
@@ -272,7 +272,7 @@ public class Scheduler {
     ///
     /// Double elimination wrapper
     ///
-    static Game[] doubleElimination(Team[] teams) {
+    public static Game[] doubleElimination(Team[] teams) {
         return doubleElimination(1, 1, teams);
     }
 
