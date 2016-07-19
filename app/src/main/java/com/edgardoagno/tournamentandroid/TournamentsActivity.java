@@ -22,6 +22,8 @@ import android.widget.Toast;
 
 import com.edgardoagno.tournamentandroid.Models.Tournament;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.Realm;
 import io.realm.RealmBasedRecyclerViewAdapter;
@@ -144,11 +146,11 @@ public class TournamentsActivity extends RealmBaseActivity {
             extends RealmBasedRecyclerViewAdapter<Tournament, TournamentRealmAdapter.ViewHolder> {
 
         public class ViewHolder extends RealmViewHolder {
-
-            public TextView tournamentTextView;
+            @Bind(R.id.tournament_text_view) TextView tournamentTextView;
+            @Bind(R.id.tournament_detail_text_view) TextView tournamentDetailTextView;
             public ViewHolder(FrameLayout container) {
                 super(container);
-                this.tournamentTextView = (TextView) container.findViewById(R.id.tournament_text_view);
+                ButterKnife.bind(this, container);
             }
         }
 
@@ -166,16 +168,13 @@ public class TournamentsActivity extends RealmBaseActivity {
         public void onBindRealmViewHolder(final ViewHolder viewHolder, int position) {
             final Tournament item = realmResults.get(position);
             viewHolder.tournamentTextView.setText(item.name);
-            viewHolder.itemView.setBackgroundColor(
-                    COLORS[(int) (item.id % COLORS.length)]
-            );
-
+            String details = String.format("%1$s groups", item.groups.size());
+            viewHolder.tournamentDetailTextView.setText(details);
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Context context = v.getContext();
                     Intent intent = new Intent(context, GroupsActivity.class);
-
                     intent.putExtra("TOURNAMENT_ID", item.id);
                     context.startActivity(intent);
                 }
