@@ -15,7 +15,6 @@
         android:paddingLeft="10dp"
         >
         <RadioButton
-            android:checked="true"
             android:id="@+id/radio_round_robin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
