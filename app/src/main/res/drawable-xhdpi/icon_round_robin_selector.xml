@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/icon_round_robin_pressed" android:state_checked="true"/>
+    <item android:drawable="@drawable/icon_round_robin" android:state_checked="false"/>
+</selector>

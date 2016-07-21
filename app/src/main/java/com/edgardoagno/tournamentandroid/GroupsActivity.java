@@ -210,11 +210,10 @@ public class GroupsActivity extends RealmBaseActivity {
             viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    Context context = v.getContext();
-//                    Intent intent = new Intent(context, GroupDetailActivity.class);
-//                    intent.putExtra(GroupDetailFragment.ARG_ITEM_ID, holder.mItem.id);
-//
-//                    context.startActivity(intent);
+                    Context context = v.getContext();
+                    Intent intent = new Intent(context, GroupDetailsActivity.class);
+                    intent.putExtra("GROUP_ID", item.id);
+                    context.startActivity(intent);
                 }
             });
         }

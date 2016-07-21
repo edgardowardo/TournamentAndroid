@@ -1,0 +1,4 @@
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/icon_double_e_pressed" android:state_checked="true"/>
+    <item android:drawable="@drawable/icon_double_e" android:state_checked="false"/>
+</selector>
