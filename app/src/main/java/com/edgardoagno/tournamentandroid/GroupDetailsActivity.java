@@ -1,16 +1,17 @@
 package com.edgardoagno.tournamentandroid;
 
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RadioButton;
 
-import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.ViewModels.GroupDetailsViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import io.realm.Realm;
 
 
@@ -39,8 +40,14 @@ public class GroupDetailsActivity extends RealmBaseActivity {
         setTitle(viewModel._group.name);
 
         ButterKnife.bind(this);
-
         configureBottomRadioGroup(viewModel._group.getScheduleType());
+
+        if (savedInstanceState == null) {
+            GamesFragment fragment = new GamesFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.content, fragment)
+                    .commit();
+        }
     }
 
     private void configureBottomRadioGroup(ScheduleType scheduleType) {
@@ -68,5 +75,29 @@ public class GroupDetailsActivity extends RealmBaseActivity {
                 losersRadioButton.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    @OnClick({ R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_winners, R.id.radio_losers})
+    public void onClickGames() {
+        GamesFragment fragment = new GamesFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, fragment)
+                .commit();
+    }
+
+    @OnClick(R.id.radio_table)
+    public void onClickTable() {
+        TeamStatsFragment fragment = new TeamStatsFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, fragment)
+                .commit();
+    }
+
+    @OnClick(R.id.radio_chart)
+    public void onClickCharts() {
+        ChartsFragment fragment = new ChartsFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, fragment)
+                .commit();
     }
 }

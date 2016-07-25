@@ -81,11 +81,11 @@ public class TournamentsActivity extends RealmBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        tournaments.removeChangeListener(tournamentsListener);
         if (realm != null) {
             realm.close();
             realm = null;
         }
-        tournaments.removeChangeListener(tournamentsListener);
     }
 
     private void buildAndShowInputDialog() {
