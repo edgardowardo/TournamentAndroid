@@ -20,4 +20,7 @@ public class GroupDetailsViewModel {
         this._group = realm.where(Group.class).equalTo("id", groupId).findFirst();
     }
 
+    public String getTitle() {
+        return _group.name;
+    }
 }

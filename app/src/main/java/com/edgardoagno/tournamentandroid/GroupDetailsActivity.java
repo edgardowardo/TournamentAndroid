@@ -1,7 +1,6 @@
 package com.edgardoagno.tournamentandroid;
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RadioButton;
@@ -37,13 +36,13 @@ public class GroupDetailsActivity extends RealmBaseActivity {
         realm = Realm.getInstance(getRealmConfig());
         Long id = getIntent().getLongExtra("GROUP_ID", 0);
         viewModel = new GroupDetailsViewModel(realm, id);
-        setTitle(viewModel._group.name);
+        setTitle(viewModel.getTitle());
 
         ButterKnife.bind(this);
         configureBottomRadioGroup(viewModel._group.getScheduleType());
 
         if (savedInstanceState == null) {
-            GamesFragment fragment = new GamesFragment();
+            GamesTabFragment fragment = new GamesTabFragment();
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.content, fragment)
                     .commit();
@@ -79,7 +78,7 @@ public class GroupDetailsActivity extends RealmBaseActivity {
 
     @OnClick({ R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_winners, R.id.radio_losers})
     public void onClickGames() {
-        GamesFragment fragment = new GamesFragment();
+        GamesTabFragment fragment = new GamesTabFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit();
