@@ -88,7 +88,17 @@ public class GroupDetailsActivity extends AppCompatActivity {
         }
     }
 
-    @OnClick({ R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_winners, R.id.radio_losers})
+    @OnClick( R.id.radio_losers )
+    public void onClickLoserGames() {
+        GamesTabFragment fragment = new GamesTabFragment();
+        _args.putBoolean("IS_LOSERS_ROUND", true);
+        fragment.setArguments(_args);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, fragment)
+                .commit();
+    }
+
+    @OnClick({ R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_winners })
     public void onClickGames() {
         GamesTabFragment fragment = new GamesTabFragment();
         fragment.setArguments(_args);

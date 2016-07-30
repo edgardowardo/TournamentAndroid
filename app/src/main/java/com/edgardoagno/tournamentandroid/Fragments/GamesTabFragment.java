@@ -79,19 +79,18 @@ public class GamesTabFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            GamesFragment tab = new GamesFragment();
-            return tab;
+            Long id = getArguments().getLong("GROUP_ID");
+            int round = position + 1;
+            Boolean isLosersRound = getArguments().getBoolean("IS_LOSERS_ROUND", false);
 
-//            switch (position) {
-//                case 0:
-//                    GamesFragment tab1 = new GamesFragment();
-//                    return tab1;
-//                case 1:
-//                    GamesFragment tab2 = new GamesFragment();
-//                    return tab2;
-//                default:
-//                    return null;
-//            }
+            Bundle args = new Bundle();
+            args.putLong("GROUP_ID", id);
+            args.putInt("ROUND_NO", round);
+            args.putBoolean("IS_LOSERS_ROUND", isLosersRound);
+
+            GamesFragment tab = new GamesFragment();
+            tab.setArguments(args);
+            return tab;
         }
 
         @Override

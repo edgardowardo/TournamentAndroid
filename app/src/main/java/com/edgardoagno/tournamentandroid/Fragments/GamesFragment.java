@@ -22,6 +22,11 @@ public class GamesFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.group_details_game_item_view, container, false);
+
+        Long id = getArguments().getLong("GROUP_ID");
+        int round = getArguments().getInt("ROUND_NO");
+        Boolean isLosersRound = getArguments().getBoolean("IS_LOSERS_ROUND", false);
+
         return view;
     }
 
