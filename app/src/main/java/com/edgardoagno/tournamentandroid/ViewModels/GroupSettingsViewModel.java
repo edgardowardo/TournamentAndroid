@@ -1,5 +1,7 @@
 package com.edgardoagno.tournamentandroid.ViewModels;
 
+import com.edgardoagno.tournamentandroid.Models.DoublesInfo;
+import com.edgardoagno.tournamentandroid.Models.Elimination;
 import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
@@ -124,6 +126,22 @@ public class GroupSettingsViewModel extends BaseViewModel {
         for (Game g: games) {
             Game game = new Game(g.round, g.index, g.leftTeam, g.rightTeam);
             realm.copyToRealmOrUpdate(game);
+
+            if (g.doublesInfo != null) {
+                DoublesInfo doublesInfo = new DoublesInfo(g.doublesInfo.leftTeam, g.doublesInfo.rightTeam);
+                realm.copyToRealmOrUpdate(doublesInfo);
+                game.doublesInfo = doublesInfo;
+            }
+
+            if (g.elimination != null) {
+                Elimination elimination = new Elimination(g.elimination.isLoserBracket, g.elimination.leftGameIndex, g.elimination.rightGameIndex);
+                elimination.firstLoserIndex = g.elimination.firstLoserIndex;
+                elimination.prevLeftGame = g.elimination.prevLeftGame;
+                elimination.prevRightGame = g.elimination.prevLeftGame;
+                realm.copyToRealmOrUpdate(elimination);
+                game.elimination = elimination;
+            }
+
             _group.games.add(game);
         }
 
