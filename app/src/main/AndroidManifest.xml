@@ -3,6 +3,7 @@
     package="com.edgardoagno.tournamentandroid">
 
     <application
+        android:name=".BaseApplication"
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@mipmap/ic_launcher"

@@ -12,13 +12,30 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import io.realm.Realm;
+
 
 /**
  * Created by edgardoagno on 21/07/16.
  */
 
 public class GamesTabFragment extends Fragment {
+
     public GamesTabFragment() {
+    }
+
+    private Realm realm;
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        realm = Realm.getDefaultInstance();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        realm.close();
     }
 
     @Nullable

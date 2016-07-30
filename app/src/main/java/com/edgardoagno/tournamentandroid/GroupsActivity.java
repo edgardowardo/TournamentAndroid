@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -33,7 +34,7 @@ import io.realm.RealmResults;
 import io.realm.RealmViewHolder;
 import io.realm.Sort;
 
-public class GroupsActivity extends RealmBaseActivity {
+public class GroupsActivity extends AppCompatActivity {
 
     private Realm realm;
     private Tournament tournament;
@@ -47,7 +48,7 @@ public class GroupsActivity extends RealmBaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        realm = Realm.getInstance(getRealmConfig());
+        realm = Realm.getDefaultInstance();
         Long id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
         tournament = realm.where(Tournament.class).equalTo("id", id).findFirst();
         setTitle(tournament.name);

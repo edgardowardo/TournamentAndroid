@@ -4,10 +4,9 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -33,7 +32,7 @@ import io.realm.RealmViewHolder;
 import io.realm.Sort;
 
 
-public class TournamentsActivity extends RealmBaseActivity {
+public class TournamentsActivity extends AppCompatActivity {
 
     private Realm realm;
     private RealmResults<Tournament> tournaments;
@@ -46,7 +45,7 @@ public class TournamentsActivity extends RealmBaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        realm = Realm.getInstance(getRealmConfig());
+        realm = Realm.getDefaultInstance();
         tournaments = realm.where(Tournament.class).findAllSorted("id", Sort.DESCENDING);
         final TournamentRealmAdapter tournamentRealmAdapter = new TournamentRealmAdapter(this, tournaments, true, true);
         final RealmRecyclerView realmRecyclerView = (RealmRecyclerView) findViewById(R.id.realm_recycler_view);

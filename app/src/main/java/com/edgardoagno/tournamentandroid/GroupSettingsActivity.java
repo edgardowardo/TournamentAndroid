@@ -1,6 +1,7 @@
 package com.edgardoagno.tournamentandroid;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -15,15 +16,13 @@ import com.edgardoagno.tournamentandroid.ViewModels.GroupSettingsViewModel;
 
 import java.util.ArrayList;
 
-import io.realm.Realm;
-
 import rx.Subscription;
 import rx.functions.Action1;
 
 /**
  * Created by edgardoagno on 10/07/16.
  */
-public class GroupSettingsActivity extends RealmBaseActivity implements OnStartDragListener {
+public class GroupSettingsActivity extends AppCompatActivity implements OnStartDragListener {
 
     GroupSettingsViewModel _viewModel;
     private MenuItem _menuSaveItem;
@@ -43,8 +42,7 @@ public class GroupSettingsActivity extends RealmBaseActivity implements OnStartD
         setSupportActionBar(toolbar);
         setTitle("Add Group");
 
-        Realm realm = Realm.getInstance(getRealmConfig());
-        _viewModel = new GroupSettingsViewModel(realm);
+        _viewModel = new GroupSettingsViewModel();
         _viewModel.createDefaultGroup();
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
@@ -91,6 +89,7 @@ public class GroupSettingsActivity extends RealmBaseActivity implements OnStartD
     protected void onDestroy() {
         super.onDestroy();
         _groupNameSubscription.unsubscribe();
+        _viewModel.onDestroy();
     }
 
     @Override

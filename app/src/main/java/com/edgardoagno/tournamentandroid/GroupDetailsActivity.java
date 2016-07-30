@@ -1,6 +1,7 @@
 package com.edgardoagno.tournamentandroid;
 
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RadioButton;
@@ -11,12 +12,9 @@ import com.edgardoagno.tournamentandroid.ViewModels.GroupDetailsViewModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.Realm;
 
+public class GroupDetailsActivity extends AppCompatActivity {
 
-public class GroupDetailsActivity extends RealmBaseActivity {
-
-    private Realm realm;
     private GroupDetailsViewModel viewModel;
     @Bind(R.id.radio_round_robin) RadioButton roundRobinRadioButton;
     @Bind(R.id.radio_american) RadioButton americanRadioButton;
@@ -33,9 +31,8 @@ public class GroupDetailsActivity extends RealmBaseActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        realm = Realm.getInstance(getRealmConfig());
         Long id = getIntent().getLongExtra("GROUP_ID", 0);
-        viewModel = new GroupDetailsViewModel(realm, id);
+        viewModel = new GroupDetailsViewModel(id);
         setTitle(viewModel.getTitle());
 
         ButterKnife.bind(this);
@@ -47,6 +44,12 @@ public class GroupDetailsActivity extends RealmBaseActivity {
                     .add(R.id.content, fragment)
                     .commit();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.onDestroy();
     }
 
     private void configureBottomRadioGroup(ScheduleType scheduleType) {

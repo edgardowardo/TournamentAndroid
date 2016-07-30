@@ -11,16 +11,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import io.realm.Realm;
-
 import rx.subjects.PublishSubject;
 
 /**
  * Created by edgardoagno on 12/07/16.
  */
-public class GroupSettingsViewModel {
+public class GroupSettingsViewModel extends BaseViewModel {
 
-    private Realm _realm;
     public PublishSubject<String> _groupNameEmitterSubject;
     public PublishSubject<ArrayList<Team>> _teamsEmitterSubject;
     public PublishSubject<Boolean> _isManualSortingEmitterSubject;
@@ -32,8 +29,7 @@ public class GroupSettingsViewModel {
 
     // Constructor
 
-    public GroupSettingsViewModel(Realm realm) {
-        this._realm = realm;
+    public GroupSettingsViewModel() {
         _groupNameEmitterSubject = PublishSubject.create();
         _teamsEmitterSubject = PublishSubject.create();
         _isManualSortingEmitterSubject = PublishSubject.create();
@@ -118,22 +114,22 @@ public class GroupSettingsViewModel {
 
         // Realm transaction
 
-        _realm.beginTransaction();
-        _realm.copyToRealmOrUpdate(_group);
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(_group);
         for (Team t: _teams) {
-            _realm.copyToRealmOrUpdate(t);
+            realm.copyToRealmOrUpdate(t);
             _group.teams.add(t);
         }
 
         for (Game g: games) {
             Game game = new Game(g.round, g.index, g.leftTeam, g.rightTeam);
-            _realm.copyToRealmOrUpdate(game);
+            realm.copyToRealmOrUpdate(game);
             _group.games.add(game);
         }
 
-        Tournament tournament = _realm.where(Tournament.class).equalTo("id", tournamentId).findFirst();
+        Tournament tournament = realm.where(Tournament.class).equalTo("id", tournamentId).findFirst();
         tournament.groups.add(_group);
-        _realm.commitTransaction();
+        realm.commitTransaction();
     }
 
     public void createDefaultGroup() {
