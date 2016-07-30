@@ -8,12 +8,18 @@ import com.edgardoagno.tournamentandroid.ViewModels.BaseViewModel;
  */
 public class GamesTabViewModel extends BaseViewModel {
 
-    public Group _group;
+    private Group _group;
+    public String[] tabNames;
 
     // Constructor
 
     public GamesTabViewModel(Long groupId) {
-        this._group = realm.where(Group.class).equalTo("id", groupId).findFirst();
-    }
+        _group = realm.where(Group.class).equalTo("id", groupId).findFirst();
 
+        int rounds = _group.distinctRounds();
+        tabNames = new String[rounds];
+        for (int i = 0; i < rounds ; i++) {
+            tabNames[i] = String.format("ROUND  %1$s", i + 1);
+        }
+    }
 }

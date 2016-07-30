@@ -19,6 +19,9 @@ import butterknife.OnClick;
 public class GroupDetailsActivity extends AppCompatActivity {
 
     private GroupDetailsViewModel viewModel;
+    private Long _id;
+    private Bundle _args;
+
     @Bind(R.id.radio_round_robin) RadioButton roundRobinRadioButton;
     @Bind(R.id.radio_american) RadioButton americanRadioButton;
     @Bind(R.id.radio_single) RadioButton singleRadioButton;
@@ -34,15 +37,18 @@ public class GroupDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Long id = getIntent().getLongExtra("GROUP_ID", 0);
-        viewModel = new GroupDetailsViewModel(id);
+        _id = getIntent().getLongExtra("GROUP_ID", 0);
+        viewModel = new GroupDetailsViewModel(_id);
         setTitle(viewModel.getTitle());
 
         ButterKnife.bind(this);
         configureBottomRadioGroup(viewModel._group.getScheduleType());
 
         if (savedInstanceState == null) {
+            _args = new Bundle();
+            _args.putLong("GROUP_ID", _id);
             GamesTabFragment fragment = new GamesTabFragment();
+            fragment.setArguments(_args);
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.content, fragment)
                     .commit();
@@ -85,6 +91,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     @OnClick({ R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_winners, R.id.radio_losers})
     public void onClickGames() {
         GamesTabFragment fragment = new GamesTabFragment();
+        fragment.setArguments(_args);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit();

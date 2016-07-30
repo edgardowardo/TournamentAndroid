@@ -12,6 +12,7 @@
         android:background="@android:color/white"
         android:minHeight="?attr/actionBarSize"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:tabMode="scrollable"
         app:tabTextColor="@android:color/darker_gray"
         app:tabSelectedTextColor="@color/colorPrimary"
         app:tabIndicatorColor="?attr/colorPrimary"

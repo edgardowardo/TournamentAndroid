@@ -13,9 +13,7 @@ import android.view.ViewGroup;
 
 import com.edgardoagno.tournamentandroid.Fragments.GamesFragment;
 import com.edgardoagno.tournamentandroid.R;
-
-import io.realm.Realm;
-
+import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GamesTabViewModel;
 
 /**
  * Created by edgardoagno on 21/07/16.
@@ -23,21 +21,15 @@ import io.realm.Realm;
 
 public class GamesTabFragment extends Fragment {
 
+    private GamesTabViewModel viewModel;
+
     public GamesTabFragment() {
-    }
-
-    private Realm realm;
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        realm = Realm.getDefaultInstance();
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        realm.close();
+        viewModel.onDestroy();
     }
 
     @Nullable
@@ -45,9 +37,14 @@ public class GamesTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.group_details_games_tab_view, container, false);
 
+        Long id = getArguments().getLong("GROUP_ID");
+        viewModel = new GamesTabViewModel(id);
+
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.pages_tabs);
-        tabLayout.addTab(tabLayout.newTab().setText("Campusplan"));
-        tabLayout.addTab(tabLayout.newTab().setText("Raumplan"));
+        for (String s : viewModel.tabNames) {
+            tabLayout.addTab(tabLayout.newTab().setText(s));
+        }
+
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
 
         viewPager.setAdapter(new PagerAdapter(getFragmentManager(), tabLayout.getTabCount()));
@@ -82,16 +79,19 @@ public class GamesTabFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            switch (position) {
-                case 0:
-                    GamesFragment tab1 = new GamesFragment();
-                    return tab1;
-                case 1:
-                    GamesFragment tab2 = new GamesFragment();
-                    return tab2;
-                default:
-                    return null;
-            }
+            GamesFragment tab = new GamesFragment();
+            return tab;
+
+//            switch (position) {
+//                case 0:
+//                    GamesFragment tab1 = new GamesFragment();
+//                    return tab1;
+//                case 1:
+//                    GamesFragment tab2 = new GamesFragment();
+//                    return tab2;
+//                default:
+//                    return null;
+//            }
         }
 
         @Override
