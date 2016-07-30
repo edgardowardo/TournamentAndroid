@@ -1,4 +1,4 @@
-package com.edgardoagno.tournamentandroid;
+package com.edgardoagno.tournamentandroid.Fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -7,18 +7,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.edgardoagno.tournamentandroid.R;
+
+
 /**
  * Created by edgardoagno on 21/07/16.
  */
-public class TeamStatsFragment extends Fragment {
 
-    public TeamStatsFragment() {
+public class GamesFragment extends Fragment {
+    public GamesFragment() {
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.group_details_team_stats_item_view, container, false);
+        View view = inflater.inflate(R.layout.group_details_game_item_view, container, false);
         return view;
     }
 
@@ -26,5 +29,5 @@ public class TeamStatsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
-
 }
+

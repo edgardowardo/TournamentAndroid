@@ -6,6 +6,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.RadioButton;
 
+import com.edgardoagno.tournamentandroid.Fragments.ChartsFragment;
+import com.edgardoagno.tournamentandroid.Fragments.GamesTabFragment;
+import com.edgardoagno.tournamentandroid.Fragments.TeamStatsFragment;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.ViewModels.GroupDetailsViewModel;
 
