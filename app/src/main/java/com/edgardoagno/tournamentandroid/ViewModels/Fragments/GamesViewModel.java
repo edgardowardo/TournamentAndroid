@@ -13,14 +13,14 @@ import io.realm.RealmResults;
 public class GamesViewModel extends BaseViewModel {
 
     public RealmResults<Game> games;
-    private Group _group;
+    public Group group;
 
     public GamesViewModel(Long groupId, int round, Boolean isLosersRound) {
-        _group = realm.where(Group.class).equalTo("id", groupId).findFirst();
-        if (_group.getScheduleType() == ScheduleType.DoubleElimination) {
-             games = _group.games.where().equalTo("round", round).equalTo("elimination.isLoserBracket", isLosersRound).findAll();
+        group = realm.where(Group.class).equalTo("id", groupId).findFirst();
+        if (group.getScheduleType() == ScheduleType.DoubleElimination) {
+             games = group.games.where().equalTo("round", round).equalTo("elimination.isLoserBracket", isLosersRound).findAll();
         } else {
-            games = _group.games.where().equalTo("round", round).findAll();
+            games = group.games.where().equalTo("round", round).findAll();
         }
     }
 }
