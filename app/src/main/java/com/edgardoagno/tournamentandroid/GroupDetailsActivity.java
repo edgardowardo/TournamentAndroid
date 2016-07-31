@@ -53,6 +53,19 @@ public class GroupDetailsActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        configureBottomRadioGroup(viewModel._group.getScheduleType());
+
+        GamesTabFragment fragment = new GamesTabFragment();
+        fragment.setArguments(createArguments(false));
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content, fragment)
+                .commit();
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         viewModel.onDestroy();
