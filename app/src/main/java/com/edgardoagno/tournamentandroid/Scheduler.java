@@ -216,6 +216,8 @@ public class Scheduler {
             Team away = elements.get(endIndex - i);
             Game game = new Game(round, index, home, away);
             game.isBye = (home == null || away == null);
+            Elimination e = new Elimination(false, 0, 0);
+            game.elimination = e;
             schedules.add(game);
             index++;
         }

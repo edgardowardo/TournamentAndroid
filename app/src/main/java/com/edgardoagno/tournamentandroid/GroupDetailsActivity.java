@@ -20,7 +20,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     private GroupDetailsViewModel viewModel;
     private Long _id;
-    private Bundle _args;
 
     @Bind(R.id.radio_round_robin) RadioButton roundRobinRadioButton;
     @Bind(R.id.radio_american) RadioButton americanRadioButton;
@@ -45,10 +44,8 @@ public class GroupDetailsActivity extends AppCompatActivity {
         configureBottomRadioGroup(viewModel._group.getScheduleType());
 
         if (savedInstanceState == null) {
-            _args = new Bundle();
-            _args.putLong("GROUP_ID", _id);
             GamesTabFragment fragment = new GamesTabFragment();
-            fragment.setArguments(_args);
+            fragment.setArguments(createArguments(false));
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.content, fragment)
                     .commit();
@@ -59,6 +56,13 @@ public class GroupDetailsActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         viewModel.onDestroy();
+    }
+
+    private Bundle createArguments(Boolean isLosersBracket) {
+        Bundle args = new Bundle();
+        args.putLong("GROUP_ID", _id);
+        args.putBoolean("IS_LOSERS_ROUND", isLosersBracket);
+        return args;
     }
 
     private void configureBottomRadioGroup(ScheduleType scheduleType) {
@@ -91,8 +95,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     @OnClick( R.id.radio_losers )
     public void onClickLoserGames() {
         GamesTabFragment fragment = new GamesTabFragment();
-        _args.putBoolean("IS_LOSERS_ROUND", true);
-        fragment.setArguments(_args);
+        fragment.setArguments(createArguments(true));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit();
@@ -101,7 +104,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     @OnClick({ R.id.radio_round_robin, R.id.radio_american, R.id.radio_single, R.id.radio_winners })
     public void onClickGames() {
         GamesTabFragment fragment = new GamesTabFragment();
-        fragment.setArguments(_args);
+        fragment.setArguments(createArguments(false));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit();

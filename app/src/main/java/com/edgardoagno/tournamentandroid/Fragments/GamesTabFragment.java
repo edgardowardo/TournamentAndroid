@@ -1,5 +1,6 @@
 package com.edgardoagno.tournamentandroid.Fragments;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
@@ -38,7 +39,8 @@ public class GamesTabFragment extends Fragment {
         View view = inflater.inflate(R.layout.group_details_games_tab_view, container, false);
 
         Long id = getArguments().getLong("GROUP_ID");
-        viewModel = new GamesTabViewModel(id);
+        Boolean isLosersRound = getArguments().getBoolean("IS_LOSERS_ROUND", false);
+        viewModel = new GamesTabViewModel(id, isLosersRound);
 
         TabLayout tabLayout = (TabLayout) view.findViewById(R.id.pages_tabs);
         for (String s : viewModel.tabNames) {
@@ -46,6 +48,11 @@ public class GamesTabFragment extends Fragment {
         }
 
         final ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
+
+        if (isLosersRound) {
+            viewPager.setBackgroundColor(Color.DKGRAY);
+            tabLayout.setBackgroundColor(Color.DKGRAY);
+        }
 
         viewPager.setAdapter(new PagerAdapter(getFragmentManager(), tabLayout.getTabCount()));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
@@ -80,7 +87,7 @@ public class GamesTabFragment extends Fragment {
         @Override
         public Fragment getItem(int position) {
             Long id = getArguments().getLong("GROUP_ID");
-            int round = position + 1;
+            int round = viewModel.getRound(position);
             Boolean isLosersRound = getArguments().getBoolean("IS_LOSERS_ROUND", false);
 
             Bundle args = new Bundle();
