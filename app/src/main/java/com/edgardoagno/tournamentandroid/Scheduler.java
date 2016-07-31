@@ -68,6 +68,9 @@ public class Scheduler {
             Team away = elements.get(endIndex - i);
             Game pair = new Game(round, index++, home, away);
             pair.isBye = (home == null || away == null);
+            if (pair.isBye) {
+                pair.winner = (home != null) ? home : away;
+            }
             schedules.add(pair);
         }
 

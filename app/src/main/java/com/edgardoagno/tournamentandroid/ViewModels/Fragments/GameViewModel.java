@@ -53,9 +53,11 @@ public class GameViewModel extends BaseViewModel {
         String leftText = "";
         if (_game.leftTeam != null) {
             leftText = _game.leftTeam.name;
+        } else if (_game.isBye) {
+            leftText = "BYE";
         }
         if (_group.getScheduleType() == ScheduleType.American && _game.doublesInfo != null && _game.doublesInfo.leftTeam != null) {
-            leftText += " / ";
+            leftText += "/";
             leftText += _game.doublesInfo.leftTeam.name;
         }
         return leftText;
@@ -65,9 +67,11 @@ public class GameViewModel extends BaseViewModel {
         String rightText = "";
         if (_game.rightTeam != null) {
             rightText = _game.rightTeam.name;
+        } else if (_game.isBye) {
+            rightText = "BYE";
         }
         if (_group.getScheduleType() == ScheduleType.American && _game.doublesInfo != null && _game.doublesInfo.rightTeam != null) {
-            rightText += " / ";
+            rightText += "/";
             rightText += _game.doublesInfo.rightTeam.name;
         }
         return rightText;
@@ -91,7 +95,7 @@ public class GameViewModel extends BaseViewModel {
     public String getRightButtonTextColor() {
         if (_game.isDraw) {
             return _whiteColor;
-        } else if (_game.winner != null && _game.leftTeam != null && _game.winner.id.equals(_game.rightTeam.id)) {
+        } else if (_game.winner != null && _game.rightTeam != null && _game.winner.id.equals(_game.rightTeam.id)) {
             return _whiteColor;
         }
         return _textColor;
@@ -109,10 +113,20 @@ public class GameViewModel extends BaseViewModel {
     public String getRightButtonColor() {
         if (_game.isDraw) {
             return _drawnColor;
-        } else if (_game.winner != null && _game.leftTeam != null && _game.winner.id.equals(_game.rightTeam.id)) {
+        } else if (_game.winner != null && _game.rightTeam != null && _game.winner.id.equals(_game.rightTeam.id)) {
             return _winningColor;
         }
         return _neutralColor;
+    }
+
+    // Enabled
+
+    public Boolean isLeftButtonEnabled() {
+        return !getLeftButtonText().equals("BYE");
+    }
+
+    public Boolean isRightButtonEnabled() {
+        return !getRightButtonText().equals("BYE");
     }
 
 }

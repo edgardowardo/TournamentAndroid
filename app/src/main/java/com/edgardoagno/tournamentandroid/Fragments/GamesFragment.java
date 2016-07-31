@@ -127,6 +127,10 @@ public class GamesFragment extends Fragment {
             viewHolder.leftButton.setTextColor(Color.parseColor(gameViewModel.getLeftButtonTextColor()));
             viewHolder.rightButton.getBackground().setColorFilter(Color.parseColor(gameViewModel.getRightButtonColor()), PorterDuff.Mode.MULTIPLY);
             viewHolder.rightButton.setTextColor(Color.parseColor(gameViewModel.getRightButtonTextColor()));
+
+            // Enabled
+            viewHolder.leftButton.setEnabled(gameViewModel.isLeftButtonEnabled());
+            viewHolder.rightButton.setEnabled(gameViewModel.isRightButtonEnabled());
         }
     }
 }
