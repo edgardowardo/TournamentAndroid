@@ -5,6 +5,7 @@ import android.util.Log;
 import com.edgardoagno.tournamentandroid.Models.DoublesInfo;
 import com.edgardoagno.tournamentandroid.Models.Elimination;
 import com.edgardoagno.tournamentandroid.Models.Game;
+import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
@@ -219,6 +220,9 @@ public class Scheduler {
             Team away = elements.get(endIndex - i);
             Game game = new Game(round, index, home, away);
             game.isBye = (home == null || away == null);
+            if (game.isBye) {
+                game.winner = (home != null) ? home : away;
+            }
             Elimination e = new Elimination(false, 0, 0);
             game.elimination = e;
             schedules.add(game);
@@ -261,6 +265,7 @@ public class Scheduler {
             e.prevLeftGame = prevHome;
             e.prevRightGame = prevAway;
             game.elimination = e;
+            promotePreviousWinners(game, null);
 
             index++;
             schedules.add(game);
@@ -272,6 +277,37 @@ public class Scheduler {
         Game[] newGames = futureSingleElimination(round + 1, index, schedules.toArray(new Game[schedules.size()]));
         schedules.addAll(new ArrayList<Game>(Arrays.asList(newGames)));
         return  schedules.toArray(new Game[schedules.size()]);
+    }
+
+    ///
+    /// Inspects the previous left and right game and promotes their respective winners
+    //  as left and right teams on the current game and resets the winner if needed.
+    ///
+    public static void promotePreviousWinners(Game game, Group group) {
+        if (game.elimination != null) {
+            Elimination e = game.elimination;
+            Game prevLeftGame = null;
+            Game prevRightGame = null;
+            if (game.isValid() && group != null) {
+                prevLeftGame = group.games.where().equalTo("index", e.leftGameIndex).findFirst();
+                prevRightGame = group.games.where().equalTo("index", e.rightGameIndex).findFirst();
+            } else {
+                prevLeftGame = e.prevLeftGame;
+                prevRightGame = e.prevRightGame;
+            }
+            if (prevLeftGame != null) {
+                game.leftTeam = prevLeftGame.winner;
+                if (game.leftTeam != null) {
+                    game.winner = null;
+                }
+            }
+            if (prevRightGame != null) {
+                game.rightTeam = prevRightGame.winner;
+                if (game.rightTeam != null) {
+                    game.winner = null;
+                }
+            }
+        }
     }
 
     ///

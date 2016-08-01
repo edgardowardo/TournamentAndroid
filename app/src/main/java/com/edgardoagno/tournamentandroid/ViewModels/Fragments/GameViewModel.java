@@ -3,6 +3,7 @@ package com.edgardoagno.tournamentandroid.ViewModels.Fragments;
 import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
+import com.edgardoagno.tournamentandroid.Scheduler;
 import com.edgardoagno.tournamentandroid.ViewModels.BaseViewModel;
 
 /**
@@ -26,20 +27,33 @@ public class GameViewModel extends BaseViewModel {
         _game = game;
     }
 
+    private void promoteGameWinner(Game game) {
+        Game next = _group.games.where()
+                .equalTo("elimination.leftGameIndex", game.index)
+                .or().equalTo("elimination.rightGameIndex", game.index)
+                .findFirst();
+        if (next != null) {
+            Scheduler.promotePreviousWinners(next, _group);
+            // recursively apply this, since setting a winner may reset succeeding games.
+            promoteGameWinner(next);
+        }
+    }
+
     public void setLeftWinner() {
         realm.beginTransaction();
-        if (_game.leftTeam != null) {
+        if (_game.leftTeam != null && _game.rightTeam != null) { // both must exist to set a winner
             _game.winner = _game.leftTeam;
-            // promote winner/loser if elimination type schedule
+            promoteGameWinner(_game);
         }
         realm.commitTransaction();
+
     }
 
     public void setRightWinner() {
         realm.beginTransaction();
-        if (_game.rightTeam != null) {
+        if (_game.rightTeam != null && _game.leftTeam != null) {
             _game.winner = _game.rightTeam;
-            // promote winner/loser if elimination type schedule
+            promoteGameWinner(_game);
         }
         realm.commitTransaction();
     }
