@@ -14,6 +14,7 @@ public class Team extends RealmObject implements Comparable<Team> {
     public String id = UUID.randomUUID().toString();
     public String name = "";
     public boolean isHandicapped = false;
+    public boolean isBye = false;
     public int handicap = 0;
     public int seed = 0;
 

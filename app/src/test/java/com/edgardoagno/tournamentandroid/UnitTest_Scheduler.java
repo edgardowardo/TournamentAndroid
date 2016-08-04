@@ -29,9 +29,9 @@ public class UnitTest_Scheduler {
         assertEquals(m[1].index, 2);
         assertEquals(m[2].index, 3);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "2");
         assertEquals(m[0].doublesInfo.leftTeam.name, "3");
@@ -67,11 +67,11 @@ public class UnitTest_Scheduler {
         assertEquals(m[3].index, 4);
         assertEquals(m[4].index, 5);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "3");
         assertEquals(m[0].doublesInfo.leftTeam.name, "4");
@@ -117,11 +117,11 @@ public class UnitTest_Scheduler {
         assertEquals(m[3].index, 4);
         assertEquals(m[4].index, 5);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "3");
         assertEquals(m[0].doublesInfo.leftTeam.name, "4");
@@ -171,13 +171,13 @@ public class UnitTest_Scheduler {
         assertEquals(m[5].index, 6);
         assertEquals(m[6].index, 7);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].doublesInfo.leftTeam.name, "5");
@@ -251,20 +251,20 @@ public class UnitTest_Scheduler {
         assertEquals(m[12].index, 13);
         assertEquals(m[13].index, 14);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
-        assertEquals(m[7].isBye, false);
-        assertEquals(m[8].isBye, false);
-        assertEquals(m[9].isBye, false);
-        assertEquals(m[10].isBye, false);
-        assertEquals(m[11].isBye, false);
-        assertEquals(m[12].isBye, false);
-        assertEquals(m[13].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
+        assertEquals(m[7].getIsBye(), false);
+        assertEquals(m[8].getIsBye(), false);
+        assertEquals(m[9].getIsBye(), false);
+        assertEquals(m[10].getIsBye(), false);
+        assertEquals(m[11].getIsBye(), false);
+        assertEquals(m[12].getIsBye(), false);
+        assertEquals(m[13].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].doublesInfo.leftTeam.name, "5");
@@ -347,7 +347,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[0].index, 1);
         assertEquals(m[0].leftTeam.name, "1");
         assertEquals(m[0].rightTeam.name, "2");
-        assertEquals(m[0].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
     }
 
     @Test
@@ -370,27 +370,27 @@ public class UnitTest_Scheduler {
         assertEquals(m[4].index, 5);
         assertEquals(m[5].index, 6);
 
-        assertEquals(m[0].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
         assertEquals(m[0].leftTeam.name, "2");
         assertEquals(m[0].rightTeam.name, "3");
 
-        assertEquals(m[1].isBye, true);
+        assertEquals(m[1].getIsBye(), true);
         assertEquals(m[1].leftTeam.name, "1");
-        assertNull(m[1].rightTeam);
+        assertEquals(m[1].rightTeam.name, "BYE");
 
-        assertEquals(m[2].isBye, true);
-        assertNull(m[2].leftTeam);
+        assertEquals(m[2].getIsBye(), true);
+        assertEquals(m[2].leftTeam.name, "BYE");
         assertEquals(m[2].rightTeam.name, "2");
 
-        assertEquals(m[3].isBye, false);
+        assertEquals(m[3].getIsBye(), false);
         assertEquals(m[3].leftTeam.name, "1");
         assertEquals(m[3].rightTeam.name, "3");
 
-        assertEquals(m[4].isBye, true);
+        assertEquals(m[4].getIsBye(), true);
         assertEquals(m[4].leftTeam.name, "3");
-        assertNull(m[4].rightTeam);
+        assertEquals(m[4].rightTeam.name, "BYE");
 
-        assertEquals(m[5].isBye, false);
+        assertEquals(m[5].getIsBye(), false);
         assertEquals(m[5].leftTeam.name, "1");
         assertEquals(m[5].rightTeam.name, "2");
     }
@@ -415,12 +415,12 @@ public class UnitTest_Scheduler {
         assertEquals(m[4].index, 5);
         assertEquals(m[5].index, 6);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "2");
         assertEquals(m[0].rightTeam.name, "3");
@@ -474,63 +474,63 @@ public class UnitTest_Scheduler {
         assertEquals(m[13].index, 14);
         assertEquals(m[14].index, 15);
 
-        assertEquals(m[0].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
         assertEquals(m[0].leftTeam.name, "3");
         assertEquals(m[0].rightTeam.name, "4");
 
-        assertEquals(m[1].isBye, false);
+        assertEquals(m[1].getIsBye(), false);
         assertEquals(m[1].leftTeam.name, "2");
         assertEquals(m[1].rightTeam.name, "5");
 
-        assertEquals(m[2].isBye, true);
+        assertEquals(m[2].getIsBye(), true);
         assertEquals(m[2].leftTeam.name, "1");
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "BYE");
 
-        assertEquals(m[3].isBye, false);
+        assertEquals(m[3].getIsBye(), false);
         assertEquals(m[3].leftTeam.name, "2");
         assertEquals(m[3].rightTeam.name, "3");
 
-        assertEquals(m[4].isBye, true);
-        assertNull(m[4].leftTeam);
+        assertEquals(m[4].getIsBye(), true);
+        assertEquals(m[4].leftTeam.name, "BYE");
         assertEquals(m[4].rightTeam.name, "4");
 
-        assertEquals(m[5].isBye, false);
+        assertEquals(m[5].getIsBye(), false);
         assertEquals(m[5].leftTeam.name, "1");
         assertEquals(m[5].rightTeam.name, "5");
 
-        assertEquals(m[6].isBye, true);
-        assertNull(m[6].leftTeam);
+        assertEquals(m[6].getIsBye(), true);
+        assertEquals(m[6].leftTeam.name, "BYE");
         assertEquals(m[6].rightTeam.name, "2");
 
-        assertEquals(m[7].isBye, false);
+        assertEquals(m[7].getIsBye(), false);
         assertEquals(m[7].leftTeam.name, "5");
         assertEquals(m[7].rightTeam.name, "3");
 
-        assertEquals(m[8].isBye, false);
+        assertEquals(m[8].getIsBye(), false);
         assertEquals(m[8].leftTeam.name, "1");
         assertEquals(m[8].rightTeam.name, "4");
 
-        assertEquals(m[9].isBye, true);
+        assertEquals(m[9].getIsBye(), true);
         assertEquals(m[9].leftTeam.name, "5");
-        assertNull(m[9].rightTeam);
+        assertEquals(m[9].rightTeam.name, "BYE");
 
-        assertEquals(m[10].isBye, false);
+        assertEquals(m[10].getIsBye(), false);
         assertEquals(m[10].leftTeam.name, "4");
         assertEquals(m[10].rightTeam.name, "2");
 
-        assertEquals(m[11].isBye, false);
+        assertEquals(m[11].getIsBye(), false);
         assertEquals(m[11].leftTeam.name, "1");
         assertEquals(m[11].rightTeam.name, "3");
 
-        assertEquals(m[12].isBye, false);
+        assertEquals(m[12].getIsBye(), false);
         assertEquals(m[12].leftTeam.name, "4");
         assertEquals(m[12].rightTeam.name, "5");
 
-        assertEquals(m[13].isBye, true);
+        assertEquals(m[13].getIsBye(), true);
         assertEquals(m[13].leftTeam.name, "3");
-        assertNull(m[13].rightTeam);
+        assertEquals(m[13].rightTeam.name, "BYE");
 
-        assertEquals(m[14].isBye, false);
+        assertEquals(m[14].getIsBye(), false);
         assertEquals(m[14].leftTeam.name, "1");
         assertEquals(m[14].rightTeam.name, "2");
     }
@@ -558,7 +558,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[0].index, 1);
         assertEquals(m[0].leftTeam.name, "1");
         assertEquals(m[0].rightTeam.name, "2");
-        assertEquals(m[0].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
         assertEquals(m[0].getIsLoserBracket(), false);
     }
 
@@ -580,17 +580,17 @@ public class UnitTest_Scheduler {
         assertEquals(m[1].index, 2);
         assertEquals(m[2].index, 3);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, true);
-        assertEquals(m[2].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), true);
+        assertEquals(m[2].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "2");
         assertEquals(m[0].rightTeam.name, "3");
         assertEquals(m[1].leftTeam.name, "1");
-        assertNull(m[1].rightTeam);
+        assertEquals(m[1].rightTeam.name, "BYE");
 
         assertNull(m[2].leftTeam);
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "1");
         assertEquals(m[2].elimination.prevLeftGame.index, 1);
         assertEquals(m[2].elimination.prevRightGame.index, 2);
     }
@@ -613,9 +613,9 @@ public class UnitTest_Scheduler {
         assertEquals(m[1].index, 2);
         assertEquals(m[2].index, 3);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "2");
         assertEquals(m[0].rightTeam.name, "3");
@@ -657,33 +657,33 @@ public class UnitTest_Scheduler {
         assertEquals(m[5].index, 6);
         assertEquals(m[6].index, 7);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, true);
-        assertEquals(m[2].isBye, true);
-        assertEquals(m[3].isBye, true);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), true);
+        assertEquals(m[2].getIsBye(), true);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
 
         assertEquals(m[1].leftTeam.name, "3");
-        assertNull(m[1].rightTeam);
+        assertEquals(m[1].rightTeam.name, "BYE");
 
         assertEquals(m[2].leftTeam.name, "2");
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "BYE");
 
         assertEquals(m[3].leftTeam.name, "1");
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
 
-        assertNull(m[4].leftTeam);
-        assertNull(m[4].rightTeam);
+        assertEquals(m[4].leftTeam.name, "3");
+        assertEquals(m[4].rightTeam.name, "2");
         assertEquals(m[4].elimination.prevLeftGame.index, 2);
         assertEquals(m[4].elimination.prevRightGame.index, 3);
 
         assertNull(m[5].leftTeam);
-        assertNull(m[5].rightTeam);
+        assertEquals(m[5].rightTeam.name, "1");
         assertEquals(m[5].elimination.prevLeftGame.index, 1);
         assertEquals(m[5].elimination.prevRightGame.index, 4);
 
@@ -724,13 +724,13 @@ public class UnitTest_Scheduler {
         assertEquals(m[5].index, 6);
         assertEquals(m[6].index, 7);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, true);
-        assertEquals(m[3].isBye, true);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), true);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
@@ -739,18 +739,18 @@ public class UnitTest_Scheduler {
         assertEquals(m[1].rightTeam.name, "6");
 
         assertEquals(m[2].leftTeam.name, "2");
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "BYE");
 
         assertEquals(m[3].leftTeam.name, "1");
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
 
         assertNull(m[4].leftTeam);
-        assertNull(m[4].rightTeam);
+        assertEquals(m[4].rightTeam.name, "2");
         assertEquals(m[4].elimination.prevLeftGame.index, 2);
         assertEquals(m[4].elimination.prevRightGame.index, 3);
 
         assertNull(m[5].leftTeam);
-        assertNull(m[5].rightTeam);
+        assertEquals(m[5].rightTeam.name, "1");
         assertEquals(m[5].elimination.prevLeftGame.index, 1);
         assertEquals(m[5].elimination.prevRightGame.index, 4);
 
@@ -790,13 +790,13 @@ public class UnitTest_Scheduler {
         assertEquals(m[5].index, 6);
         assertEquals(m[6].index, 7);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, true);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
@@ -808,7 +808,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[2].rightTeam.name, "7");
 
         assertEquals(m[3].leftTeam.name, "1");
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
 
         assertNull(m[4].leftTeam);
         assertNull(m[4].rightTeam);
@@ -816,7 +816,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[4].elimination.prevRightGame.index, 3);
 
         assertNull(m[5].leftTeam);
-        assertNull(m[5].rightTeam);
+        assertEquals(m[5].rightTeam.name, "1");
         assertEquals(m[5].elimination.prevLeftGame.index, 1);
         assertEquals(m[5].elimination.prevRightGame.index, 4);
 
@@ -856,13 +856,13 @@ public class UnitTest_Scheduler {
         assertEquals(m[5].index, 6);
         assertEquals(m[6].index, 7);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
@@ -912,35 +912,35 @@ public class UnitTest_Scheduler {
         assertEquals(m[4].index, 5);
         assertEquals(m[5].index, 6);
 
-        assertEquals(m[0].isBye, true);
-        assertEquals(m[1].isBye, true);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
+        assertEquals(m[0].getIsBye(), true);
+        assertEquals(m[1].getIsBye(), true);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), true);
+        assertEquals(m[5].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "2");
-        assertNull(m[0].rightTeam);
+        assertEquals(m[0].rightTeam.name, "BYE");
         assertEquals(m[0].getIsLoserBracket(), false);
 
         assertEquals(m[1].leftTeam.name, "1");
-        assertNull(m[1].rightTeam);
+        assertEquals(m[1].rightTeam.name, "BYE");
         assertEquals(m[1].getIsLoserBracket(), false);
 
-        assertNull(m[2].leftTeam);
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].leftTeam.name, "2");
+        assertEquals(m[2].rightTeam.name, "1");
         assertEquals(m[2].elimination.prevLeftGame.index, 1);
         assertEquals(m[2].elimination.prevRightGame.index, 2);
         assertEquals(m[2].getIsLoserBracket(), false);
 
-        assertNull(m[3].leftTeam);
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].leftTeam.name, "BYE");
+        assertEquals(m[3].rightTeam.name, "BYE");
         assertEquals(m[3].elimination.prevLeftGame.index, 1);
         assertEquals(m[3].elimination.prevRightGame.index, 2);
         assertEquals(m[3].getIsLoserBracket(), true);
 
         assertNull(m[4].leftTeam);
-        assertNull(m[4].rightTeam);
+        assertEquals(m[4].rightTeam.name, "BYE");
         assertEquals(m[4].elimination.prevLeftGame.index, 3);
         assertEquals(m[4].elimination.prevRightGame.index, 4);
         assertEquals(m[4].getIsLoserBracket(), true);
@@ -972,29 +972,29 @@ public class UnitTest_Scheduler {
         assertEquals(m[4].index, 5);
         assertEquals(m[5].index, 6);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, true);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), true);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "2");
         assertEquals(m[0].rightTeam.name, "3");
         assertEquals(m[0].getIsLoserBracket(), false);
 
         assertEquals(m[1].leftTeam.name, "1");
-        assertNull(m[1].rightTeam);
+        assertEquals(m[1].rightTeam.name, "BYE");
         assertEquals(m[1].getIsLoserBracket(), false);
 
         assertNull(m[2].leftTeam);
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "1");
         assertEquals(m[2].elimination.prevLeftGame.index, 1);
         assertEquals(m[2].elimination.prevRightGame.index, 2);
         assertEquals(m[2].getIsLoserBracket(), false);
 
         assertNull(m[3].leftTeam);
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
         assertEquals(m[3].elimination.prevLeftGame.index, 1);
         assertEquals(m[3].elimination.prevRightGame.index, 2);
         assertEquals(m[3].getIsLoserBracket(), true);
@@ -1032,12 +1032,12 @@ public class UnitTest_Scheduler {
         assertEquals(m[4].index, 5);
         assertEquals(m[5].index, 6);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "2");
         assertEquals(m[0].rightTeam.name, "3");
@@ -1108,45 +1108,45 @@ public class UnitTest_Scheduler {
         assertEquals(m[12].index, 13);
         assertEquals(m[13].index, 14);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, true);
-        assertEquals(m[2].isBye, true);
-        assertEquals(m[3].isBye, true);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
-        assertEquals(m[7].isBye, false);
-        assertEquals(m[8].isBye, false);
-        assertEquals(m[9].isBye, false);
-        assertEquals(m[10].isBye, false);
-        assertEquals(m[11].isBye, false);
-        assertEquals(m[12].isBye, false);
-        assertEquals(m[13].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), true);
+        assertEquals(m[2].getIsBye(), true);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
+        assertEquals(m[7].getIsBye(), true);
+        assertEquals(m[8].getIsBye(), true);
+        assertEquals(m[9].getIsBye(), false);
+        assertEquals(m[10].getIsBye(), true);
+        assertEquals(m[11].getIsBye(), false);
+        assertEquals(m[12].getIsBye(), false);
+        assertEquals(m[13].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
         assertEquals(m[0].getIsLoserBracket(), false);
 
         assertEquals(m[1].leftTeam.name, "3");
-        assertNull(m[1].rightTeam);
+        assertEquals(m[1].rightTeam.name, "BYE");
         assertEquals(m[1].getIsLoserBracket(), false);
 
         assertEquals(m[2].leftTeam.name, "2");
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "BYE");
         assertEquals(m[2].getIsLoserBracket(), false);
 
         assertEquals(m[3].leftTeam.name, "1");
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
         assertEquals(m[3].getIsLoserBracket(), false);
 
-        assertNull(m[4].leftTeam);
-        assertNull(m[4].rightTeam);
+        assertEquals(m[4].leftTeam.name, "3");
+        assertEquals(m[4].rightTeam.name, "2");
         assertEquals(m[4].elimination.prevLeftGame.index, 2);
         assertEquals(m[4].elimination.prevRightGame.index, 3);
         assertEquals(m[4].getIsLoserBracket(), false);
 
         assertNull(m[5].leftTeam);
-        assertNull(m[5].rightTeam);
+        assertEquals(m[5].rightTeam.name, "1");
         assertEquals(m[5].elimination.prevLeftGame.index, 1);
         assertEquals(m[5].elimination.prevRightGame.index, 4);
         assertEquals(m[5].getIsLoserBracket(), false);
@@ -1158,13 +1158,13 @@ public class UnitTest_Scheduler {
         assertEquals(m[6].getIsLoserBracket(), false);
 
         assertNull(m[7].leftTeam);
-        assertNull(m[7].rightTeam);
+        assertEquals(m[7].rightTeam.name, "BYE");
         assertEquals(m[7].elimination.prevLeftGame.index, 1);
         assertEquals(m[7].elimination.prevRightGame.index, 2);
         assertEquals(m[7].getIsLoserBracket(), true);
 
-        assertNull(m[8].leftTeam);
-        assertNull(m[8].rightTeam);
+        assertEquals(m[8].leftTeam.name, "BYE");
+        assertEquals(m[8].rightTeam.name, "BYE");
         assertEquals(m[8].elimination.prevLeftGame.index, 3);
         assertEquals(m[8].elimination.prevRightGame.index, 4);
         assertEquals(m[8].getIsLoserBracket(), true);
@@ -1176,7 +1176,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[9].getIsLoserBracket(), true);
 
         assertNull(m[10].leftTeam);
-        assertNull(m[10].rightTeam);
+        assertEquals(m[10].rightTeam.name, "BYE");
         assertEquals(m[10].elimination.prevLeftGame.index, 6);
         assertEquals(m[10].elimination.prevRightGame.index, 9);
         assertEquals(m[10].getIsLoserBracket(), true);
@@ -1236,20 +1236,20 @@ public class UnitTest_Scheduler {
         assertEquals(m[12].index, 13);
         assertEquals(m[13].index, 14);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, true);
-        assertEquals(m[3].isBye, true);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
-        assertEquals(m[7].isBye, false);
-        assertEquals(m[8].isBye, false);
-        assertEquals(m[9].isBye, false);
-        assertEquals(m[10].isBye, false);
-        assertEquals(m[11].isBye, false);
-        assertEquals(m[12].isBye, false);
-        assertEquals(m[13].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), true);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
+        assertEquals(m[7].getIsBye(), false);
+        assertEquals(m[8].getIsBye(), true);
+        assertEquals(m[9].getIsBye(), false);
+        assertEquals(m[10].getIsBye(), true);
+        assertEquals(m[11].getIsBye(), false);
+        assertEquals(m[12].getIsBye(), false);
+        assertEquals(m[13].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
@@ -1260,21 +1260,21 @@ public class UnitTest_Scheduler {
         assertEquals(m[1].getIsLoserBracket(), false);
 
         assertEquals(m[2].leftTeam.name, "2");
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "BYE");
         assertEquals(m[2].getIsLoserBracket(), false);
 
         assertEquals(m[3].leftTeam.name, "1");
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
         assertEquals(m[3].getIsLoserBracket(), false);
 
         assertNull(m[4].leftTeam);
-        assertNull(m[4].rightTeam);
+        assertEquals(m[4].rightTeam.name, "2");
         assertEquals(m[4].elimination.prevLeftGame.index, 2);
         assertEquals(m[4].elimination.prevRightGame.index, 3);
         assertEquals(m[4].getIsLoserBracket(), false);
 
         assertNull(m[5].leftTeam);
-        assertNull(m[5].rightTeam);
+        assertEquals(m[5].rightTeam.name, "1");
         assertEquals(m[5].elimination.prevLeftGame.index, 1);
         assertEquals(m[5].elimination.prevRightGame.index, 4);
         assertEquals(m[5].getIsLoserBracket(), false);
@@ -1291,8 +1291,8 @@ public class UnitTest_Scheduler {
         assertEquals(m[7].elimination.prevRightGame.index, 2);
         assertEquals(m[7].getIsLoserBracket(), true);
 
-        assertNull(m[8].leftTeam);
-        assertNull(m[8].rightTeam);
+        assertEquals(m[8].leftTeam.name, "BYE");
+        assertEquals(m[8].rightTeam.name, "BYE");
         assertEquals(m[8].elimination.prevLeftGame.index, 3);
         assertEquals(m[8].elimination.prevRightGame.index, 4);
         assertEquals(m[8].getIsLoserBracket(), true);
@@ -1304,7 +1304,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[9].getIsLoserBracket(), true);
 
         assertNull(m[10].leftTeam);
-        assertNull(m[10].rightTeam);
+        assertEquals(m[10].rightTeam.name, "BYE");
         assertEquals(m[10].elimination.prevLeftGame.index, 6);
         assertEquals(m[10].elimination.prevRightGame.index, 9);
         assertEquals(m[10].getIsLoserBracket(), true);
@@ -1364,20 +1364,20 @@ public class UnitTest_Scheduler {
         assertEquals(m[12].index, 13);
         assertEquals(m[13].index, 14);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, true);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
-        assertEquals(m[7].isBye, false);
-        assertEquals(m[8].isBye, false);
-        assertEquals(m[9].isBye, false);
-        assertEquals(m[10].isBye, false);
-        assertEquals(m[11].isBye, false);
-        assertEquals(m[12].isBye, false);
-        assertEquals(m[13].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
+        assertEquals(m[7].getIsBye(), false);
+        assertEquals(m[8].getIsBye(), true);
+        assertEquals(m[9].getIsBye(), false);
+        assertEquals(m[10].getIsBye(), false);
+        assertEquals(m[11].getIsBye(), false);
+        assertEquals(m[12].getIsBye(), false);
+        assertEquals(m[13].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
@@ -1392,7 +1392,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[2].getIsLoserBracket(), false);
 
         assertEquals(m[3].leftTeam.name, "1");
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
         assertEquals(m[3].getIsLoserBracket(), false);
 
         assertNull(m[4].leftTeam);
@@ -1402,7 +1402,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[4].getIsLoserBracket(), false);
 
         assertNull(m[5].leftTeam);
-        assertNull(m[5].rightTeam);
+        assertEquals(m[5].rightTeam.name, "1");
         assertEquals(m[5].elimination.prevLeftGame.index, 1);
         assertEquals(m[5].elimination.prevRightGame.index, 4);
         assertEquals(m[5].getIsLoserBracket(), false);
@@ -1420,7 +1420,7 @@ public class UnitTest_Scheduler {
         assertEquals(m[7].getIsLoserBracket(), true);
 
         assertNull(m[8].leftTeam);
-        assertNull(m[8].rightTeam);
+        assertEquals(m[8].rightTeam.name, "BYE");
         assertEquals(m[8].elimination.prevLeftGame.index, 3);
         assertEquals(m[8].elimination.prevRightGame.index, 4);
         assertEquals(m[8].getIsLoserBracket(), true);
@@ -1492,20 +1492,20 @@ public class UnitTest_Scheduler {
         assertEquals(m[12].index, 13);
         assertEquals(m[13].index, 14);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, false);
-        assertEquals(m[2].isBye, false);
-        assertEquals(m[3].isBye, false);
-        assertEquals(m[4].isBye, false);
-        assertEquals(m[5].isBye, false);
-        assertEquals(m[6].isBye, false);
-        assertEquals(m[7].isBye, false);
-        assertEquals(m[8].isBye, false);
-        assertEquals(m[9].isBye, false);
-        assertEquals(m[10].isBye, false);
-        assertEquals(m[11].isBye, false);
-        assertEquals(m[12].isBye, false);
-        assertEquals(m[13].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), false);
+        assertEquals(m[2].getIsBye(), false);
+        assertEquals(m[3].getIsBye(), false);
+        assertEquals(m[4].getIsBye(), false);
+        assertEquals(m[5].getIsBye(), false);
+        assertEquals(m[6].getIsBye(), false);
+        assertEquals(m[7].getIsBye(), false);
+        assertEquals(m[8].getIsBye(), false);
+        assertEquals(m[9].getIsBye(), false);
+        assertEquals(m[10].getIsBye(), false);
+        assertEquals(m[11].getIsBye(), false);
+        assertEquals(m[12].getIsBye(), false);
+        assertEquals(m[13].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "4");
         assertEquals(m[0].rightTeam.name, "5");
@@ -1652,95 +1652,89 @@ public class UnitTest_Scheduler {
         assertEquals(m[28].index, 29);
         assertEquals(m[29].index, 30);
 
-        assertEquals(m[0].isBye, false);
-        assertEquals(m[1].isBye, true);
-        assertEquals(m[2].isBye, true);
-        assertEquals(m[3].isBye, true);
-        assertEquals(m[4].isBye, true);
-        assertEquals(m[5].isBye, true);
-        assertEquals(m[6].isBye, true);
-        assertEquals(m[7].isBye, true);
-        assertEquals(m[8].isBye, false);
-        assertEquals(m[9].isBye, false);
-        assertEquals(m[10].isBye, false);
-        assertEquals(m[11].isBye, false);
-        assertEquals(m[12].isBye, false);
-        assertEquals(m[13].isBye, false);
-        assertEquals(m[14].isBye, false);
-        assertEquals(m[15].isBye, false);
-        assertEquals(m[16].isBye, false);
-        assertEquals(m[17].isBye, false);
-        assertEquals(m[18].isBye, false);
-        assertEquals(m[19].isBye, false);
-        assertEquals(m[20].isBye, false);
-        assertEquals(m[21].isBye, false);
-        assertEquals(m[22].isBye, false);
-        assertEquals(m[23].isBye, false);
-        assertEquals(m[24].isBye, false);
-        assertEquals(m[25].isBye, false);
-        assertEquals(m[26].isBye, false);
-        assertEquals(m[27].isBye, false);
-        assertEquals(m[28].isBye, false);
-        assertEquals(m[29].isBye, false);
+        assertEquals(m[0].getIsBye(), false);
+        assertEquals(m[1].getIsBye(), true);
+        assertEquals(m[2].getIsBye(), true);
+        assertEquals(m[3].getIsBye(), true);
+        assertEquals(m[4].getIsBye(), true);
+        assertEquals(m[5].getIsBye(), true);
+        assertEquals(m[6].getIsBye(), true);
+        assertEquals(m[7].getIsBye(), true);
+        assertEquals(m[8].getIsBye(), false);
+        assertEquals(m[9].getIsBye(), false);
+        assertEquals(m[10].getIsBye(), false);
+        assertEquals(m[11].getIsBye(), false);
+        assertEquals(m[12].getIsBye(), false);
+        assertEquals(m[13].getIsBye(), false);
+        assertEquals(m[14].getIsBye(), false);
+        assertEquals(m[15].getIsBye(), true);
+        assertEquals(m[16].getIsBye(), true);
+        assertEquals(m[17].getIsBye(), true);
+        assertEquals(m[18].getIsBye(), true);
+        assertEquals(m[19].getIsBye(), false);
+        assertEquals(m[20].getIsBye(), true);
+        assertEquals(m[21].getIsBye(), true);
+        assertEquals(m[22].getIsBye(), true);
+        assertEquals(m[23].getIsBye(), false);
+        assertEquals(m[24].getIsBye(), false);
+        assertEquals(m[25].getIsBye(), false);
+        assertEquals(m[26].getIsBye(), false);
+        assertEquals(m[27].getIsBye(), false);
+        assertEquals(m[28].getIsBye(), false);
+        assertEquals(m[29].getIsBye(), false);
 
         assertEquals(m[0].leftTeam.name, "8");
         assertEquals(m[0].rightTeam.name, "9");
         assertEquals(m[0].getIsLoserBracket(), false);
 
         assertEquals(m[1].leftTeam.name, "7");
-        assertNull(m[1].rightTeam);
+        assertEquals(m[1].rightTeam.name, "BYE");
         assertEquals(m[1].getIsLoserBracket(), false);
 
         assertEquals(m[2].leftTeam.name, "6");
-        assertNull(m[2].rightTeam);
+        assertEquals(m[2].rightTeam.name, "BYE");
         assertEquals(m[2].getIsLoserBracket(), false);
 
         assertEquals(m[3].leftTeam.name, "5");
-        assertNull(m[3].rightTeam);
+        assertEquals(m[3].rightTeam.name, "BYE");
         assertEquals(m[3].getIsLoserBracket(), false);
 
         assertEquals(m[4].leftTeam.name, "4");
-        assertNull(m[4].rightTeam);
+        assertEquals(m[4].rightTeam.name, "BYE");
         assertEquals(m[4].getIsLoserBracket(), false);
 
         assertEquals(m[5].leftTeam.name, "3");
-        assertNull(m[5].rightTeam);
+        assertEquals(m[5].rightTeam.name, "BYE");
         assertEquals(m[5].getIsLoserBracket(), false);
 
         assertEquals(m[6].leftTeam.name, "2");
-        assertNull(m[6].rightTeam);
+        assertEquals(m[6].rightTeam.name, "BYE");
         assertEquals(m[6].getIsLoserBracket(), false);
 
         assertEquals(m[7].leftTeam.name, "1");
-        assertNull(m[7].rightTeam);
+        assertEquals(m[7].rightTeam.name, "BYE");
         assertEquals(m[7].getIsLoserBracket(), false);
 
-        assertNull(m[8].leftTeam);
-        assertNull(m[8].rightTeam);
+        assertEquals(m[8].leftTeam.name, "5");
+        assertEquals(m[8].rightTeam.name, "4");
         assertEquals(m[8].elimination.prevLeftGame.index, 4);
         assertEquals(m[8].elimination.prevRightGame.index, 5);
         assertEquals(m[8].getIsLoserBracket(), false);
 
-        assertNull(m[8].leftTeam);
-        assertNull(m[8].rightTeam);
-        assertEquals(m[8].elimination.prevLeftGame.index, 4);
-        assertEquals(m[8].elimination.prevRightGame.index, 5);
-        assertEquals(m[8].getIsLoserBracket(), false);
-
-        assertNull(m[9].leftTeam);
-        assertNull(m[9].rightTeam);
+        assertEquals(m[9].leftTeam.name, "6");
+        assertEquals(m[9].rightTeam.name, "3");
         assertEquals(m[9].elimination.prevLeftGame.index, 3);
         assertEquals(m[9].elimination.prevRightGame.index, 6);
         assertEquals(m[9].getIsLoserBracket(), false);
 
-        assertNull(m[10].leftTeam);
-        assertNull(m[10].rightTeam);
+        assertEquals(m[10].leftTeam.name, "7");
+        assertEquals(m[10].rightTeam.name, "2");
         assertEquals(m[10].elimination.prevLeftGame.index, 2);
         assertEquals(m[10].elimination.prevRightGame.index, 7);
         assertEquals(m[10].getIsLoserBracket(), false);
 
         assertNull(m[11].leftTeam);
-        assertNull(m[11].rightTeam);
+        assertEquals(m[11].rightTeam.name, "1");
         assertEquals(m[11].elimination.prevLeftGame.index, 1);
         assertEquals(m[11].elimination.prevRightGame.index, 8);
         assertEquals(m[11].getIsLoserBracket(), false);
@@ -1764,25 +1758,25 @@ public class UnitTest_Scheduler {
         assertEquals(m[14].getIsLoserBracket(), false);
 
         assertNull(m[15].leftTeam);
-        assertNull(m[15].rightTeam);
+        assertEquals(m[15].rightTeam.name, "BYE");
         assertEquals(m[15].elimination.prevLeftGame.index, 1);
         assertEquals(m[15].elimination.prevRightGame.index, 2);
         assertEquals(m[15].getIsLoserBracket(), true);
 
-        assertNull(m[16].leftTeam);
-        assertNull(m[16].rightTeam);
+        assertEquals(m[16].leftTeam.name, "BYE");
+        assertEquals(m[16].rightTeam.name, "BYE");
         assertEquals(m[16].elimination.prevLeftGame.index, 3);
         assertEquals(m[16].elimination.prevRightGame.index, 4);
         assertEquals(m[16].getIsLoserBracket(), true);
 
-        assertNull(m[17].leftTeam);
-        assertNull(m[17].rightTeam);
+        assertEquals(m[17].leftTeam.name, "BYE");
+        assertEquals(m[17].rightTeam.name, "BYE");
         assertEquals(m[17].elimination.prevLeftGame.index, 5);
         assertEquals(m[17].elimination.prevRightGame.index, 6);
         assertEquals(m[17].getIsLoserBracket(), true);
 
-        assertNull(m[18].leftTeam);
-        assertNull(m[18].rightTeam);
+        assertEquals(m[18].leftTeam.name, "BYE");
+        assertEquals(m[18].rightTeam.name, "BYE");
         assertEquals(m[18].elimination.prevLeftGame.index, 7);
         assertEquals(m[18].elimination.prevRightGame.index, 8);
         assertEquals(m[18].getIsLoserBracket(), true);
@@ -1794,19 +1788,19 @@ public class UnitTest_Scheduler {
         assertEquals(m[19].getIsLoserBracket(), true);
 
         assertNull(m[20].leftTeam);
-        assertNull(m[20].rightTeam);
+        assertEquals(m[20].rightTeam.name, "BYE");
         assertEquals(m[20].elimination.prevLeftGame.index, 10);
         assertEquals(m[20].elimination.prevRightGame.index, 17);
         assertEquals(m[20].getIsLoserBracket(), true);
 
         assertNull(m[21].leftTeam);
-        assertNull(m[21].rightTeam);
+        assertEquals(m[21].rightTeam.name, "BYE");
         assertEquals(m[21].elimination.prevLeftGame.index, 11);
         assertEquals(m[21].elimination.prevRightGame.index, 18);
         assertEquals(m[21].getIsLoserBracket(), true);
 
         assertNull(m[22].leftTeam);
-        assertNull(m[22].rightTeam);
+        assertEquals(m[22].rightTeam.name, "BYE");
         assertEquals(m[22].elimination.prevLeftGame.index, 12);
         assertEquals(m[22].elimination.prevRightGame.index, 19);
         assertEquals(m[22].getIsLoserBracket(), true);

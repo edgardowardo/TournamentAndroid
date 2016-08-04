@@ -49,7 +49,9 @@ public class Scheduler {
         // if odd then add a bye
         //
         if (elements.size() % 2 != 0) {
-            elements.add(null);
+            Team bye = new Team("BYE");
+            bye.isBye = true;
+            elements.add(bye);
         }
 
         //
@@ -68,10 +70,7 @@ public class Scheduler {
             Team home = elements.get(i);
             Team away = elements.get(endIndex - i);
             Game pair = new Game(round, index++, home, away);
-            pair.isBye = (home == null || away == null);
-            if (pair.isBye) {
-                pair.winner = (home != null) ? home : away;
-            }
+            pair.promoteTeamOnBye();
             schedules.add(pair);
         }
 
@@ -203,7 +202,9 @@ public class Scheduler {
             if (elements.size() < minimum) {
                 int diff = minimum - elements.size();
                 for (int j = 0; j < diff; j++) {
-                    elements.add(null);
+                    Team bye = new Team("BYE");
+                    bye.isBye = true;
+                    elements.add(bye);
                 }
                 break;
             } else if (elements.size() == minimum) {
@@ -219,10 +220,7 @@ public class Scheduler {
             Team home = elements.get(i);
             Team away = elements.get(endIndex - i);
             Game game = new Game(round, index, home, away);
-            game.isBye = (home == null || away == null);
-            if (game.isBye) {
-                game.winner = (home != null) ? home : away;
-            }
+            game.promoteTeamOnBye();
             Elimination e = new Elimination(false, 0, 0);
             game.elimination = e;
             schedules.add(game);
@@ -311,6 +309,60 @@ public class Scheduler {
     }
 
     ///
+    /// Inspects the previous left and right game and promotes their respective LOSERS
+    //  as left and right teams on the current game.
+    ///
+    public static void demotePreviousLosers(Game game, Group group) {
+        if (game.getIsBothBye()) {
+            game.winner = game.leftTeam;
+        }
+        if (game.elimination != null) {
+            Elimination e = game.elimination;
+            Game prevLeftGame = null;
+            Game prevRightGame = null;
+            if (game.isValid() && group != null) {
+                prevLeftGame = group.games.where().equalTo("index", e.leftGameIndex).findFirst();
+                prevRightGame = group.games.where().equalTo("index", e.rightGameIndex).findFirst();
+            } else {
+                prevLeftGame = e.prevLeftGame;
+                prevRightGame = e.prevRightGame;
+            }
+            if (prevLeftGame != null) {
+                if (prevLeftGame.winner != null) {
+                    if (prevLeftGame.winner.id.compareTo(prevLeftGame.leftTeam.id) == 0) {
+                        game.leftTeam = prevLeftGame.rightTeam;
+                    } else {
+                        game.leftTeam = prevLeftGame.leftTeam;
+                    }
+                } else if (prevLeftGame.getIsBye() && prevLeftGame.getIsLoserBracket() == false
+                        || prevLeftGame.getIsBothBye() && prevLeftGame.getIsLoserBracket() == true) {
+                    if (prevLeftGame.leftTeam != null && prevLeftGame.leftTeam.isBye) {
+                        game.leftTeam = prevLeftGame.leftTeam;
+                    } else if (prevLeftGame.rightTeam != null && prevLeftGame.rightTeam.isBye) {
+                        game.rightTeam = prevLeftGame.rightTeam;
+                    }
+                }
+            }
+            if (prevRightGame != null) {
+                if (prevRightGame.winner != null) {
+                    if (prevRightGame.winner.id.compareTo(prevRightGame.leftTeam.id) == 0) {
+                        game.rightTeam = prevRightGame.rightTeam;
+                    } else {
+                        game.rightTeam = prevRightGame.leftTeam;
+                    }
+                } else if (prevRightGame.getIsBye() && prevRightGame.getIsLoserBracket() == false
+                        || prevRightGame.getIsBothBye() && prevRightGame.getIsLoserBracket() == true) {
+                    if (prevRightGame.leftTeam != null && prevRightGame.leftTeam.isBye) {
+                        game.rightTeam = prevRightGame.leftTeam;
+                    } else if (prevRightGame.rightTeam != null && prevRightGame.rightTeam.isBye) {
+                        game.rightTeam = prevRightGame.rightTeam;
+                    }
+                }
+            }
+        }
+    }
+
+    ///
     /// Double elimination wrapper
     ///
     public static Game[] doubleElimination(Team[] teams) {
@@ -332,7 +384,9 @@ public class Scheduler {
         //
         if (elements.size() == 2) {
             for (int i = 3; i < 5; i++) {
-                elements.add(null);
+                Team bye = new Team("BYE");
+                bye.isBye = true;
+                elements.add(bye);
             }
         }
 
@@ -444,6 +498,7 @@ public class Scheduler {
             elimination.prevLeftGame = prevHome;
             elimination.prevRightGame = prevAway;
             game.elimination = elimination;
+            demotePreviousLosers(game, null);
             survivors.add(game);
             i+=2;
         }
@@ -482,6 +537,7 @@ public class Scheduler {
             elimination.prevLeftGame = newLoser;
             elimination.prevRightGame = survivor;
             game.elimination = elimination;
+            demotePreviousLosers(game, null);
             survivors.add(game);
         }
 

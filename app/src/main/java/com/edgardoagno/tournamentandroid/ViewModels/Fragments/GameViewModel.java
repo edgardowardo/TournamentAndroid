@@ -67,8 +67,6 @@ public class GameViewModel extends BaseViewModel {
         String leftText = "";
         if (_game.leftTeam != null) {
             leftText = _game.leftTeam.name;
-        } else if (_game.isBye) {
-            leftText = "BYE";
         }
         if (_group.getScheduleType() == ScheduleType.American && _game.doublesInfo != null && _game.doublesInfo.leftTeam != null) {
             leftText += "/";
@@ -81,8 +79,6 @@ public class GameViewModel extends BaseViewModel {
         String rightText = "";
         if (_game.rightTeam != null) {
             rightText = _game.rightTeam.name;
-        } else if (_game.isBye) {
-            rightText = "BYE";
         }
         if (_group.getScheduleType() == ScheduleType.American && _game.doublesInfo != null && _game.doublesInfo.rightTeam != null) {
             rightText += "/";
