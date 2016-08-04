@@ -6,6 +6,8 @@ import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.Scheduler;
 import com.edgardoagno.tournamentandroid.ViewModels.BaseViewModel;
 
+import io.realm.RealmResults;
+
 /**
  * Created by edgardoagno on 31/07/16.
  */
@@ -27,15 +29,15 @@ public class GameViewModel extends BaseViewModel {
         _game = game;
     }
 
-    private void promoteGameWinner(Game game) {
-        Game next = _group.games.where()
+    private void parseTree(Game game) {
+        RealmResults<Game> nexts = _group.games.where()
                 .equalTo("elimination.leftGameIndex", game.index)
                 .or().equalTo("elimination.rightGameIndex", game.index)
-                .findFirst();
-        if (next != null) {
-            Scheduler.promotePreviousWinners(next, _group);
+                .findAll();
+        for (Game next: nexts) {
+            Scheduler.parseTree(next, _group);
             // recursively apply this, since setting a winner may reset succeeding games.
-            promoteGameWinner(next);
+            parseTree(next);
         }
     }
 
@@ -43,7 +45,7 @@ public class GameViewModel extends BaseViewModel {
         realm.beginTransaction();
         if (_game.leftTeam != null && _game.rightTeam != null) { // both must exist to set a winner
             _game.winner = _game.leftTeam;
-            promoteGameWinner(_game);
+            parseTree(_game);
         }
         realm.commitTransaction();
 
@@ -53,7 +55,7 @@ public class GameViewModel extends BaseViewModel {
         realm.beginTransaction();
         if (_game.rightTeam != null && _game.leftTeam != null) {
             _game.winner = _game.rightTeam;
-            promoteGameWinner(_game);
+            parseTree(_game);
         }
         realm.commitTransaction();
     }
@@ -132,11 +134,11 @@ public class GameViewModel extends BaseViewModel {
     // Enabled
 
     public Boolean isLeftButtonEnabled() {
-        return !getLeftButtonText().equals("BYE");
+        return !_game.getIsBye();
     }
 
     public Boolean isRightButtonEnabled() {
-        return !getRightButtonText().equals("BYE");
+        return !_game.getIsBye();
     }
 
 }

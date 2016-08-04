@@ -1,7 +1,5 @@
 package com.edgardoagno.tournamentandroid;
 
-import android.util.Log;
-
 import com.edgardoagno.tournamentandroid.Models.DoublesInfo;
 import com.edgardoagno.tournamentandroid.Models.Elimination;
 import com.edgardoagno.tournamentandroid.Models.Game;
@@ -9,8 +7,6 @@ import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSortedSet;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Ordering;
 import com.google.common.primitives.Ints;
@@ -19,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -263,7 +258,7 @@ public class Scheduler {
             e.prevLeftGame = prevHome;
             e.prevRightGame = prevAway;
             game.elimination = e;
-            promotePreviousWinners(game, null);
+            parseTree(game, null);
 
             index++;
             schedules.add(game);
@@ -275,91 +270,6 @@ public class Scheduler {
         Game[] newGames = futureSingleElimination(round + 1, index, schedules.toArray(new Game[schedules.size()]));
         schedules.addAll(new ArrayList<Game>(Arrays.asList(newGames)));
         return  schedules.toArray(new Game[schedules.size()]);
-    }
-
-    ///
-    /// Inspects the previous left and right game and promotes their respective winners
-    //  as left and right teams on the current game and resets the winner if needed.
-    ///
-    public static void promotePreviousWinners(Game game, Group group) {
-        if (game.elimination != null) {
-            Elimination e = game.elimination;
-            Game prevLeftGame = null;
-            Game prevRightGame = null;
-            if (game.isValid() && group != null) {
-                prevLeftGame = group.games.where().equalTo("index", e.leftGameIndex).findFirst();
-                prevRightGame = group.games.where().equalTo("index", e.rightGameIndex).findFirst();
-            } else {
-                prevLeftGame = e.prevLeftGame;
-                prevRightGame = e.prevRightGame;
-            }
-            if (prevLeftGame != null) {
-                game.leftTeam = prevLeftGame.winner;
-                if (game.leftTeam != null) {
-                    game.winner = null;
-                }
-            }
-            if (prevRightGame != null) {
-                game.rightTeam = prevRightGame.winner;
-                if (game.rightTeam != null) {
-                    game.winner = null;
-                }
-            }
-        }
-    }
-
-    ///
-    /// Inspects the previous left and right game and promotes their respective LOSERS
-    //  as left and right teams on the current game.
-    ///
-    public static void demotePreviousLosers(Game game, Group group) {
-        if (game.getIsBothBye()) {
-            game.winner = game.leftTeam;
-        }
-        if (game.elimination != null) {
-            Elimination e = game.elimination;
-            Game prevLeftGame = null;
-            Game prevRightGame = null;
-            if (game.isValid() && group != null) {
-                prevLeftGame = group.games.where().equalTo("index", e.leftGameIndex).findFirst();
-                prevRightGame = group.games.where().equalTo("index", e.rightGameIndex).findFirst();
-            } else {
-                prevLeftGame = e.prevLeftGame;
-                prevRightGame = e.prevRightGame;
-            }
-            if (prevLeftGame != null) {
-                if (prevLeftGame.winner != null) {
-                    if (prevLeftGame.winner.id.compareTo(prevLeftGame.leftTeam.id) == 0) {
-                        game.leftTeam = prevLeftGame.rightTeam;
-                    } else {
-                        game.leftTeam = prevLeftGame.leftTeam;
-                    }
-                } else if (prevLeftGame.getIsBye() && prevLeftGame.getIsLoserBracket() == false
-                        || prevLeftGame.getIsBothBye() && prevLeftGame.getIsLoserBracket() == true) {
-                    if (prevLeftGame.leftTeam != null && prevLeftGame.leftTeam.isBye) {
-                        game.leftTeam = prevLeftGame.leftTeam;
-                    } else if (prevLeftGame.rightTeam != null && prevLeftGame.rightTeam.isBye) {
-                        game.rightTeam = prevLeftGame.rightTeam;
-                    }
-                }
-            }
-            if (prevRightGame != null) {
-                if (prevRightGame.winner != null) {
-                    if (prevRightGame.winner.id.compareTo(prevRightGame.leftTeam.id) == 0) {
-                        game.rightTeam = prevRightGame.rightTeam;
-                    } else {
-                        game.rightTeam = prevRightGame.leftTeam;
-                    }
-                } else if (prevRightGame.getIsBye() && prevRightGame.getIsLoserBracket() == false
-                        || prevRightGame.getIsBothBye() && prevRightGame.getIsLoserBracket() == true) {
-                    if (prevRightGame.leftTeam != null && prevRightGame.leftTeam.isBye) {
-                        game.rightTeam = prevRightGame.leftTeam;
-                    } else if (prevRightGame.rightTeam != null && prevRightGame.rightTeam.isBye) {
-                        game.rightTeam = prevRightGame.rightTeam;
-                    }
-                }
-            }
-        }
     }
 
     ///
@@ -498,7 +408,7 @@ public class Scheduler {
             elimination.prevLeftGame = prevHome;
             elimination.prevRightGame = prevAway;
             game.elimination = elimination;
-            demotePreviousLosers(game, null);
+            parseTree(game, null);
             survivors.add(game);
             i+=2;
         }
@@ -537,7 +447,7 @@ public class Scheduler {
             elimination.prevLeftGame = newLoser;
             elimination.prevRightGame = survivor;
             game.elimination = elimination;
-            demotePreviousLosers(game, null);
+            parseTree(game, null);
             survivors.add(game);
         }
 
@@ -555,4 +465,52 @@ public class Scheduler {
 
         return returnBrackets.toArray(new Game[returnBrackets.size()]);
     }
+
+    ///
+    /// Inspects the previous left and right game and promotes their respective winners
+    //  as left and right teams on the current game and resets the winner if needed.
+    ///
+    public static void parseTree(Game current, Group group) {
+        if (current.elimination != null) {
+            Elimination e = current.elimination;
+            Game prevLeftGame = null;
+            Game prevRightGame = null;
+            if (current.isValid() && group != null) {
+                prevLeftGame = group.games.where().equalTo("index", e.leftGameIndex).findFirst();
+                prevRightGame = group.games.where().equalTo("index", e.rightGameIndex).findFirst();
+            } else {
+                prevLeftGame = e.prevLeftGame;
+                prevRightGame = e.prevRightGame;
+            }
+            if (prevLeftGame != null) {
+                if (current.getIsLoserBracket() == false && prevLeftGame.getIsLoserBracket() == false // winner level
+                        || current.getIsLoserBracket() == true && prevLeftGame.getIsLoserBracket() == true // loser level
+                        || current.getIsLoserBracket() == false && prevLeftGame.getIsLoserBracket() == true && current.index == group.games.size() // re-join winner level
+                        ) {
+                    // look for winner
+                    current.leftTeam = prevLeftGame.winner;
+                } else {
+                    current.leftTeam = prevLeftGame.getLoser();
+                }
+            }
+            if (prevRightGame != null) {
+                if (current.getIsLoserBracket() == false && prevRightGame.getIsLoserBracket() == false
+                        || current.getIsLoserBracket() == true && prevRightGame.getIsLoserBracket() == true
+                        || current.getIsLoserBracket() == false && prevRightGame.getIsLoserBracket() == true && current.index == group.games.size()
+                        ) {
+                    // look for winner
+                    current.rightTeam = prevRightGame.winner;
+                } else {
+                    // look for loser
+                    current.rightTeam = prevRightGame.getLoser();
+                }
+            }
+            // reset winner since participants changed
+            current.winner = null;
+
+            // promote team if bye
+            current.promoteTeamOnBye();
+        }
+    }
+
 }

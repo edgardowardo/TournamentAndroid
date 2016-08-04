@@ -47,6 +47,17 @@ public class Game extends RealmObject {
         this.elimination = elimination;
     }
 
+    public Team getLoser() {
+        if (winner != null) {
+            if (leftTeam != null && leftTeam.id.compareTo(winner.id) == 0) {
+                return rightTeam;
+            } else if (rightTeam != null && rightTeam.id.compareTo(winner.id) == 0) {
+                return leftTeam;
+            }
+        }
+        return null;
+    }
+
     public boolean getIsBothBye() {
         return  (leftTeam != null && leftTeam.isBye && rightTeam != null && rightTeam.isBye);
     }
