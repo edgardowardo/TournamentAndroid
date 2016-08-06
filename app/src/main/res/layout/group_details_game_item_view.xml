@@ -5,6 +5,18 @@
     android:layout_height="wrap_content"
     >
 
+    <EditText
+        android:id="@+id/left_score"
+        android:layout_weight="0"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:gravity="left"
+        android:inputType="numberSigned"
+        android:theme="@style/editTextTheme"
+        android:hint="0"
+        android:visibility="gone"
+        />
+
     <Button
         android:id="@+id/left_team"
         android:layout_weight=".45"
@@ -31,5 +43,17 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:text="Team 2" />
+
+    <EditText
+        android:id="@+id/right_score"
+        android:layout_weight="0"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:inputType="numberSigned"
+        android:theme="@style/editTextTheme"
+        android:hint="0"
+        android:visibility="gone"
+        />
 
 </LinearLayout>

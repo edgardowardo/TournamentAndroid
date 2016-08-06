@@ -61,10 +61,45 @@ public class GameViewModel extends BaseViewModel {
         realm.commitTransaction();
     }
 
-    public void setDrawn() {
+    public void setLeftScore(String scoreText) {
+        int score = 0;
+        try {
+            score = Integer.parseInt(scoreText);
+        } catch (NumberFormatException e) {
+            score = 0;
+        }
+        realm.beginTransaction();
+        _game.leftScore = score;
+        realm.commitTransaction();
     }
 
+    public void setRightScore(String scoreText) {
+        int score = 0;
+        try {
+            score = Integer.parseInt(scoreText);
+        } catch (NumberFormatException e) {
+            score = 0;
+        }
+        realm.beginTransaction();
+        _game.rightScore = score;
+        realm.commitTransaction();
+    }
+
+//    public void setDrawn() {
+//        realm.beginTransaction();
+//        _game.isDraw = true;
+//        realm.commitTransaction();
+//    }
+
     // Text values
+
+    public String getLeftScoreText() {
+        return String.format("%1$s", _game.leftScore);
+    }
+
+    public String getRightScoreText() {
+        return String.format("%1$s", _game.rightScore);
+    }
 
     public String getLeftButtonText() {
         String leftText = "";

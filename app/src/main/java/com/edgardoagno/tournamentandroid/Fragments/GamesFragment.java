@@ -9,7 +9,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -21,6 +23,7 @@ import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GamesViewModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnEditorAction;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmChangeListener;
@@ -80,9 +83,12 @@ public class GamesFragment extends Fragment {
         public class ViewHolder extends RealmViewHolder {
 
             public GameViewModel gameViewModel;
+            @Bind(R.id.left_score) EditText leftScore;
             @Bind(R.id.left_team) Button leftButton;
             @Bind(R.id.right_team) Button rightButton;
+            @Bind(R.id.right_score) EditText rightScore;
             @Bind(R.id.index_text_view) TextView indexTextView;
+
             public ViewHolder(LinearLayout container, GameViewModel gameViewModelIn) {
                 super(container);
                 gameViewModel = gameViewModelIn;
@@ -97,6 +103,27 @@ public class GamesFragment extends Fragment {
             @OnClick(R.id.right_team)
             public void onClickRightTeam() {
                 gameViewModel.setRightWinner();
+            }
+
+
+            @OnEditorAction(R.id.left_score)
+            public boolean onLeftScoreChanged(int actionId) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId ==  EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_PREVIOUS) {
+                    String score = leftScore.getText().toString();
+                    gameViewModel.setLeftScore(score);
+                    return  true;
+                }
+                return false;
+            }
+
+            @OnEditorAction(R.id.right_score)
+            public boolean onRightScoreChanged(int actionId) {
+                if (actionId == EditorInfo.IME_ACTION_DONE || actionId ==  EditorInfo.IME_ACTION_NEXT || actionId == EditorInfo.IME_ACTION_PREVIOUS) {
+                    String score = rightScore.getText().toString();
+                    gameViewModel.setRightScore(score);
+                    return true;
+                }
+                return false;
             }
         }
 
@@ -118,20 +145,27 @@ public class GamesFragment extends Fragment {
             gameViewModel.setGame(item);
 
             // Text values
+            viewHolder.leftScore.setText(gameViewModel.getLeftScoreText());
             viewHolder.leftButton.setText(gameViewModel.getLeftButtonText());
             viewHolder.indexTextView.setText(gameViewModel.getIndex());
-            viewHolder.indexTextView.setTextColor(Color.parseColor(gameViewModel.getIndexTextColor()));
             viewHolder.rightButton.setText(gameViewModel.getRightButtonText());
+            viewHolder.rightScore.setText(gameViewModel.getRightScoreText());
 
             // Set colors
             viewHolder.leftButton.getBackground().setColorFilter(Color.parseColor(gameViewModel.getLeftButtonColor()), PorterDuff.Mode.MULTIPLY);
             viewHolder.leftButton.setTextColor(Color.parseColor(gameViewModel.getLeftButtonTextColor()));
+            viewHolder.indexTextView.setTextColor(Color.parseColor(gameViewModel.getIndexTextColor()));
             viewHolder.rightButton.getBackground().setColorFilter(Color.parseColor(gameViewModel.getRightButtonColor()), PorterDuff.Mode.MULTIPLY);
             viewHolder.rightButton.setTextColor(Color.parseColor(gameViewModel.getRightButtonTextColor()));
 
             // Enabled
             viewHolder.leftButton.setEnabled(gameViewModel.isLeftButtonEnabled());
             viewHolder.rightButton.setEnabled(gameViewModel.isRightButtonEnabled());
+
+            // Visibility
+            boolean isLandscape = getContext().getResources().getBoolean(R.bool.is_landscape);
+            viewHolder.leftScore.setVisibility( (isLandscape) ? View.VISIBLE : View.GONE);
+            viewHolder.rightScore.setVisibility( (isLandscape) ? View.VISIBLE : View.GONE);
         }
     }
 }
