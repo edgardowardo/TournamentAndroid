@@ -13,10 +13,10 @@ public class Game extends RealmObject {
     public String id = UUID.randomUUID().toString();
     public int round = 0;
     public int index = 0;
-    public Team winner;
+    private Team winner;
     public Team leftTeam;
     public Team rightTeam;
-    public boolean isDraw = false;
+    private boolean isDraw = false;
     public int leftScore = 0;
     public int rightScore = 0;
     public String note = "";
@@ -47,6 +47,24 @@ public class Game extends RealmObject {
         this.elimination = elimination;
     }
 
+    public Team getWinner() {
+        return winner;
+    }
+
+    public void setWinner(Team winner1) {
+        winner = winner1;
+        isDraw = false;
+    }
+
+    public boolean getIsDraw() {
+        return isDraw;
+    }
+
+    public void setIsDraw(boolean isDraw1) {
+        isDraw = isDraw1;
+        winner = null;
+    }
+
     public Team getLoser() {
         if (winner != null) {
             if (leftTeam != null && leftTeam.id.compareTo(winner.id) == 0) {
@@ -69,9 +87,9 @@ public class Game extends RealmObject {
     public void promoteTeamOnBye() {
         if (getIsBye()) {
             if (leftTeam != null && leftTeam.isBye) {
-                winner = rightTeam;
+                setWinner(rightTeam);
             } else {
-                winner = leftTeam;
+                setWinner(leftTeam);
             }
         }
     }

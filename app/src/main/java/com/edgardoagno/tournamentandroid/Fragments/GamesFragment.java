@@ -24,6 +24,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnEditorAction;
+import butterknife.OnLongClick;
 import co.moonmonkeylabs.realmrecyclerview.RealmRecyclerView;
 import io.realm.RealmBasedRecyclerViewAdapter;
 import io.realm.RealmChangeListener;
@@ -105,6 +106,17 @@ public class GamesFragment extends Fragment {
                 gameViewModel.setRightWinner();
             }
 
+            @OnLongClick(R.id.left_team)
+            public boolean onLongClickLeftTeam() {
+                gameViewModel.setDrawn();
+                return true;
+            }
+
+            @OnLongClick(R.id.right_team)
+            public boolean onLongClickRightTeam() {
+                gameViewModel.setDrawn();
+                return true;
+            }
 
             @OnEditorAction(R.id.left_score)
             public boolean onLeftScoreChanged(int actionId) {

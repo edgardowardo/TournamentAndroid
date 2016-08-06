@@ -45,7 +45,7 @@ public class GameViewModel extends BaseViewModel {
     public void setLeftWinner() {
         realm.beginTransaction();
         if (_game.leftTeam != null && _game.rightTeam != null) { // both must exist to set a winner
-            _game.winner = _game.leftTeam;
+            _game.setWinner(_game.leftTeam);;
             parseTree(_game);
         }
         realm.commitTransaction();
@@ -55,7 +55,7 @@ public class GameViewModel extends BaseViewModel {
     public void setRightWinner() {
         realm.beginTransaction();
         if (_game.rightTeam != null && _game.leftTeam != null) {
-            _game.winner = _game.rightTeam;
+            _game.setWinner(_game.rightTeam);
             parseTree(_game);
         }
         realm.commitTransaction();
@@ -85,11 +85,13 @@ public class GameViewModel extends BaseViewModel {
         realm.commitTransaction();
     }
 
-//    public void setDrawn() {
-//        realm.beginTransaction();
-//        _game.isDraw = true;
-//        realm.commitTransaction();
-//    }
+    public void setDrawn() {
+        if (_game.getIsDraw() == false) {
+            realm.beginTransaction();
+            _game.setIsDraw(true);
+            realm.commitTransaction();
+        }
+    }
 
     // Text values
 
@@ -136,8 +138,8 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public String getLeftButtonTextColor() {
-        if (_game.isDraw
-                || _game.winner != null && _game.leftTeam != null && _game.winner.id.equals(_game.leftTeam.id)
+        if (_game.getIsDraw()
+                || _game.getWinner() != null && _game.leftTeam != null && _game.getWinner().id.equals(_game.leftTeam.id)
                 || _game.leftTeam != null && _game.leftTeam.isBye) {
             return _whiteColor;
         }
@@ -145,8 +147,8 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public String getRightButtonTextColor() {
-        if (_game.isDraw
-                || _game.winner != null && _game.rightTeam != null && _game.winner.id.equals(_game.rightTeam.id)
+        if (_game.getIsDraw()
+                || _game.getWinner() != null && _game.rightTeam != null && _game.getWinner().id.equals(_game.rightTeam.id)
                 || _game.rightTeam != null && _game.rightTeam.isBye) {
             return _whiteColor;
         }
@@ -154,9 +156,9 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public String getLeftButtonColor() {
-        if (_game.isDraw) {
+        if (_game.getIsDraw()) {
             return _drawnColor;
-        } else if (_game.winner != null && _game.leftTeam != null && _game.winner.id.equals(_game.leftTeam.id)) {
+        } else if (_game.getWinner() != null && _game.leftTeam != null && _game.getWinner().id.equals(_game.leftTeam.id)) {
             if (_game.elimination != null && _game.index == _group.games.size()) {
                 return _primaryColor;
             } else {
@@ -167,9 +169,9 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public String getRightButtonColor() {
-        if (_game.isDraw) {
+        if (_game.getIsDraw()) {
             return _drawnColor;
-        } else if (_game.winner != null && _game.rightTeam != null && _game.winner.id.equals(_game.rightTeam.id)) {
+        } else if (_game.getWinner() != null && _game.rightTeam != null && _game.getWinner().id.equals(_game.rightTeam.id)) {
             if (_game.elimination != null && _game.index == _group.games.size()) {
                 return _primaryColor;
             } else {

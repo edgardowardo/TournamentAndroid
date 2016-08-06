@@ -124,7 +124,7 @@ public class GroupSettingsViewModel extends BaseViewModel {
         }
 
         for (Game g: games) {
-            Game game = new Game(g.round, g.index, g.winner, g.leftTeam, g.rightTeam, null, null);
+            Game game = new Game(g.round, g.index, g.getWinner(), g.leftTeam, g.rightTeam, null, null);
             realm.copyToRealmOrUpdate(game);
 
             if (g.doublesInfo != null) {

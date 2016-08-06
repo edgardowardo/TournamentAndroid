@@ -488,7 +488,7 @@ public class Scheduler {
                         || current.getIsLoserBracket() == false && prevLeftGame.getIsLoserBracket() == true && current.index == group.games.size() // re-join winner level
                         ) {
                     // look for winner
-                    current.leftTeam = prevLeftGame.winner;
+                    current.leftTeam = prevLeftGame.getWinner();
                 } else {
                     current.leftTeam = prevLeftGame.getLoser();
                 }
@@ -499,14 +499,14 @@ public class Scheduler {
                         || current.getIsLoserBracket() == false && prevRightGame.getIsLoserBracket() == true && current.index == group.games.size()
                         ) {
                     // look for winner
-                    current.rightTeam = prevRightGame.winner;
+                    current.rightTeam = prevRightGame.getWinner();
                 } else {
                     // look for loser
                     current.rightTeam = prevRightGame.getLoser();
                 }
             }
             // reset winner since participants changed
-            current.winner = null;
+            current.setWinner(null);;
 
             // promote team if bye
             current.promoteTeamOnBye();
