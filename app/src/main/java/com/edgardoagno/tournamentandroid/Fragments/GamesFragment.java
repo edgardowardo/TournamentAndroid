@@ -17,6 +17,7 @@ import android.widget.TextView;
 
 import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.R;
+import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GameFooterViewModel;
 import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GameViewModel;
 import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GamesViewModel;
 
@@ -81,7 +82,16 @@ public class GamesFragment extends Fragment {
 
     public class GamesRealmAdapter extends RealmBasedRecyclerViewAdapter<Game, GamesRealmAdapter.ViewHolder> {
 
+        private static final int TYPE_ITEM = 0;
+        private static final int TYPE_FOOTER = 1;
+
         public class ViewHolder extends RealmViewHolder {
+            public ViewHolder(LinearLayout container) {
+                super(container);
+            }
+        }
+
+        public class ItemViewHolder extends ViewHolder {
 
             public GameViewModel gameViewModel;
             @Bind(R.id.left_score) EditText leftScore;
@@ -90,7 +100,7 @@ public class GamesFragment extends Fragment {
             @Bind(R.id.right_score) EditText rightScore;
             @Bind(R.id.index_text_view) TextView indexTextView;
 
-            public ViewHolder(LinearLayout container, GameViewModel gameViewModelIn) {
+            public ItemViewHolder(LinearLayout container, GameViewModel gameViewModelIn) {
                 super(container);
                 gameViewModel = gameViewModelIn;
                 ButterKnife.bind(this, container);
@@ -139,45 +149,87 @@ public class GamesFragment extends Fragment {
             }
         }
 
+        public class FooterViewHolder extends ViewHolder {
+            public GameFooterViewModel footerViewModel;
+            @Bind(R.id.game_footer_text_view) TextView footerTextView;
+            public FooterViewHolder(LinearLayout container, GameFooterViewModel model) {
+                super(container);
+                footerViewModel = model;
+                ButterKnife.bind(this, container);
+            }
+        }
+
         public GamesRealmAdapter(Context context, RealmResults<Game> realmResults, boolean automaticUpdate, boolean animateResults) {
             super(context, realmResults, automaticUpdate, animateResults);
         }
 
         @Override
         public ViewHolder onCreateRealmViewHolder(ViewGroup viewGroup, int viewType) {
-            View v = inflater.inflate(R.layout.group_details_game_item_view, viewGroup, false);
-            GameViewModel gameViewModel = new GameViewModel(viewModel.group);
-            return new ViewHolder((LinearLayout) v, gameViewModel);
+            if (viewType == TYPE_ITEM) {
+                View v = inflater.inflate(R.layout.group_details_game_item_view, viewGroup, false);
+                GameViewModel gameViewModel = new GameViewModel(viewModel.group);
+                return new ItemViewHolder((LinearLayout) v, gameViewModel);
+            } else if (viewType == TYPE_FOOTER) {
+                View v = inflater.inflate(R.layout.group_details_game_footer_view, viewGroup, false);
+                Boolean isLosersRound = getArguments().getBoolean("IS_LOSERS_ROUND", false);
+                GameFooterViewModel footerViewModel = new GameFooterViewModel(isLosersRound);
+                return new FooterViewHolder((LinearLayout)v, footerViewModel);
+            }
+            throw new RuntimeException("there is no type that matches the type " + viewType + " + make sure your using types correctly");
         }
 
         @Override
         public void onBindRealmViewHolder(final ViewHolder viewHolder, int position) {
-            final Game item = realmResults.get(position);
-            GameViewModel gameViewModel = viewHolder.gameViewModel;
-            gameViewModel.setGame(item);
+            if (viewHolder instanceof ItemViewHolder) {
+                final ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
 
-            // Text values
-            viewHolder.leftScore.setText(gameViewModel.getLeftScoreText());
-            viewHolder.leftButton.setText(gameViewModel.getLeftButtonText());
-            viewHolder.indexTextView.setText(gameViewModel.getIndex());
-            viewHolder.rightButton.setText(gameViewModel.getRightButtonText());
-            viewHolder.rightScore.setText(gameViewModel.getRightScoreText());
+                final Game item = realmResults.get(position);
+                GameViewModel gameViewModel = itemViewHolder.gameViewModel;
+                gameViewModel.setGame(item);
 
-            // Set colors
-            viewHolder.leftButton.getBackground().setColorFilter(Color.parseColor(gameViewModel.getLeftButtonColor()), PorterDuff.Mode.MULTIPLY);
-            viewHolder.leftButton.setTextColor(Color.parseColor(gameViewModel.getLeftButtonTextColor()));
-            viewHolder.indexTextView.setTextColor(Color.parseColor(gameViewModel.getIndexTextColor()));
-            viewHolder.rightButton.getBackground().setColorFilter(Color.parseColor(gameViewModel.getRightButtonColor()), PorterDuff.Mode.MULTIPLY);
-            viewHolder.rightButton.setTextColor(Color.parseColor(gameViewModel.getRightButtonTextColor()));
+                // Text values
+                itemViewHolder.leftScore.setText(gameViewModel.getLeftScoreText());
+                itemViewHolder.leftButton.setText(gameViewModel.getLeftButtonText());
+                itemViewHolder.indexTextView.setText(gameViewModel.getIndex());
+                itemViewHolder.rightButton.setText(gameViewModel.getRightButtonText());
+                itemViewHolder.rightScore.setText(gameViewModel.getRightScoreText());
 
-            // Enabled
-            viewHolder.leftButton.setEnabled(gameViewModel.isLeftButtonEnabled());
-            viewHolder.rightButton.setEnabled(gameViewModel.isRightButtonEnabled());
+                // Set colors
+                itemViewHolder.leftButton.getBackground().setColorFilter(Color.parseColor(gameViewModel.getLeftButtonColor()), PorterDuff.Mode.MULTIPLY);
+                itemViewHolder.leftButton.setTextColor(Color.parseColor(gameViewModel.getLeftButtonTextColor()));
+                itemViewHolder.indexTextView.setTextColor(Color.parseColor(gameViewModel.getIndexTextColor()));
+                itemViewHolder.rightButton.getBackground().setColorFilter(Color.parseColor(gameViewModel.getRightButtonColor()), PorterDuff.Mode.MULTIPLY);
+                itemViewHolder.rightButton.setTextColor(Color.parseColor(gameViewModel.getRightButtonTextColor()));
 
-            // Visibility
-            boolean isLandscape = getContext().getResources().getBoolean(R.bool.is_landscape);
-            viewHolder.leftScore.setVisibility( (isLandscape) ? View.VISIBLE : View.GONE);
-            viewHolder.rightScore.setVisibility( (isLandscape) ? View.VISIBLE : View.GONE);
+                // Enabled
+                itemViewHolder.leftButton.setEnabled(gameViewModel.isLeftButtonEnabled());
+                itemViewHolder.rightButton.setEnabled(gameViewModel.isRightButtonEnabled());
+
+                // Visibility
+                boolean isLandscape = getContext().getResources().getBoolean(R.bool.is_landscape);
+                itemViewHolder.leftScore.setVisibility( (isLandscape) ? View.VISIBLE : View.GONE);
+                itemViewHolder.rightScore.setVisibility( (isLandscape) ? View.VISIBLE : View.GONE);
+            } else if (viewHolder instanceof FooterViewHolder) {
+                final FooterViewHolder holder = (FooterViewHolder) viewHolder;
+                holder.footerTextView.setTextColor(Color.parseColor(holder.footerViewModel.getFooterTextColor()));
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return super.getItemCount() + 1;
+        }
+
+        @Override
+        public int getItemRealmViewType(int position) {
+            if (isPositionHFooter(position)) {
+                return TYPE_FOOTER;
+            }
+            return TYPE_ITEM;
+        }
+
+        private boolean isPositionHFooter(int position) {
+            return realmResults.size() == position;
         }
     }
 }
