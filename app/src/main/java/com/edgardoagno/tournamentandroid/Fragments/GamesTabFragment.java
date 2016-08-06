@@ -56,7 +56,7 @@ public class GamesTabFragment extends Fragment {
 
         viewPager.setAdapter(new PagerAdapter(getFragmentManager(), tabLayout.getTabCount()));
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        
+
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             
             @Override
@@ -72,6 +72,9 @@ public class GamesTabFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        TabLayout.Tab tab = tabLayout.getTabAt(viewModel.getIndexOfIncompletedRound());
+        tab.select();
 
         return view;
     }

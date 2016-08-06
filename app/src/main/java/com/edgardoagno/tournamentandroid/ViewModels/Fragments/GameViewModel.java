@@ -13,6 +13,7 @@ import io.realm.RealmResults;
  */
 public class GameViewModel extends BaseViewModel {
 
+    private String _primaryColor = "#CE6F2D";
     private String _textColor = "#333333";
     private String _whiteColor = "#FFFFFF";
     private String _winningColor = "#4FB05D";
@@ -95,19 +96,23 @@ public class GameViewModel extends BaseViewModel {
 
     // Colors
 
+    public String getIndexTextColor() {
+        return _neutralColor;
+    }
+
     public String getLeftButtonTextColor() {
-        if (_game.isDraw) {
-            return _whiteColor;
-        } else if (_game.winner != null && _game.leftTeam != null && _game.winner.id.equals(_game.leftTeam.id)) {
+        if (_game.isDraw
+                || _game.winner != null && _game.leftTeam != null && _game.winner.id.equals(_game.leftTeam.id)
+                || _game.leftTeam != null && _game.leftTeam.isBye) {
             return _whiteColor;
         }
         return _textColor;
     }
 
     public String getRightButtonTextColor() {
-        if (_game.isDraw) {
-            return _whiteColor;
-        } else if (_game.winner != null && _game.rightTeam != null && _game.winner.id.equals(_game.rightTeam.id)) {
+        if (_game.isDraw
+                || _game.winner != null && _game.rightTeam != null && _game.winner.id.equals(_game.rightTeam.id)
+                || _game.rightTeam != null && _game.rightTeam.isBye) {
             return _whiteColor;
         }
         return _textColor;
@@ -117,7 +122,11 @@ public class GameViewModel extends BaseViewModel {
         if (_game.isDraw) {
             return _drawnColor;
         } else if (_game.winner != null && _game.leftTeam != null && _game.winner.id.equals(_game.leftTeam.id)) {
-            return _winningColor;
+            if (_game.elimination != null && _game.index == _group.games.size()) {
+                return _primaryColor;
+            } else {
+                return _winningColor;
+            }
         }
         return _neutralColor;
     }
@@ -126,7 +135,11 @@ public class GameViewModel extends BaseViewModel {
         if (_game.isDraw) {
             return _drawnColor;
         } else if (_game.winner != null && _game.rightTeam != null && _game.winner.id.equals(_game.rightTeam.id)) {
-            return _winningColor;
+            if (_game.elimination != null && _game.index == _group.games.size()) {
+                return _primaryColor;
+            } else {
+                return _winningColor;
+            }
         }
         return _neutralColor;
     }

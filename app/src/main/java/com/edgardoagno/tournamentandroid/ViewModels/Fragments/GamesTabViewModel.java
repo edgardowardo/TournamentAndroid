@@ -15,17 +15,21 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import io.realm.RealmResults;
+
 /**
  * Created by edgardoagno on 30/07/16.
  */
 public class GamesTabViewModel extends BaseViewModel {
 
     private Group _group;
+    private boolean _isLosersBracket;
     public String[] tabNames;
 
     // Constructor
 
     public GamesTabViewModel(Long groupId, Boolean isLosersBracket) {
+        _isLosersBracket = isLosersBracket;
         _group = realm.where(Group.class).equalTo("id", groupId).findFirst();
 
         if ( _group.getScheduleType() == ScheduleType.DoubleElimination) {
@@ -71,5 +75,26 @@ public class GamesTabViewModel extends BaseViewModel {
         String title = tabNames[index];
         String trimmed = title.replace("ROUND ","");
         return Integer.parseInt(trimmed);
+    }
+
+    public int getIndexOfIncompletedRound() {
+        for (String roundText: tabNames) {
+            String trimmed = roundText.replace("ROUND ","");
+            int round = Integer.parseInt(trimmed);
+            RealmResults<Game> games = null;
+            if ( _group.getScheduleType() == ScheduleType.DoubleElimination) {
+                games = _group.games.where().equalTo("round", round).equalTo("elimination.isLoserBracket", _isLosersBracket).findAll();
+            } else {
+                games = _group.games.where().equalTo("round", round).findAll();
+            }
+            if (games != null) {
+                int completedCount = games.where().isNotNull("winner").or().equalTo("isDraw", true).findAll().size();
+                if (completedCount != games.size()) {
+                    int incompleteRound = Arrays.asList(tabNames).indexOf(roundText);
+                    return incompleteRound;
+                }
+            }
+        }
+        return tabNames.length - 1;
     }
 }

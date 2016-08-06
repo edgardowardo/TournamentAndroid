@@ -120,6 +120,7 @@ public class GamesFragment extends Fragment {
             // Text values
             viewHolder.leftButton.setText(gameViewModel.getLeftButtonText());
             viewHolder.indexTextView.setText(gameViewModel.getIndex());
+            viewHolder.indexTextView.setTextColor(Color.parseColor(gameViewModel.getIndexTextColor()));
             viewHolder.rightButton.setText(gameViewModel.getRightButtonText());
 
             // Set colors
