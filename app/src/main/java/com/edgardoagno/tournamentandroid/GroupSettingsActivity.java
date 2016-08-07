@@ -1,5 +1,7 @@
 package com.edgardoagno.tournamentandroid;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,10 +42,11 @@ public class GroupSettingsActivity extends AppCompatActivity implements OnStartD
         setContentView(R.layout.group_settings_layout);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Add Group");
 
-        _viewModel = new GroupSettingsViewModel();
+        Long groupId  = getIntent().getLongExtra("GROUP_ID", 0);
+        _viewModel = new GroupSettingsViewModel(groupId);
         _viewModel.createDefaultGroup();
+        setTitle(_viewModel.getTitle());
 
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         layoutManager = new LinearLayoutManager(this);
@@ -96,20 +99,51 @@ public class GroupSettingsActivity extends AppCompatActivity implements OnStartD
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_group_settings, menu);
         _menuSaveItem = menu.getItem(0);
-        _menuSaveItem.setEnabled(false);
-        _menuSaveItem.getIcon().setAlpha(130);
+        boolean isEnabled = _viewModel.isSaveEnabled();
+        _menuSaveItem.setEnabled(isEnabled);
+        _menuSaveItem.getIcon().setAlpha((isEnabled) ? 255 : 130);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
-        if (id == R.id.action_attach_default_group) {
-            Long tournament_id = getIntent().getLongExtra("TOURNAMENT_ID", 0);
-            _viewModel.attachDefaultGroup(tournament_id);
-            finish();
+        if (id == R.id.action_save_group) {
+            Long groupId  = getIntent().getLongExtra("GROUP_ID", 0);
+            if (groupId > 0) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("Saving will clear game progress. Continue?");
+                builder.setCancelable(true);
+                builder.setPositiveButton(
+                        "Continue",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                save();
+                                dialog.cancel();
+                            }
+                        });
+
+                builder.setNegativeButton(
+                        "Cancel",
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                dialog.cancel();
+                            }
+                        });
+
+                AlertDialog alert = builder.create();
+                alert.show();
+            } else {
+                save();
+            }
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void save() {
+        Long tournamentId = getIntent().getLongExtra("TOURNAMENT_ID", 0);
+        _viewModel.saveGroup(tournamentId);
+        finish();
     }
 }

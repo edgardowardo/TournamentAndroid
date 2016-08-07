@@ -1,8 +1,11 @@
 package com.edgardoagno.tournamentandroid;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 
@@ -15,6 +18,7 @@ import com.edgardoagno.tournamentandroid.ViewModels.GroupDetailsViewModel;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.realm.RealmChangeListener;
 
 public class GroupDetailsActivity extends AppCompatActivity {
 
@@ -36,12 +40,12 @@ public class GroupDetailsActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        ButterKnife.bind(this);
+
         _id = getIntent().getLongExtra("GROUP_ID", 0);
         viewModel = new GroupDetailsViewModel(_id);
-        setTitle(viewModel.getTitle());
 
-        ButterKnife.bind(this);
-        configureBottomRadioGroup(viewModel._group.getScheduleType());
+        refresh();
 
         if (savedInstanceState == null) {
             GamesTabFragment fragment = new GamesTabFragment();
@@ -49,6 +53,38 @@ public class GroupDetailsActivity extends AppCompatActivity {
             getSupportFragmentManager().beginTransaction()
                     .add(R.id.content, fragment)
                     .commit();
+        }
+    }
+
+    private void refresh() {
+        setTitle(viewModel.getTitle());
+        configureBottomRadioGroup(viewModel._group.getScheduleType());
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_group_details, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+        if (id == R.id.action_edit) {
+            Intent intent = new Intent(GroupDetailsActivity.this, GroupSettingsActivity.class);
+            intent.putExtra("GROUP_ID", _id);
+            startActivityForResult(intent, 0xe110);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0xe110) {
+            refresh();
+            onClickGames();
         }
     }
 
@@ -120,7 +156,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
         fragment.setArguments(createArguments(false));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     @OnClick(R.id.radio_table)

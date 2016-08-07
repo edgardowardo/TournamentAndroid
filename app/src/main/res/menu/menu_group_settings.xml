@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".GroupSettingsActivity">
 
-    <item android:id="@+id/action_attach_default_group"
+    <item android:id="@+id/action_save_group"
         android:icon="@android:drawable/ic_menu_save"
         android:title="Save"
         android:orderInCategory="200"

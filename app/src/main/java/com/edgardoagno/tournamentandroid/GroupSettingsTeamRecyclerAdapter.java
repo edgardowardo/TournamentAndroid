@@ -129,6 +129,7 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
 
     public class HeaderViewHolder extends ViewHolder implements  HorizontalPicker.OnItemSelected {
 
+        boolean isUserChanging = true;
         @Bind(R.id.group_edit_text) EditText _groupNameEditText;
         @Bind(R.id.radio_round_robin) RadioButton _radioRoundRobin;
         @Bind(R.id.radio_american) RadioButton _radioAmerican;
@@ -151,8 +152,10 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
 
         @OnTextChanged(R.id.group_edit_text)
         public void onGroupNameChanged() {
-            String name = _groupNameEditText.getText().toString();
-            viewModel.setGroupName(name);
+            if (isUserChanging) {
+                String name = _groupNameEditText.getText().toString();
+                viewModel.setGroupName(name);
+            }
         }
 
         @OnClick(R.id.shuffle_button)
@@ -192,6 +195,27 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
                 setScheduleType(ScheduleType.SingleElimination);
             } else if (_radioDouble.isChecked()) {
                 setScheduleType(ScheduleType.DoubleElimination);
+            }
+        }
+
+        public void selectHandicap(boolean isHandicap) {
+            _handicapToggleButton.setChecked(isHandicap);
+        }
+
+        public void checkRadioScheduleType(ScheduleType scheduleType) {
+            switch (scheduleType) {
+                case RoundRobin:
+                    _radioRoundRobin.setChecked(true);
+                    break;
+                case American:
+                    _radioAmerican.setChecked(true);
+                    break;
+                case SingleElimination:
+                    _radioSingle.setChecked(true);
+                    break;
+                case DoubleElimination:
+                    _radioDouble.setChecked(true);
+                    break;
             }
         }
 
@@ -257,8 +281,14 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
         } else if (viewHolder instanceof HeaderViewHolder) {
             //cast holder to HeaderViewHolder and set data for header.
             HeaderViewHolder holder = (HeaderViewHolder)viewHolder;
-            holder._groupNameEditText.requestFocus();
+            holder.isUserChanging = false;
 
+            if (viewModel.isNameFocused()) {
+                holder._groupNameEditText.requestFocus();
+            }
+            holder._groupNameEditText.setText(viewModel._group.name);
+            holder.selectHandicap(viewModel._group.isHandicap);
+            holder.checkRadioScheduleType(viewModel._group.getScheduleType());
             holder._pickerTeamCount.setOnItemSelectedListener(holder);
             CharSequence[] s = viewModel.getAllowedTeamCounts();
             holder._pickerTeamCount.setValues(s);
@@ -267,6 +297,8 @@ public class GroupSettingsTeamRecyclerAdapter extends RecyclerView.Adapter<Group
             String teamCount = Integer.toString(viewModel._group.teamCount);
             int index = Arrays.asList(allowedTeamCounts).indexOf(teamCount);
             holder._pickerTeamCount.setSelectedItem(index);
+
+            holder.isUserChanging = true;
         }
     }
 

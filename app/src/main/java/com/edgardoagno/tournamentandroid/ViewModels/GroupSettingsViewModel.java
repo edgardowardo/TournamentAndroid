@@ -24,18 +24,32 @@ public class GroupSettingsViewModel extends BaseViewModel {
     public PublishSubject<ArrayList<Team>> _teamsEmitterSubject;
     public PublishSubject<Boolean> _isManualSortingEmitterSubject;
     public PublishSubject<Boolean> _isEditingHandicapEmitterSubject;
+    public ArrayList<Team> _teams;
+    public Group _group;
+    private Group _originalGroup;
     private boolean isManualSorting = false;
     private boolean isEditingHandicap = false;
-    public Group _group;
-    public ArrayList<Team> _teams;
 
     // Constructor
 
-    public GroupSettingsViewModel() {
+    public GroupSettingsViewModel(Long groupId) {
         _groupNameEmitterSubject = PublishSubject.create();
         _teamsEmitterSubject = PublishSubject.create();
         _isManualSortingEmitterSubject = PublishSubject.create();
         _isEditingHandicapEmitterSubject = PublishSubject.create();
+        _originalGroup = realm.where(Group.class).equalTo("id", groupId).findFirst();
+    }
+
+    public boolean isNameFocused() {
+        return (_originalGroup == null);
+    }
+
+    public String getTitle() {
+        if (_originalGroup != null) {
+            return String.format("Edit %s", _originalGroup.name);
+        } else {
+            return "Add Group";
+        }
     }
 
     public CharSequence[] getAllowedTeamCounts() {
@@ -96,10 +110,29 @@ public class GroupSettingsViewModel extends BaseViewModel {
         _groupNameEmitterSubject.onNext(groupName);
     }
 
-    public void attachDefaultGroup(long tournamentId) {
+    public void saveGroup(long tournamentId) {
+        realm.beginTransaction();
+        if (tournamentId > 0) {
+            attachTeamsAndGames(_group);
+            Tournament tournament = realm.where(Tournament.class).equalTo("id", tournamentId).findFirst();
+            tournament.groups.add(_group);
+        } else {
+            _originalGroup.teams.deleteAllFromRealm();
+            _originalGroup.games.deleteAllFromRealm();
+            _originalGroup.setScheduleType(_group.getScheduleType());
+            _originalGroup.name = _group.name;
+            _originalGroup.isHandicap = _group.isHandicap;
+            _originalGroup.teamCount = _group.teamCount;
+            attachTeamsAndGames(_originalGroup);
+        }
+        realm.commitTransaction();
+    }
+
+    private void attachTeamsAndGames(Group group) {
+
         Game[] games = {};
         Team[] teams = _teams.toArray(new Team[_teams.size()]);
-        switch (_group.getScheduleType()) {
+        switch (group.getScheduleType()) {
             case RoundRobin:
                 games = Scheduler.roundRobin(teams);
                 break;
@@ -114,13 +147,10 @@ public class GroupSettingsViewModel extends BaseViewModel {
                 break;
         }
 
-        // Realm transaction
-
-        realm.beginTransaction();
-        realm.copyToRealmOrUpdate(_group);
+        realm.copyToRealmOrUpdate(group);
         for (Team t: _teams) {
             realm.copyToRealmOrUpdate(t);
-            _group.teams.add(t);
+            group.teams.add(t);
         }
 
         for (Game g: games) {
@@ -142,23 +172,38 @@ public class GroupSettingsViewModel extends BaseViewModel {
                 game.elimination = elimination;
             }
 
-            _group.games.add(game);
+            group.games.add(game);
         }
+    }
 
-        Tournament tournament = realm.where(Tournament.class).equalTo("id", tournamentId).findFirst();
-        tournament.groups.add(_group);
-        realm.commitTransaction();
+    public boolean isSaveEnabled() {
+        return _originalGroup != null && _originalGroup.name.length() > 0;
     }
 
     public void createDefaultGroup() {
         _group = new Group();
-        _group.setDefaultProperties();
+        if (_originalGroup != null) {
+            setIsEditingHandicap(_originalGroup.isHandicap);
+            _group.name = _originalGroup.name;
+            _group.teamCount = _originalGroup.teamCount;
+            _group.setScheduleType(_originalGroup.getScheduleType());
+        } else {
+            _group.setDefaultProperties();
+        }
         _teams = new ArrayList<Team>();
         for (int i = 0; i < _group.teamCount; i++ ) {
             int seed = i + 1;
             String name = String.format("Team %1$s", seed);
             Team team = new Team(name);
             team.seed = seed;
+
+            if (_originalGroup != null) {
+                Team oldTeam = _originalGroup.teams.get(i);
+                team.handicap = oldTeam.handicap;
+                team.isHandicapped = oldTeam.isHandicapped;
+                team.name = oldTeam.name;
+                team.seed = oldTeam.seed;
+            }
             _teams.add(team);
         }
     }
