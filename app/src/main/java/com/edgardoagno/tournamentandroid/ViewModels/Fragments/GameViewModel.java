@@ -86,7 +86,7 @@ public class GameViewModel extends BaseViewModel {
     }
 
     public void setDrawn() {
-        if (_game.getIsDraw() == false) {
+        if (_game.getIsDraw() == false && _game.leftTeam != null && _game.rightTeam != null) {
             realm.beginTransaction();
             _game.setIsDraw(true);
             realm.commitTransaction();

@@ -162,6 +162,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     @OnClick(R.id.radio_table)
     public void onClickTable() {
         TeamStatsFragment fragment = new TeamStatsFragment();
+        fragment.setArguments(createArguments(false));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit();
@@ -170,6 +171,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     @OnClick(R.id.radio_chart)
     public void onClickCharts() {
         ChartsFragment fragment = new ChartsFragment();
+        fragment.setArguments(createArguments(false));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit();

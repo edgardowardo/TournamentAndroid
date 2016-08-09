@@ -56,6 +56,37 @@ public class Game extends RealmObject {
         isDraw = false;
     }
 
+    public Team getWinner2() {
+        if (winner != null && doublesInfo != null) {
+            if (winner.seed == leftTeam.seed) {
+                return doublesInfo.leftTeam;
+            } else if (winner.seed == rightTeam.seed) {
+                return doublesInfo.rightTeam;
+            }
+        }
+        return  null;
+    }
+
+    public boolean isWinner(int seed) {
+        Team winner = getWinner();
+        Team winner2 = getWinner2();
+        return winner != null && winner.seed == seed || winner2 != null && winner2.seed == seed;
+    }
+
+    public boolean isLeftParticipant(int seed) {
+        return (leftTeam != null && leftTeam.seed == seed)
+                || (doublesInfo != null && doublesInfo.leftTeam != null && doublesInfo.leftTeam.seed == seed);
+    }
+
+    public boolean isRightParticipant(int seed) {
+        return (rightTeam != null && rightTeam.seed == seed)
+                || (doublesInfo != null && doublesInfo.rightTeam != null && doublesInfo.rightTeam.seed == seed);
+    }
+
+    public boolean isParticipant(int seed) {
+        return isLeftParticipant(seed) || isRightParticipant(seed);
+    }
+
     public boolean getIsDraw() {
         return isDraw;
     }
