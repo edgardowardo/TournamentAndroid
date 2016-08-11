@@ -14,16 +14,18 @@ import com.edgardoagno.tournamentandroid.Fragments.GamesTabFragment;
 import com.edgardoagno.tournamentandroid.Fragments.TeamStatsFragment;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
 import com.edgardoagno.tournamentandroid.ViewModels.GroupDetailsViewModel;
+import com.kaopiz.kprogresshud.KProgressHUD;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import io.realm.RealmChangeListener;
 
 public class GroupDetailsActivity extends AppCompatActivity {
 
     private GroupDetailsViewModel viewModel;
     private Long _id;
+    private KProgressHUD hud;
+    private TeamStatsFragment teamStatsFragment;
 
     @Bind(R.id.radio_round_robin) RadioButton roundRobinRadioButton;
     @Bind(R.id.radio_american) RadioButton americanRadioButton;
@@ -161,10 +163,19 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.radio_table)
     public void onClickTable() {
-        TeamStatsFragment fragment = new TeamStatsFragment();
-        fragment.setArguments(createArguments(false));
+        if (hud == null) {
+            hud = KProgressHUD.create(GroupDetailsActivity.this)
+                    .setStyle(KProgressHUD.Style.ANNULAR_DETERMINATE)
+                    .setLabel("Calculating...")
+                    .setDimAmount(0.2f)
+                    .setMaxProgress(100);
+        }
+        if (teamStatsFragment == null) {
+            teamStatsFragment = new TeamStatsFragment();
+            teamStatsFragment.setArguments(createArguments(false));
+        }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content, fragment)
+                .replace(R.id.content, teamStatsFragment)
                 .commit();
     }
 
@@ -175,5 +186,24 @@ public class GroupDetailsActivity extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, fragment)
                 .commit();
+    }
+
+    public void showHud() {
+        if (hud != null) {
+            hud.setProgress(0);
+            hud.show();
+        }
+    }
+
+    public void hideHud() {
+        if (hud != null) {
+            hud.dismiss();
+        }
+    }
+
+    public void progressHud(int value) {
+        if (hud != null) {
+            hud.setProgress(value);
+        }
     }
 }

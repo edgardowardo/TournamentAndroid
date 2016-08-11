@@ -4,7 +4,6 @@ import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.TeamStats;
-import com.edgardoagno.tournamentandroid.ViewModels.BaseViewModel;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
@@ -13,29 +12,38 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import io.realm.Realm;
+import rx.subjects.PublishSubject;
+
 /**
  * Created by edgardoagno on 09/08/16.
  */
-public class BaseStatsViewModel extends BaseViewModel {
+public class BaseStatsViewModel {
 
+    private int progress = 1;
+    public PublishSubject<Integer> progressEmitterSubject;
     public ArrayList<TeamStats> teamStatsList;
-    protected Group _group;
 
     public BaseStatsViewModel() {
         super();
+        progressEmitterSubject = PublishSubject.create();
     }
 
-    public BaseStatsViewModel(Long groupId) {
-        super();
-        _group = realm.where(Group.class).equalTo("id", groupId).findFirst();
-    }
+    public void loadStatsList(Long groupId) {
 
-    public void loadStatsList() {
+        Realm realm = Realm.getDefaultInstance();
+        final Group group = realm.where(Group.class).equalTo("id", groupId).findFirst();
+        progress = 1;
+
         Function<Team, TeamStats> teamToStats =
                 new Function<Team, TeamStats>() {
                     @Override
                     public TeamStats apply(Team t) {
-                        int countPlayed = _group.games.where()
+                        int p = 100 * progress / group.teams.size();
+                        progressEmitterSubject.onNext(p);
+                        progress++;
+
+                        int countPlayed = group.games.where()
                                 .beginGroup()
                                 .equalTo("isDraw",true).or().isNotNull("winner")
                                 .endGroup()
@@ -47,7 +55,7 @@ public class BaseStatsViewModel extends BaseViewModel {
                                 .endGroup()
                                 .findAll().size();
 
-                        int countGames = _group.games.where()
+                        int countGames = group.games.where()
                                 .beginGroup()
                                 .equalTo("leftTeam.seed", t.seed)
                                 .or().equalTo("rightTeam.seed", t.seed)
@@ -59,7 +67,7 @@ public class BaseStatsViewModel extends BaseViewModel {
                         int pointsForLeft = 0, pointsForRight = 0, pointsAgainstLeft = 0, pointsAgainstRight = 0;
                         int countWins = 0, countDraws = 0, countLost = 0, pointsFor = 0, pointsAgainst = 0, pointsDifference = 0;
 
-                        for (Game g : _group.games) {
+                        for (Game g : group.games) {
                             if (g.isWinner(t.seed)) {
                                 countWins++;
                             }
@@ -89,7 +97,7 @@ public class BaseStatsViewModel extends BaseViewModel {
                     }
                 };
 
-        List<Team> teams =_group.teams;
+        List<Team> teams = group.teams;
         List<TeamStats> unIndexed = Lists.transform(teams, teamToStats);
         teamStatsList = new ArrayList<TeamStats>(unIndexed);
 
@@ -108,6 +116,8 @@ public class BaseStatsViewModel extends BaseViewModel {
             TeamStats ts = teamStatsList.get(i);
             ts.seed = i + 1;
         }
+
+        realm.close();
     }
 
 }
