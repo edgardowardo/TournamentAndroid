@@ -14,6 +14,7 @@ import com.edgardoagno.tournamentandroid.GroupDetailsActivity;
 import com.edgardoagno.tournamentandroid.R;
 import com.edgardoagno.tournamentandroid.ViewModels.Fragments.TeamStatsViewModel;
 
+import io.realm.RealmChangeListener;
 import rx.functions.Action1;
 
 /**
@@ -23,9 +24,12 @@ public class TeamStatsFragment extends Fragment {
 
     private GroupDetailsActivity activity;
     private TeamStatsViewModel viewModel;
+    private boolean reload;
+    private RealmChangeListener gamesListener;
 
     public TeamStatsFragment() {
         super();
+        reload = true;
     }
 
     @Override
@@ -42,7 +46,21 @@ public class TeamStatsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.group_details_team_stats_item_view, container, false);
         final Long id = getArguments().getLong("GROUP_ID", 0);
-        viewModel = new TeamStatsViewModel();
+
+        if (viewModel == null) {
+            viewModel = new TeamStatsViewModel(id);
+
+            if (viewModel.games != null) {
+                gamesListener = new RealmChangeListener() {
+                    @Override
+                    public void onChange(Object element) {
+                        reload = true;
+                    }
+                };
+                viewModel.games.addChangeListener(gamesListener);
+            }
+        }
+
         viewModel.progressEmitterSubject
                 .asObservable()
                 .subscribe(new Action1<Integer>() {
@@ -56,22 +74,26 @@ public class TeamStatsFragment extends Fragment {
                         });
                     }
                 });
-        activity.showHud();
-        AsyncTask<String, String, String> task = new AsyncTask<String, String, String>() {
-            @Override
-            protected String doInBackground(String... params) {
-                viewModel.loadStatsList(id);
-                return null;
-            }
-            protected void onPostExecute(String file_url) {
-                activity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        activity.hideHud();
-                    }
-                });
-            }
-        };
-        task.execute();
+
+        if (reload) {
+            activity.showHud();
+            AsyncTask<String, String, String> task = new AsyncTask<String, String, String>() {
+                @Override
+                protected String doInBackground(String... params) {
+                    viewModel.loadStatsList();
+                    return null;
+                }
+                protected void onPostExecute(String file_url) {
+                    activity.runOnUiThread(new Runnable() {
+                        public void run() {
+                            activity.hideHud();
+                        }
+                    });
+                }
+            };
+            task.execute();
+            reload = false;
+        }
         return view;
     }
 

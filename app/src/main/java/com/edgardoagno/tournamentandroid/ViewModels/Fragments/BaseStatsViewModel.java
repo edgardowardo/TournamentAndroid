@@ -4,6 +4,7 @@ import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.Models.Group;
 import com.edgardoagno.tournamentandroid.Models.Team;
 import com.edgardoagno.tournamentandroid.Models.TeamStats;
+import com.edgardoagno.tournamentandroid.ViewModels.BaseViewModel;
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
@@ -13,23 +14,31 @@ import java.util.Comparator;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmResults;
 import rx.subjects.PublishSubject;
 
 /**
  * Created by edgardoagno on 09/08/16.
  */
-public class BaseStatsViewModel {
+public class BaseStatsViewModel extends BaseViewModel {
 
+    private Long groupId;
     private int progress = 1;
     public PublishSubject<Integer> progressEmitterSubject;
     public ArrayList<TeamStats> teamStatsList;
+    public RealmResults<Game> games;
 
-    public BaseStatsViewModel() {
+    public BaseStatsViewModel(Long _groupId) {
         super();
         progressEmitterSubject = PublishSubject.create();
+        groupId = _groupId;
+        Group group =  realm.where(Group.class).equalTo("id", groupId).findFirst();
+        if (group != null) {
+            games = group.games.where().findAll();
+        }
     }
 
-    public void loadStatsList(Long groupId) {
+    public void loadStatsList() {
 
         Realm realm = Realm.getDefaultInstance();
         final Group group = realm.where(Group.class).equalTo("id", groupId).findFirst();
