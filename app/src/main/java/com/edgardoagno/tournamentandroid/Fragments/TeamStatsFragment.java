@@ -110,12 +110,7 @@ public class TeamStatsFragment extends Fragment {
                     activity.runOnUiThread(new Runnable() {
                         public void run() {
                             activity.hideHud();
-
-                            adapter = new TeamStatsRecyclerAdapter();
-                            recyclerView = (RecyclerView) view.findViewById(R.id.team_stats_recycler_view);
-                            layoutManager = new LinearLayoutManager(activity);
-                            recyclerView.setLayoutManager(layoutManager);
-                            recyclerView.setAdapter(adapter);
+                            refresh(view);
                         }
                     });
                 }
@@ -125,14 +120,18 @@ public class TeamStatsFragment extends Fragment {
         }
 
         if (viewModel.teamStatsList != null) {
+            refresh(view);
+        }
+
+        return view;
+    }
+
+    private void refresh(View view) {
             adapter = new TeamStatsRecyclerAdapter();
             recyclerView = (RecyclerView) view.findViewById(R.id.team_stats_recycler_view);
             layoutManager = new LinearLayoutManager(activity);
             recyclerView.setLayoutManager(layoutManager);
             recyclerView.setAdapter(adapter);
-        }
-
-        return view;
     }
 
     @Override
