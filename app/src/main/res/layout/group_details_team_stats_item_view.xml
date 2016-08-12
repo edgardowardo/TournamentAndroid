@@ -1,17 +1,133 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/rank_text_view"
-        android:layout_width="40dp"
-        android:layout_height="wrap_content"
-        android:padding="4dp"
-        android:textSize="32sp"
-        android:layout_weight="0.1"
-        android:text="add recycler view of team stats"
-        />
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_weight="0.2"
+            android:layout_width="21dp"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/rank_text_view"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textSize="16sp"
+                android:text="1"
+                />
+
+            <TextView
+                android:id="@+id/rank_delta_direction_text_view"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:text="↑"
+                />
+
+            <TextView
+                android:id="@+id/rank_delta_value_text_view"
+                android:layout_weight="0"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="4dp"
+                android:textColor="@color/kprogresshud_grey_color"
+                android:textSize="16sp"
+                android:text="2"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/stats_name_text_view"
+            android:layout_weight="0.4"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="TEAM NAME"
+            />
+
+        <TextView
+            android:id="@+id/stats_played_text_view"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="0"
+            />
+
+        <TextView
+            android:id="@+id/stats_win_text_view"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="0"
+            />
+        <TextView
+            android:id="@+id/stats_lost_text_view"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="0"
+            />
+        <TextView
+            android:id="@+id/stats_drawn_text_view"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="0"
+            />
+
+        <TextView
+            android:id="@+id/stats_points_for_text_view"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="0"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/stats_points_against_text_view"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="0"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/stats_points_difference_drawn_text_view"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="0"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -1,0 +1,106 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:background="@color/kprogresshud_grey_color"
+        >
+
+        <TextView
+            android:layout_weight=".2"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="RANK"
+            />
+
+        <TextView
+            android:layout_weight=".4"
+            android:layout_width="1dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="TEAM NAME"
+            />
+
+        <TextView
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="P"
+            />
+
+        <TextView
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="W"
+            />
+        <TextView
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="L"
+            />
+        <TextView
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="D"
+            />
+
+        <TextView
+            android:id="@+id/title_points_for"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="F"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/title_points_against"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="A"
+            android:visibility="gone"
+            />
+        <TextView
+            android:id="@+id/title_points_difference"
+            android:layout_weight="0"
+            android:layout_width="40dp"
+            android:layout_height="wrap_content"
+            android:padding="4dp"
+            android:textSize="16sp"
+            android:text="D"
+            android:visibility="gone"
+            />
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/team_stats_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        />
+
+</LinearLayout>
+

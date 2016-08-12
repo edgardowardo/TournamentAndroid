@@ -27,12 +27,13 @@ public class BaseStatsViewModel extends BaseViewModel {
     public PublishSubject<Integer> progressEmitterSubject;
     public ArrayList<TeamStats> teamStatsList;
     public RealmResults<Game> games;
+    protected Group group;
 
     public BaseStatsViewModel(Long _groupId) {
         super();
         progressEmitterSubject = PublishSubject.create();
         groupId = _groupId;
-        Group group =  realm.where(Group.class).equalTo("id", groupId).findFirst();
+        group =  realm.where(Group.class).equalTo("id", groupId).findFirst();
         if (group != null) {
             games = group.games.where().findAll();
         }
@@ -80,11 +81,11 @@ public class BaseStatsViewModel extends BaseViewModel {
                             if (g.isWinner(t.seed)) {
                                 countWins++;
                             }
+                            if (g.isParticipant(t.seed) && g.getWinner() != null && g.isWinner(t.seed) == false ) {
+                                countLost++;
+                            }
                             if (g.isParticipant(t.seed) && g.getIsDraw()) {
                                 countDraws++;
-                            }
-                            if (g.isParticipant(t.seed) && g.isWinner(t.seed) == false) {
-                                countLost++;
                             }
                             if (g.isLeftParticipant(t.seed)) {
                                 pointsForLeft += g.leftScore;
