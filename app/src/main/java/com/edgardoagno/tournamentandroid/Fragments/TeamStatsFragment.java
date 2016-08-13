@@ -127,11 +127,11 @@ public class TeamStatsFragment extends Fragment {
     }
 
     private void refresh(View view) {
-            adapter = new TeamStatsRecyclerAdapter();
-            recyclerView = (RecyclerView) view.findViewById(R.id.team_stats_recycler_view);
-            layoutManager = new LinearLayoutManager(activity);
-            recyclerView.setLayoutManager(layoutManager);
-            recyclerView.setAdapter(adapter);
+        adapter = new TeamStatsRecyclerAdapter();
+        recyclerView = (RecyclerView) view.findViewById(R.id.team_stats_recycler_view);
+        layoutManager = new LinearLayoutManager(activity);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

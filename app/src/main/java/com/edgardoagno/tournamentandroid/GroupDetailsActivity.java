@@ -9,7 +9,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.RadioButton;
 
-import com.edgardoagno.tournamentandroid.Fragments.ChartsFragment;
+import com.edgardoagno.tournamentandroid.Fragments.ChartsTabFragment;
 import com.edgardoagno.tournamentandroid.Fragments.GamesTabFragment;
 import com.edgardoagno.tournamentandroid.Fragments.TeamStatsFragment;
 import com.edgardoagno.tournamentandroid.Models.ScheduleType;
@@ -26,6 +26,7 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private Long _id;
     private KProgressHUD hud;
     private TeamStatsFragment teamStatsFragment;
+    private ChartsTabFragment chartTabStatsFragment;
 
     @Bind(R.id.radio_round_robin) RadioButton roundRobinRadioButton;
     @Bind(R.id.radio_american) RadioButton americanRadioButton;
@@ -181,10 +182,19 @@ public class GroupDetailsActivity extends AppCompatActivity {
 
     @OnClick(R.id.radio_chart)
     public void onClickCharts() {
-        ChartsFragment fragment = new ChartsFragment();
-        fragment.setArguments(createArguments(false));
+        if (hud == null) {
+            hud = KProgressHUD.create(GroupDetailsActivity.this)
+                    .setStyle(KProgressHUD.Style.ANNULAR_DETERMINATE)
+                    .setLabel("Drawing...")
+                    .setDimAmount(0.2f)
+                    .setMaxProgress(100);
+        }
+        if (chartTabStatsFragment == null) {
+            chartTabStatsFragment = new ChartsTabFragment();
+            chartTabStatsFragment.setArguments(createArguments(false));
+        }
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content, fragment)
+                .replace(R.id.content, chartTabStatsFragment)
                 .commit();
     }
 

@@ -35,7 +35,7 @@ public class GamesTabFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.group_details_games_tab_view, container, false);
+        View view = inflater.inflate(R.layout.group_details_tab_container_view, container, false);
 
         Long id = getArguments().getLong("GROUP_ID");
         Boolean isLosersRound = getArguments().getBoolean("IS_LOSERS_ROUND", false);

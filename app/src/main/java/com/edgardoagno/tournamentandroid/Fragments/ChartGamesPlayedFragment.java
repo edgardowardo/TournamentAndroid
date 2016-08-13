@@ -11,11 +11,12 @@ import com.edgardoagno.tournamentandroid.R;
 
 
 /**
- * Created by edgardoagno on 21/07/16.
+ * Created by edgardoagno on 13/08/16.
  */
+public class ChartGamesPlayedFragment extends Fragment {
 
-public class ChartsFragment extends Fragment {
-    public ChartsFragment() {
+    public ChartGamesPlayedFragment() {
+
     }
 
     @Nullable
@@ -29,5 +30,7 @@ public class ChartsFragment extends Fragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
     }
+
+
 }
 
