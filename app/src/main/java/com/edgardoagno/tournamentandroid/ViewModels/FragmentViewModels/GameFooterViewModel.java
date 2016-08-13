@@ -1,4 +1,4 @@
-package com.edgardoagno.tournamentandroid.ViewModels.Fragments;
+package com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels;
 
 /**
  * Created by edgardoagno on 06/08/16.

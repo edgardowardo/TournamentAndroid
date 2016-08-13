@@ -13,7 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edgardoagno.tournamentandroid.R;
-import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GamesTabViewModel;
+import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.GamesTabViewModel;
 
 /**
  * Created by edgardoagno on 21/07/16.

@@ -17,9 +17,9 @@ import android.widget.TextView;
 
 import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.R;
-import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GameFooterViewModel;
-import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GameViewModel;
-import com.edgardoagno.tournamentandroid.ViewModels.Fragments.GamesViewModel;
+import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.GameFooterViewModel;
+import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.GameViewModel;
+import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.GamesViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

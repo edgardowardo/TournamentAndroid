@@ -34,5 +34,6 @@ dependencies {
     compile 'io.reactivex:rxjava:1.1.6'
     compile 'com.jakewharton:butterknife:7.0.1'
     compile 'com.kaopiz:kprogresshud:1.0.5'
+    compile 'com.github.PhilJay:MPAndroidChart:v3.0.0-beta1'
     compile project(":HorizontalPicker")
 }

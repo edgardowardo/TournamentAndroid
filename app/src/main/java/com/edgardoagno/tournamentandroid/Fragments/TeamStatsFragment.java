@@ -17,8 +17,8 @@ import android.widget.TextView;
 import com.edgardoagno.tournamentandroid.GroupDetailsActivity;
 import com.edgardoagno.tournamentandroid.Models.TeamStats;
 import com.edgardoagno.tournamentandroid.R;
-import com.edgardoagno.tournamentandroid.ViewModels.Fragments.TeamStatsItemViewModel;
-import com.edgardoagno.tournamentandroid.ViewModels.Fragments.TeamStatsViewModel;
+import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.TeamStatsItemViewModel;
+import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.TeamStatsViewModel;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;

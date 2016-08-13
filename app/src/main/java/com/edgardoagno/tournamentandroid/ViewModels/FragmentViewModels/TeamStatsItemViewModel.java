@@ -1,4 +1,4 @@
-package com.edgardoagno.tournamentandroid.ViewModels.Fragments;
+package com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels;
 
 import com.edgardoagno.tournamentandroid.Models.TeamStats;
 import com.edgardoagno.tournamentandroid.ViewModels.BaseViewModel;
