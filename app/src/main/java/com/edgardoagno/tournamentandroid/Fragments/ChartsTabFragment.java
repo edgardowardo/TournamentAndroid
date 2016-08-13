@@ -15,10 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edgardoagno.tournamentandroid.GroupDetailsActivity;
+import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.R;
 import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.ChartsTabViewModel;
 
-import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import rx.functions.Action1;
 
 
@@ -31,7 +32,6 @@ public class ChartsTabFragment extends Fragment {
     private GroupDetailsActivity activity;
     private ChartsTabViewModel viewModel;
     private boolean reload;
-    private RealmChangeListener gamesListener;
 
     public ChartsTabFragment() {
         super();
@@ -58,13 +58,14 @@ public class ChartsTabFragment extends Fragment {
             viewModel = new ChartsTabViewModel(id);
 
             if (viewModel.games != null) {
-                gamesListener = new RealmChangeListener() {
-                    @Override
-                    public void onChange(Object element) {
-                        reload = true;
-                    }
-                };
-                viewModel.games.addChangeListener(gamesListener);
+                viewModel.games
+                        .asObservable()
+                        .subscribe(new Action1<RealmResults<Game>>() {
+                            @Override
+                            public void call(RealmResults<Game> games) {
+                                reload = true;
+                            }
+                        });
             }
         }
 
@@ -88,6 +89,7 @@ public class ChartsTabFragment extends Fragment {
                 @Override
                 protected String doInBackground(String... params) {
                     viewModel.loadStatsList();
+                    reload = false;
                     return null;
                 }
                 protected void onPostExecute(String file_url) {

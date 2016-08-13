@@ -15,6 +15,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edgardoagno.tournamentandroid.GroupDetailsActivity;
+import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.Models.TeamStats;
 import com.edgardoagno.tournamentandroid.R;
 import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.TeamStatsItemViewModel;
@@ -22,7 +23,7 @@ import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.TeamStats
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.RealmChangeListener;
+import io.realm.RealmResults;
 import rx.functions.Action1;
 
 /**
@@ -33,7 +34,6 @@ public class TeamStatsFragment extends Fragment {
     private GroupDetailsActivity activity;
     private TeamStatsViewModel viewModel;
     private boolean reload;
-    private RealmChangeListener gamesListener;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -74,13 +74,14 @@ public class TeamStatsFragment extends Fragment {
             viewModel = new TeamStatsViewModel(id);
 
             if (viewModel.games != null) {
-                gamesListener = new RealmChangeListener() {
-                    @Override
-                    public void onChange(Object element) {
-                        reload = true;
-                    }
-                };
-                viewModel.games.addChangeListener(gamesListener);
+                viewModel.games
+                        .asObservable()
+                        .subscribe(new Action1<RealmResults<Game>>() {
+                            @Override
+                            public void call(RealmResults<Game> games) {
+                                reload = true;
+                            }
+                        });
             }
         }
 
