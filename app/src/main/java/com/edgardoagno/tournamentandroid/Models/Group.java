@@ -25,6 +25,7 @@ public class Group extends RealmObject {
     public boolean isHandicap = false;
     private String scheduleTypeValue = ScheduleType.RoundRobin.toString();
     public RealmList<Team> teams = new RealmList<Team>();
+    public RealmList<TeamStats> stats = new RealmList<TeamStats>();
     public RealmList<Game> games = new RealmList<Game>();
 
     public void setDefaultProperties() {

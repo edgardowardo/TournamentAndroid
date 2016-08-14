@@ -15,7 +15,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.edgardoagno.tournamentandroid.GroupDetailsActivity;
-import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.Models.TeamStats;
 import com.edgardoagno.tournamentandroid.R;
 import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.TeamStatsItemViewModel;
@@ -23,7 +22,6 @@ import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.TeamStats
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.RealmResults;
 import rx.functions.Action1;
 
 /**
@@ -33,7 +31,6 @@ public class TeamStatsFragment extends Fragment {
 
     private GroupDetailsActivity activity;
     private TeamStatsViewModel viewModel;
-    private boolean reload;
 
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
@@ -45,7 +42,6 @@ public class TeamStatsFragment extends Fragment {
 
     public TeamStatsFragment() {
         super();
-        reload = true;
     }
 
     @Override
@@ -72,17 +68,6 @@ public class TeamStatsFragment extends Fragment {
 
         if (viewModel == null) {
             viewModel = new TeamStatsViewModel(id);
-
-            if (viewModel.games != null) {
-                viewModel.games
-                        .asObservable()
-                        .subscribe(new Action1<RealmResults<Game>>() {
-                            @Override
-                            public void call(RealmResults<Game> games) {
-                                reload = true;
-                            }
-                        });
-            }
         }
 
         viewModel.progressEmitterSubject
@@ -99,7 +84,8 @@ public class TeamStatsFragment extends Fragment {
                     }
                 });
 
-        if (reload) {
+
+        if (!viewModel.haveStats()) {
             activity.showHud();
             AsyncTask<String, String, String> task = new AsyncTask<String, String, String>() {
                 @Override
@@ -117,7 +103,6 @@ public class TeamStatsFragment extends Fragment {
                 }
             };
             task.execute();
-            reload = false;
         }
 
         if (viewModel.teamStatsList != null) {

@@ -26,7 +26,6 @@ public class GroupDetailsActivity extends AppCompatActivity {
     private Long _id;
     private KProgressHUD hud;
     private TeamStatsFragment teamStatsFragment;
-    private ChartsTabFragment chartTabStatsFragment;
 
     @Bind(R.id.radio_round_robin) RadioButton roundRobinRadioButton;
     @Bind(R.id.radio_american) RadioButton americanRadioButton;
@@ -189,10 +188,8 @@ public class GroupDetailsActivity extends AppCompatActivity {
                     .setDimAmount(0.2f)
                     .setMaxProgress(100);
         }
-        if (chartTabStatsFragment == null) {
-            chartTabStatsFragment = new ChartsTabFragment();
-            chartTabStatsFragment.setArguments(createArguments(false));
-        }
+        ChartsTabFragment chartTabStatsFragment = new ChartsTabFragment();
+        chartTabStatsFragment.setArguments(createArguments(false));
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content, chartTabStatsFragment)
                 .commit();

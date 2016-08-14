@@ -15,6 +15,7 @@ import java.util.List;
 
 import io.realm.Realm;
 import io.realm.RealmResults;
+import rx.functions.Action1;
 import rx.subjects.PublishSubject;
 
 /**
@@ -22,6 +23,10 @@ import rx.subjects.PublishSubject;
  */
 public class BaseStatsViewModel extends BaseViewModel {
 
+    //
+    // TODO: isLoading is useless! Back to drawing board!
+    //
+    private boolean isLoading = false;
     private Long groupId;
     private int progress = 1;
     public PublishSubject<Integer> progressEmitterSubject;
@@ -33,13 +38,30 @@ public class BaseStatsViewModel extends BaseViewModel {
         super();
         progressEmitterSubject = PublishSubject.create();
         groupId = _groupId;
-        group =  realm.where(Group.class).equalTo("id", groupId).findFirst();
+        group = realm.where(Group.class).equalTo("id", groupId).findFirst();
         if (group != null) {
             games = group.games.where().findAll();
+            games.asObservable()
+                    .subscribe(new Action1<RealmResults<Game>>() {
+                        @Override
+                        public void call(RealmResults<Game> games) {
+                            if (!isLoading) {
+                                realm.beginTransaction();
+                                group.stats.deleteAllFromRealm();
+                                realm.commitTransaction();
+                            }
+                        }
+                    });
         }
     }
 
+    public boolean haveStats() {
+        return group != null && group.stats != null && group.stats.size() > 0;
+    }
+
     public void loadStatsList() {
+
+        isLoading = true;
 
         Realm realm = Realm.getDefaultInstance();
         final Group group = realm.where(Group.class).equalTo("id", groupId).findFirst();
@@ -127,7 +149,14 @@ public class BaseStatsViewModel extends BaseViewModel {
             ts.seed = i + 1;
         }
 
+        realm.beginTransaction();
+        realm.copyToRealmOrUpdate(teamStatsList);
+        group.stats.addAll(teamStatsList);
+        realm.commitTransaction();
+
         realm.close();
+
+        isLoading = false;
     }
 
 }

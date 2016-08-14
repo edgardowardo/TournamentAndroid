@@ -14,21 +14,4 @@ public class ChartsTabViewModel extends BaseStatsViewModel {
         tabNames = new String[] {"GAMES PLAYED", "GAMES PLAYED / TEAM", "GAMES WON", "POINTS FOR", "POINTS AGAINST"};
     }
 
-    public int getCountGames() {
-        return teamStatsList.size();
-    }
-
-    public int getCountNotPlayed() {
-        return getCountGames() - getCountPlayed();
-    }
-
-    public int getCountPlayed() {
-        int countPlayed = 0;
-        for (TeamStats t: teamStatsList) {
-            countPlayed += t.countPlayed;
-        }
-        return countPlayed;
-    }
-
-
 }

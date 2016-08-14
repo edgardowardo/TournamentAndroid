@@ -15,7 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.edgardoagno.tournamentandroid.GroupDetailsActivity;
-import com.edgardoagno.tournamentandroid.Models.Game;
 import com.edgardoagno.tournamentandroid.R;
 import com.edgardoagno.tournamentandroid.ViewModels.FragmentViewModels.ChartsTabViewModel;
 
@@ -31,14 +30,13 @@ public class ChartsTabFragment extends Fragment {
 
     private GroupDetailsActivity activity;
     private ChartsTabViewModel viewModel;
-    private boolean reload;
     private TabLayout tabLayout;
     private ViewPager viewPager;
     private PagerAdapter adapter;
+    private Long groupId;
 
     public ChartsTabFragment() {
         super();
-        reload = true;
     }
 
     @Override
@@ -55,21 +53,10 @@ public class ChartsTabFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         final View view = inflater.inflate(R.layout.group_details_tab_container_view, container, false);
-        final Long id = getArguments().getLong("GROUP_ID");
+        groupId = getArguments().getLong("GROUP_ID");
 
         if (viewModel == null) {
-            viewModel = new ChartsTabViewModel(id);
-
-            if (viewModel.games != null) {
-                viewModel.games
-                        .asObservable()
-                        .subscribe(new Action1<RealmResults<Game>>() {
-                            @Override
-                            public void call(RealmResults<Game> games) {
-                                reload = true;
-                            }
-                        });
-            }
+            viewModel = new ChartsTabViewModel(groupId);
         }
 
         viewModel.progressEmitterSubject
@@ -86,7 +73,7 @@ public class ChartsTabFragment extends Fragment {
                     }
                 });
 
-        if (reload) {
+        if (!viewModel.haveStats()) {
             activity.showHud();
             AsyncTask<String, String, String> task = new AsyncTask<String, String, String>() {
                 @Override
@@ -104,7 +91,6 @@ public class ChartsTabFragment extends Fragment {
                 }
             };
             task.execute();
-            reload = false;
         }
 
         if (viewModel.teamStatsList != null) {
@@ -138,8 +124,6 @@ public class ChartsTabFragment extends Fragment {
 
         TabLayout.Tab tab = tabLayout.getTabAt(0);
         tab.select();
-
-//        adapter.notifyDataSetChanged();
     }
 
     public class PagerAdapter extends FragmentStatePagerAdapter {
@@ -149,30 +133,26 @@ public class ChartsTabFragment extends Fragment {
             super(fm);
             this.numOfTabs = NumOfTabs;
         }
-//        @Override
-//        public int getItemPosition(Object object) {
-//            return POSITION_NONE;
-//        }
         @Override
         public Fragment getItem(int position) {
             Long id = getArguments().getLong("GROUP_ID");
             Bundle args = new Bundle();
             switch (position) {
-                case 0: {
-                    ChartPieFragment tab = new ChartPieFragment();
-                    args.putInt("COUNT_GAMES", viewModel.getCountGames());
-                    args.putInt("COUNT_PLAYED", viewModel.getCountPlayed());
-                    args.putInt("COUNT_NOT_PLAYED", viewModel.getCountNotPlayed());
-                    tab.setArguments(args);
-                    return tab;
-                }
+                case 0:
                 case 1:
                 case 2:
                 case 3:
-                case 4:
+                case 4: {
                     ChartPieFragment tab = new ChartPieFragment();
+                    args.putLong("GROUP_ID", groupId);
+                    args.putInt("CHART_POSITION", position);
                     tab.setArguments(args);
                     return tab;
+                }
+//                case 1: {
+//                    // TODO: Horizontal Bar Chart
+//                    return tab;
+//                }
             }
             return null;
         }
