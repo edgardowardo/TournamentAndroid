@@ -32,6 +32,9 @@ public class ChartsTabFragment extends Fragment {
     private GroupDetailsActivity activity;
     private ChartsTabViewModel viewModel;
     private boolean reload;
+    private TabLayout tabLayout;
+    private ViewPager viewPager;
+    private PagerAdapter adapter;
 
     public ChartsTabFragment() {
         super();
@@ -89,7 +92,6 @@ public class ChartsTabFragment extends Fragment {
                 @Override
                 protected String doInBackground(String... params) {
                     viewModel.loadStatsList();
-                    reload = false;
                     return null;
                 }
                 protected void onPostExecute(String file_url) {
@@ -113,12 +115,13 @@ public class ChartsTabFragment extends Fragment {
     }
 
     private void refresh(View view) {
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.pages_tabs);
+        tabLayout = (TabLayout) view.findViewById(R.id.pages_tabs);
         for (String s : viewModel.tabNames) {
             tabLayout.addTab(tabLayout.newTab().setText(s));
         }
-        final ViewPager viewPager = (ViewPager) view.findViewById(R.id.view_pager);
-        viewPager.setAdapter(new PagerAdapter(getFragmentManager(), tabLayout.getTabCount()));
+        viewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        adapter = new PagerAdapter(getFragmentManager(), tabLayout.getTabCount());
+        viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -132,28 +135,42 @@ public class ChartsTabFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {
             }
         });
+
+        TabLayout.Tab tab = tabLayout.getTabAt(0);
+        tab.select();
+
+//        adapter.notifyDataSetChanged();
     }
 
     public class PagerAdapter extends FragmentStatePagerAdapter {
-        int mNumOfTabs;
+        int numOfTabs;
 
         public PagerAdapter(FragmentManager fm, int NumOfTabs) {
             super(fm);
-            this.mNumOfTabs = NumOfTabs;
+            this.numOfTabs = NumOfTabs;
         }
-
+//        @Override
+//        public int getItemPosition(Object object) {
+//            return POSITION_NONE;
+//        }
         @Override
         public Fragment getItem(int position) {
             Long id = getArguments().getLong("GROUP_ID");
             Bundle args = new Bundle();
-            args.putLong("GROUP_ID", id);
             switch (position) {
-                case 0:
+                case 0: {
+                    ChartPieFragment tab = new ChartPieFragment();
+                    args.putInt("COUNT_GAMES", viewModel.getCountGames());
+                    args.putInt("COUNT_PLAYED", viewModel.getCountPlayed());
+                    args.putInt("COUNT_NOT_PLAYED", viewModel.getCountNotPlayed());
+                    tab.setArguments(args);
+                    return tab;
+                }
                 case 1:
                 case 2:
                 case 3:
                 case 4:
-                    ChartGamesPlayedFragment tab = new ChartGamesPlayedFragment();
+                    ChartPieFragment tab = new ChartPieFragment();
                     tab.setArguments(args);
                     return tab;
             }
@@ -162,7 +179,7 @@ public class ChartsTabFragment extends Fragment {
 
         @Override
         public int getCount() {
-            return mNumOfTabs;
+            return numOfTabs;
         }
     }
 
